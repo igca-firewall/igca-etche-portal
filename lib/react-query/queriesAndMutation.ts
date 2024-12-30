@@ -102,23 +102,23 @@ export const useGetUserPosts = (userId: string) => {
     },
   });
 };
-export const useUpdateProfileImage = () => {
-  const queryClient = useQueryClient();
+// export const useUpdateProfileImage = () => {
+//   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async ({ user, file }: Help) => {
-      const data = await updateUserAvatar({ user, file });
-      return data;
-    },
-    onSuccess: (data) => {
-      if (data?.$id) {
-        queryClient.invalidateQueries({
-          queryKey: ["GET_PROFILE", data.user.$id],
-        });
-      }
-    },
-  });
-};
+//   return useMutation({
+//     mutationFn: async ({ user, file }: Help) => {
+//       const data = await updateUserAvatar({ user, file });
+//       return data;
+//     },
+//     onSuccess: (data) => {
+//       if (data?.$id) {
+//         queryClient.invalidateQueries({
+//           queryKey: ["GET_PROFILE", data.user.$id],
+//         });
+//       }
+//     },
+//   });
+// };
 export const useLikePost = () => {
   const queryClient = useQueryClient();
   return useMutation({

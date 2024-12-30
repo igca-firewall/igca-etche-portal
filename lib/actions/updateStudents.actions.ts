@@ -3,6 +3,7 @@ import { Query } from "appwrite";
 import { createAdminClient } from "../appwrite";
 import { parseStringify } from "../utils";
 import { getStudentsByClass, listAllStudents } from "./studentsData.actions";
+import { addresults } from "./results.actions";
 
 
 const DATABASE_ID = process.env.APPWRITE_DATABASE_ID;
@@ -121,6 +122,66 @@ export const updateScoresWithClassRoom = async ({ classRoom }: { classRoom: stri
       // You can also trigger any additional side effects, such as navigating or updating other UI components
       return updatedCount;  
       // Return the count of updated scores
+  };
+  
+  export const prepareAndAddResults = async ({
+    classRoom,
+    session,
+    term,
+    subject,
+  }: {
+    classRoom: string;
+    session: string;
+    term: string;
+    subject: string;
+  }) => {
+    try {
+      // Step 1: Fetch all students in the selected class
+      const students = await getStudentsByClass({ classRoom });
+      console.log("All students in the class:", students);
+  
+      // Step 2: Fetch scores for each student based on class, subject, session, and term
+      const allScores = await Promise.all(
+        students.map(async (student) => {
+          const studentId = student.studentId;
+          const scores = await listAllScores({
+            studentId,
+           
+          });
+  
+          // Format each score as an object (not stringified)
+          return scores.map((score) => ({
+            studentId: studentId,
+            studentName: student.name, // Assuming `name` is part of the student data
+            firstTest: score.firstTest || "0", // Default to "0" if undefined
+            secondTest: score.secondTest || "0",
+            project: score.project || "0",
+            bnb: score.bnb || "0",
+            assignment: score.assignment || "0",
+            exam: score.exam || "0",
+            total: score.total || "0",
+            grade: score.grade || "F", // Default to "F" if grade is not available
+          }));
+        })
+      );
+  
+      // Flatten the nested array of score objects
+      const scores = allScores.flat();
+  
+      // Step 3: Call the addresults function with the gathered data
+      const result = await addresults({
+        classRoom,
+        session,
+        term,
+        subject,
+        scores,
+      });
+  
+      return result; // Return the result of addresults
+    } catch (error) {
+      console.error("Error preparing and adding results:", error);
+      throw error;
+    }
   };
   
   

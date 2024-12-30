@@ -103,9 +103,40 @@ declare type ResultParams = {
   bnb?: string;
   assignment?: string;
   exam?: string;
+  subject?: string;
+  
   result?: string;
 };
+interface Student {
+  $id: string;
+  name: string;
+  studentId: string;
+}
 
+interface Result {
+  studentId: string;
+  studentName: string;
+  grades: string[];
+  sum: number;
+  grade: string;
+}
+interface Scores {
+  $id: string;
+  firstTest: string;
+  secondTest: string;
+  bnb: string;
+  project: string;
+  assignment: string;
+  exam: string;
+  subject: string;
+  total: string;
+  grade: string;
+  session: string;
+  term: string;
+  createdAt: string;
+  studentId: string;
+  // grades: string[];
+}
 
 interface Helper {
   user: User;
