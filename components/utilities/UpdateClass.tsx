@@ -97,8 +97,10 @@ const UpdateScoresComponent: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="w-full max-w-xl mx-auto bg-neutral-100 dark:bg-neutral-800 p-6 rounded-lg shadow-lg">
-        <h2 className="text-xl font-bold text-center mb-4">Update Class</h2>
+      <div className="w-full h-full flex flex-col items-center justify-start bg-gray-50 dark:bg-neutral-900 p-8">
+        <h2 className="text-3xl font-semibold mb-8 text-gray-800 dark:text-gray-200 transition duration-200">
+          Update Class
+        </h2>
         <div className="flex flex-wrap justify-between gap-5 w-full mb-8">
           <div className="mb-5 w-full sm:w-1/3">
             {" "}
