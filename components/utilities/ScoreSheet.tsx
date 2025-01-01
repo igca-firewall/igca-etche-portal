@@ -432,6 +432,9 @@ const SubjectResultUploader: React.FC = () => {
               {
                 value: ` ${currentYear}/${nextYear}`,
                 label: `${currentYear}/${nextYear}`,
+              }, {
+                value: `2024/2025`,
+                label: `2024/2025`,
               },
             ]}
             value={session}
