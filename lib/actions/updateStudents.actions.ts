@@ -144,7 +144,7 @@ export const prepareAndAddResults = async ({
     });
     console.log("Scores", scores);
     // Step 2: Format the scores
-    const formattedScores = scores?.map((score) => ({
+    const formattedScores = scores.map((score) => ({
       studentId: score.studentId,
       studentName: score.name || "Unknown", // Assuming `studentName` is part of the scores
       firstTest: score.firstTest || "0",
@@ -163,7 +163,7 @@ export const prepareAndAddResults = async ({
       session,
       term,
       subject,
-      scores: formattedScores || [],
+      scores: formattedScores,
     });
     console.log("Results", result);
     return result; // Return the result of addresults
@@ -247,6 +247,24 @@ export const listAllScoresBy = async ({
       ]
     );
 
-return parseStringify(newScoresInfo.documents)
-   } // Return the full list of scores for the given studentId
+    const scores = newScoresInfo.documents; // Get the documents (scores)
+
+    allScores = [...allScores, ...scores]; // Append to the results array
+    totalFetched += scores.length; // Update the total count of fetched students
+
+    // If the number of documents returned is less than the limit, we've reached the end
+    if (scores.length < limit) {
+      break; // Exit the loop when there are no more scores to fetch
+    }
+
+    // Increment the offset for the next page
+    offset += limit;
+
+    // If we've already fetched the maximum number of students, exit the loop
+    if (totalFetched >= maxRecords) {
+      break;
+    }
+  }
+
+  return allScores; // Return the full list of scores for the given studentId
 };
