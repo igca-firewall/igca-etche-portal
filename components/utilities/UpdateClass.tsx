@@ -37,34 +37,9 @@ const UpdateScoresComponent: React.FC = () => {
     setErrorMessage(null);
 
     try {
-      const fetchedScores = await getStudentsByClass({ classRoom });
-      if (fetchedScores.length === 0) {
-        throw new Error("No scores available to update.");
-      }
-      const studentClassRoomMap = fetchedScores.reduce((map, student) => {
-        map[student.studentId] = student.classRoom;
-        return map;
-      }, {} as Record<string, string>);
-
-      const allScores = await Promise.all(
-        fetchedScores.map(async (student) => {
-          const studentId = student.studentId;
-          const scores = await listAllScores({ studentId });
-          return scores
-            .filter(
-              (score) => score.classRoom !== studentClassRoomMap[studentId]
-            ) // Filter scores that need updates
-            .map((score) => ({
-              id: score.$id,
-              classRoom: studentClassRoomMap[studentId], // Map score to its updated classRoom
-            }));
-        })
-      );
-      setProgress({ total: allScores.length, updated: 0 });
-      setStatus("idle");
-
-      const updates = fetchedScores.map(async (score) => {
-        if (!updatedStudents.has(score.id)) {
+     
+      // const updates = fetchedScores.map(async (score) => {
+        // if (!updatedStudents.has(score.id)) {
           const result = await prepareAndAddResults({
             classRoom,
             subject,
@@ -76,14 +51,14 @@ const UpdateScoresComponent: React.FC = () => {
               ...prev,
               updated: prev.updated + 1,
             }));
-            setUpdatedStudents((prev) => new Set(prev).add(score.id));
+            // setUpdatedStudents((prev) => new Set(prev).add(score.id));
           } else {
             throw new Error("Update failed for a score.");
           }
-        }
-      });
+        // }
+    
 
-      await Promise.all(updates);
+ 
       setStatus("success");
     } catch (error) {
       console.error("Error updating scores:", error);
