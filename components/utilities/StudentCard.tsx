@@ -3,6 +3,7 @@ import React from "react";
 interface ResultCardProps {
   studentName: string;
   studentId: string;
+  
   grades: { 
     term: string;
     subjects: { [subject: string]: number };

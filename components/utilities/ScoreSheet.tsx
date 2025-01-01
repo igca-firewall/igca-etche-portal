@@ -312,7 +312,7 @@ const SubjectResultUploader: React.FC = () => {
   }, [classRoom, subject, session, term]);
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-start bg-gray-50 dark:bg-neutral-900 p-8">
+    <div className="w-full h-full flex flex-col items-center justify-start bg-gray-50 dark:bg-neutral-900 p-8 rounded-[25px] border border-neutral-200 dark:border-neutral-800">
       <h2 className="text-3xl font-semibold mb-8 text-gray-800 dark:text-gray-200 transition duration-200">
         Upload Results
       </h2>
@@ -433,7 +433,7 @@ const SubjectResultUploader: React.FC = () => {
                 value: ` ${currentYear}/${nextYear}`,
                 label: `${currentYear}/${nextYear}`,
               }, {
-                value: `2024/2025`,
+                value: ` 2024/2025`,
                 label: `2024/2025`,
               },
             ]}
