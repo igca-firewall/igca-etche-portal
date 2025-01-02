@@ -1,4 +1,7 @@
-import { fetchCompiledResults, fetchResultWithSubject } from "@/lib/actions/rexults.actions";
+import {
+  fetchCompiledResults,
+  fetchResultWithSubject,
+} from "@/lib/actions/rexults.actions";
 import { useEffect, useState } from "react";
 import Select from "./CustomSelect";
 import { classOrder } from "@/lib/utils";
@@ -7,10 +10,9 @@ import { useUserContext } from "@/context/AuthContext";
 import { getStudentsByClass } from "@/lib/actions/studentsData.actions";
 import { Models } from "appwrite";
 import Image from "next/image";
-import { fetchResultData } from "@/lib/actions/results.actions";
+import { editResults, fetchResultData } from "@/lib/actions/results.actions";
 import { listAllScoresBy } from "@/lib/actions/updateStudents.actions";
-
-
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
 
 const CompiledResults: React.FC = () => {
   const [subject, setSubject] = useState<string>("");
@@ -27,20 +29,36 @@ const CompiledResults: React.FC = () => {
   const [errors, setErrors] = useState<string[]>([]); // Error state
   const [inputValue, setInputValue] = useState("");
   const [showPopup, setShowPopup] = useState(false);
-  const [values, setValues] = useState({});
-  // New state for processing status
-  const [isSuccess, setIsSuccess] = useState(false); // State for success popup
-  const [isFailure, setIsFailure] = useState(false); // State for failure popup
-  const [errorMessage, setErrorMessage] = useState(""); // State for storing error message
-  const [completedSubmissions, setCompletedSubmissions] = useState(0);
-  const [total, setTotal] = useState(0);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [studentToDelete, setStudentToDelete] = useState<string | null>(null);
+  const [editStudentData, setEditStudentData] = useState<Scores | null>(null);
+  const [newScore, setNewScore] = useState<string>("");
 
-  const [activeRow, setActiveRow] = useState(0); // Tracks the active row
-  const [activeColumn, setActiveColumn] = useState(0); // Tracks the active column (field)
+  // Edit form state
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  // Tracks the active column (field)
   // const inputRefs = useRef([]);
   const currentYear = new Date().getFullYear();
   const nextYear = currentYear + 1;
+  // const confirmDelete = async () => {
+  //   if (studentToDelete) {
+  //     try {
+  //       await deleteStudent({ id: studentToDelete });
+
+  //       setStudents((prevStudents) =>
+  //         prevStudents.filter((student) => student.$id !== studentToDelete)
+  //       );
+  //       console.log("Student deleted:", studentToDelete);
+  //     } catch (error) {
+  //       console.error("Error deleting student:", error);
+  //     }
+  //   }
+  //   setIsModalOpen(false);
+  // };
+
+  // const cancelDelete = () => {
+  //   setStudentToDelete(null);
+  //   setIsModalOpen(false);
+  // };
   useEffect(() => {
     const fetchStudents = async () => {
       try {
@@ -75,29 +93,33 @@ const CompiledResults: React.FC = () => {
         setIsLoading(true);
         setScores([]);
         setIsStudent([]);
-  
-        const particles = await listAllScoresBy({
+
+        const particles = await fetchResultData({
           classRoom,
           term,
           session,
           subject,
         });
-  console.log("particles", particles)
+        console.log("particles", particles);
         if (particles?.length) {
           const transformedScores = particles.flatMap((result) => {
-            return result.scores.map((score) => ({
-              studentId: score.studentId,
-              firstTest: score.firstTest,
-              secondTest: score.secondTest,
-              bnb: score.bnb,
-              project: score.project,
-              assignment: score.assignment,
-              exam: score.exam,
-              total: score.total,
-              grade: score.grade,
-            }));
+            return result.scores.map((scoreString: string) => {
+              const score = JSON.parse(scoreString); // Parse the JSON string into an object
+              return {
+                studentId: score.studentId,
+                studentName: score.studentName,
+                firstTest: score.firstTest,
+                secondTest: score.secondTest,
+                bnb: score.bnb,
+                project: score.project,
+                assignment: score.assignment,
+                exam: score.exam,
+                total: score.total,
+                grade: score.grade,
+              };
+            });
           });
-  
+
           setScores(transformedScores);
           console.log("Transformed Scores:", transformedScores);
         }
@@ -107,12 +129,96 @@ const CompiledResults: React.FC = () => {
         setIsLoading(false);
       }
     };
-  
+
     if (classRoom && subject && session && term) {
       fetchStudentsScore();
     }
   }, [classRoom, subject, session, term]);
-  
+  const handleSubmit = async () => {
+    const fetchStudentsScore = async () => {
+      try {
+        setIsLoading(true);
+        setScores([]);
+        setIsStudent([]);
+
+        const particles = await fetchResultData({
+          classRoom,
+          term,
+          session,
+          subject,
+        });
+        console.log("particles", particles);
+        if (particles?.length) {
+          const transformedScores = particles.flatMap((result) => {
+            return result.scores.map((scoreString: string) => {
+              const score = JSON.parse(scoreString); // Parse the JSON string into an object
+              return {
+                studentId: score.studentId,
+                studentName: score.studentName,
+                firstTest: score.firstTest,
+                secondTest: score.secondTest,
+                bnb: score.bnb,
+                project: score.project,
+                assignment: score.assignment,
+                exam: score.exam,
+                total: score.total,
+                grade: score.grade,
+              };
+            });
+          });
+
+          setScores(transformedScores);
+          console.log("Transformed Scores:", transformedScores);
+        }
+      } catch (error) {
+        console.error("Error fetching student scores:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  };
+  const handleEditSubmit = async () => {
+    if (!editStudentData || !newScore) return;
+
+    try {
+      await editResults({
+        classRoom,
+        session,
+        term,
+        subject,
+        action: "edit",
+        studentId: editStudentData.$id,
+        newScore: JSON.stringify({
+          ...editStudentData, // Include existing student details
+          scores: newScore, // Updated scores
+        }),
+      });
+
+      setEditStudentData(null); // Clear edit state
+      setNewScore(""); // Clear the score input field
+      alert("Student scores updated successfully!");
+    } catch (error) {
+      console.error("Failed to update student scores:", error);
+      alert("An error occurred while updating the scores.");
+    }
+  };
+  const handleDelete = async (studentId: string) => {
+    try {
+      await editResults({
+        classRoom,
+        session,
+        term,
+        subject,
+        action: "delete",
+        studentId,
+      });
+
+      alert("Student record deleted successfully!");
+    } catch (error) {
+      console.error("Failed to delete student record:", error);
+      alert("An error occurred while deleting the record.");
+    }
+  };
   return (
     <div className="w-full h-full flex flex-col items-center justify-start bg-gray-50 dark:bg-neutral-900 p-8">
       <h2 className="text-3xl font-semibold mb-8 text-gray-800 dark:text-gray-200 transition duration-200">
@@ -234,7 +340,8 @@ const CompiledResults: React.FC = () => {
               {
                 value: ` ${currentYear}/${nextYear}`,
                 label: `${currentYear}/${nextYear}`,
-              }, {
+              },
+              {
                 value: ` 2024/2025`,
                 label: `2024/2025`,
               },
@@ -263,91 +370,269 @@ const CompiledResults: React.FC = () => {
           </div>
         ) : (
           <table className="min-w-full table-auto border-collapse bg-white dark:bg-neutral-800 rounded-lg shadow-md overflow-hidden">
-          <thead className="bg-gray-100 dark:bg-neutral-700">
-            <tr>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                Student Name
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                1st Summarize Test (10%)
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                2nd Summarize Test (10%)
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                Assignment (10%)
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                Midterm Project (10%)
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                Book and Beyond (20%)
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                Examination (40%)
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                Sum
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                Grade
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                Scored?
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-  {students
-    .sort((a, b) => a.name.localeCompare(b.name)) // Sort alphabetically by name
-    .map((student) => {
-      const studentScore = scores.find(
-        (score) => score.studentId === student.studentId
-      );
+            <thead className="bg-gray-100 dark:bg-neutral-700">
+              <tr>
+                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Student Name
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                  1st Summarize Test (10%)
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                  2nd Summarize Test (10%)
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Assignment (10%)
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Midterm Project (10%)
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Book and Beyond (20%)
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Examination (40%)
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Sum
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Grade
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {students
+                .sort((a, b) => a.name.localeCompare(b.name)) // Sort alphabetically by name
+                .map((student) => {
+                  const studentScore = scores.find(
+                    (score) => score.studentId === student.studentId
+                  );
 
-      return (
-        <tr
-          key={student.studentId}
-          className="border-b border-gray-200 dark:border-neutral-700"
-        >
-          <td className="px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300">
-            {student.name}
-          </td>
-          <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
-            {studentScore ? studentScore.firstTest : "-"}
-          </td>
-          <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
-            {studentScore ? studentScore.secondTest : "-"}
-          </td>
-          <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
-            {studentScore ? studentScore.assignment : "-"}
-          </td>
-          <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
-            {studentScore ? studentScore.project : "-"}
-          </td>
-          <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
-            {studentScore ? studentScore.bnb : "-"}
-          </td>
-          <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
-            {studentScore ? studentScore.exam : "-"}
-          </td>
-          <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
-            {studentScore ? studentScore.total : "-"}
-          </td>
-          <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
-            {studentScore ? studentScore.grade : "-"}
-          </td>
-          <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200"></td>
-        </tr>
-      );
-    })}
-</tbody>
-
-        </table>
-        
+                  return (
+                    <tr
+                      key={student.studentId}
+                      className="border-b border-gray-200 dark:border-neutral-700"
+                    >
+                      <td className="px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300">
+                        {student.name}
+                      </td>
+                      <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
+                        {editStudentData?.$id === student?.$id ? (
+                          <Input
+                            type="text"
+                            value={editStudentData?.firstTest}
+                            onChange={(e) =>
+                              setEditStudentData({
+                                ...editStudentData,
+                                firstTest: e.target.value,
+                              })
+                            }
+                            className="w-full px-2 py-1 border rounded-md dark:bg-neutral-700 dark:text-white"
+                          />
+                        ) : studentScore ? (
+                          studentScore.firstTest
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
+                      {editStudentData?.$id === student.$id ? (
+                          <Input
+                            type="text"
+                            value={editStudentData?.secondTest}
+                            onChange={(e) =>
+                              setEditStudentData({
+                                ...editStudentData,
+                                secondTest: e.target.value,
+                              })
+                            }
+                            className="w-full px-2 py-1 border rounded-md dark:bg-neutral-700 dark:text-white"
+                          />
+                        ) : studentScore ? (
+                          studentScore.secondTest
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
+                      {editStudentData?.$id === student.$id ? (
+                          <Input
+                            type="text"
+                            value={editStudentData?.bnb}
+                            onChange={(e) =>
+                              setEditStudentData({
+                                ...editStudentData,
+                                bnb: e.target.value,
+                              })
+                            }
+                            className="w-full px-2 py-1 border rounded-md dark:bg-neutral-700 dark:text-white"
+                          />
+                        ) : studentScore ? (
+                          studentScore.bnb
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
+                      {editStudentData?.$id === student.$id ? (
+                          <Input
+                            type="text"
+                            value={editStudentData?.project}
+                            onChange={(e) =>
+                              setEditStudentData({
+                                ...editStudentData,
+                                project: e.target.value,
+                              })
+                            }
+                            className="w-full px-2 py-1 border rounded-md dark:bg-neutral-700 dark:text-white"
+                          />
+                        ) : studentScore ? (
+                          studentScore.project
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
+                      {editStudentData?.$id === student.$id ? (
+                          <Input
+                            type="text"
+                            value={editStudentData?.assignment}
+                            onChange={(e) =>
+                              setEditStudentData({
+                                ...editStudentData,
+                                assignment: e.target.value,
+                              })
+                            }
+                            className="w-full px-2 py-1 border rounded-md dark:bg-neutral-700 dark:text-white"
+                          />
+                        ) : studentScore ? (
+                          studentScore.assignment
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
+                      {editStudentData?.$id === student.$id ? (
+                          <Input
+                            type="text"
+                            value={editStudentData?.exam}
+                            onChange={(e) =>
+                              setEditStudentData({
+                                ...editStudentData,
+                                exam: e.target.value,
+                              })
+                            }
+                            className="w-full px-2 py-1 border rounded-md dark:bg-neutral-700 dark:text-white"
+                          />
+                        ) : studentScore ? (
+                          studentScore.exam
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
+                      {editStudentData?.$id === student.$id ? (
+                          <Input
+                            type="text"
+                            value={editStudentData?.total}
+                            onChange={(e) =>
+                              setEditStudentData({
+                                ...editStudentData,
+                                total: e.target.value,
+                              })
+                            }
+                            className="w-full px-2 py-1 border rounded-md dark:bg-neutral-700 dark:text-white"
+                          />
+                        ) : studentScore ? (
+                          studentScore.total
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
+                      {editStudentData?.$id === student.$id ? (
+                          <Input
+                            type="text"
+                            value={editStudentData?.grade}
+                            onChange={(e) =>
+                              setEditStudentData({
+                                ...editStudentData,
+                                grade: e.target.value,
+                              })
+                            }
+                            className="w-full px-2 py-1 border rounded-md dark:bg-neutral-700 dark:text-white"
+                          />
+                        ) : studentScore ? (
+                          studentScore.grade
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
+                        {user?.role === "admin" && (
+                          <td className="px-4 py-2 flex items-center gap-3">
+                            {editStudentData?.$id === studentScore?.$id ? (
+                              <>
+                                <button
+                                  className="text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 transition-all duration-200"
+                                  onClick={handleEditSubmit}
+                                >
+                                  Save
+                                </button>
+                                <button
+                                  className="text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-all duration-200"
+                                  onClick={() => setEditStudentData(null)}
+                                >
+                                  Cancel
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <button
+                                  className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition-all duration-200"
+                                  onClick={() =>
+                                    setEditStudentData(studentScore!)
+                                  }
+                                >
+                                  <FaEdit />
+                                </button>
+                                <button
+                                  className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-all duration-200"
+                                  onClick={() => handleDelete(student.$id)}
+                                >
+                                  <FaTrashAlt />
+                                </button>
+                              </>
+                            )}
+                          </td>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </table>
         )}
       </div>
-
+      {!scores && (
+        <button
+          onClick={() => handleSubmit()}
+          className="bg-purple-500 text-white py-6 px-10 rounded-full hover:bg-purple-600 focus:ring-4 focus:ring-purple-300 disabled:bg-gray-300"
+          disabled={
+            isProcessing ||
+            !classRoom ||
+            !subject ||
+            !term ||
+            results.length === 0
+          }
+        >
+          {isProcessing ? "Submitting..." : "Submit Results"}
+        </button>
+      )}
     </div>
   );
 };

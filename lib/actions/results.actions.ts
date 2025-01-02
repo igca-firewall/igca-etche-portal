@@ -161,7 +161,7 @@ export const fetchResultData = async ({
     Query.equal("index", index),
   ]);
   if (fetchedResults) {
-    console.log("Rerieved the result data", fetchedResults);
+    console.log("Retrieved the result data", fetchedResults);
     return parseStringify(fetchedResults.documents);
   }
   console.log("Nothing like such", fetchedResults);
@@ -202,13 +202,17 @@ export const editResults = async ({
   session,
   term,
   subject,
-  scores,
+  action,
+  studentId,
+  newScore,
 }: {
   classRoom: string;
   session: string;
   term: string;
   subject: string;
-  scores: string[]; // Array of new scores
+  action: "edit" | "delete"; // Action type: edit or delete
+  studentId: string; // Unique ID of the student
+  newScore?: string; // New score for editing (JSON stringified)
 }) => {
   const { database } = await createAdminClient();
 
@@ -224,34 +228,59 @@ export const editResults = async ({
     subject,
   });
 
-  if (dataToEdit) {
-    // Assuming the dataToEdit is an array of student records with studentId and current scores
-    const studentRecords = dataToEdit;
+  if (dataToEdit?.length) {
+    const studentRecord = dataToEdit.find(
+      (record) => record.studentId === studentId
+    );
 
-    // Update the scores in each student record
-    const updatedStudents = studentRecords.map((student, index) => {
-      return {
-        ...student, // Copy existing student data
-        scores: scores[index], // Replace the old score with the new one from the scores[] array
-      };
-    });
+    if (!studentRecord) {
+      console.error(`Student with ID ${studentId} not found.`);
+      return;
+    }
 
-    // Loop through each updated student and update their record in the database
-    for (const student of updatedStudents) {
-      const updatedResult = await database.updateDocument(
-        DATABASE_ID!,
-        hem!, // Term identifier (FIRST, SECOND, or THIRD)
-        dataToEdit[0].$id, // Update the document by its ID
-        {
-          scores: student.scores, // Only update the scores for the student
-        }
+    let updatedScores: any[] = JSON.parse(studentRecord.scores || "[]");
+
+    if (action === "edit") {
+      // Update the specific student's score
+      if (!newScore) {
+        console.error("No new score provided for editing.");
+        return;
+      }
+
+      const updatedScoreObj = JSON.parse(newScore);
+      updatedScores = updatedScores.map((score) =>
+        score.studentId === studentId ? updatedScoreObj : score
       );
 
-      // Optionally handle the result for each student or log it
-      console.log(`Updated result for student ${student.$id}`, updatedResult);
+      console.log(`Updated scores for student ${studentId}`, updatedScores);
+    } else if (action === "delete") {
+      // Remove the specific student's score
+      updatedScores = updatedScores.filter(
+        (score) => score.studentId !== studentId
+      );
+
+      console.log(`Deleted scores for student ${studentId}`, updatedScores);
     }
+
+    // Update the database with the modified scores
+    const updatedResult = await database.updateDocument(
+      DATABASE_ID!,
+      hem!,
+      studentRecord.$id,
+      {
+        scores: JSON.stringify(updatedScores), // Save the updated scores back to the database
+      }
+    );
+
+    console.log(
+      `${action === "edit" ? "Edited" : "Deleted"} result for student ${studentId}`,
+      updatedResult
+    );
+  } else {
+    console.error("No data found to edit or delete for the provided parameters.");
   }
 };
+
 export const fetchResults = async ({
   classRoom,
   session,

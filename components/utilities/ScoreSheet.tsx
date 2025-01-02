@@ -8,7 +8,7 @@ import { classOrder } from "@/lib/utils";
 import { useUserContext } from "@/context/AuthContext";
 
 import Image from "next/image";
-import { addresults, fetchResults } from "@/lib/actions/results.actions";
+import { addresults, fetchResultData, fetchResults } from "@/lib/actions/results.actions";
 import Popup from "./PopUp";
 
 
@@ -259,7 +259,7 @@ const SubjectResultUploader: React.FC = () => {
         setScores([]); // Clear scores immediately before fetching
         setIsStudent([]); // Clear isStudent immediately before fetching
 
-        const particles = await fetchResults({
+        const particles = await fetchResultData({
           classRoom,
           term,
           session,
@@ -267,34 +267,27 @@ const SubjectResultUploader: React.FC = () => {
         });
 
         console.log("Particles:", particles);
-        if (Array.isArray(particles)) {
-          const transformedScores = particles.map((scores) => ({
-            $id: scores.$id,
-            firstTest: scores.firstTest,
-            secondTest: scores.secondTest,
-            bnb: scores.bnb,
-            project: scores.project,
-            assignment: scores.assignment,
-            exam: scores.exam,
-            subject: scores.subject,
-            total: scores.total,
-            grade: scores.grade,
-            session: scores.session,
-            term: scores.term,
-            createdAt: scores.$createdAt,
-            studentId: scores.studentId,
-            grades: [
-              scores.firstTest,
-              scores.secondTest,
-              scores.bnb,
-              scores.project,
-              scores.assignment,
-              scores.exam,
-            ],
-          }));
+        if (particles?.length) {
+          const transformedScores = particles.flatMap((result) => {
+            return result.scores.map((scoreString: string) => {
+              const score = JSON.parse(scoreString); // Parse the JSON string into an object
+              return {
+                studentId: score.studentId,
+                studentName: score.studentName,
+                firstTest: score.firstTest,
+                secondTest: score.secondTest,
+                bnb: score.bnb,
+                project: score.project,
+                assignment: score.assignment,
+                exam: score.exam,
+                total: score.total,
+                grade: score.grade,
+              };
+            });
+          });
+        
           setScores(transformedScores);
-          setIsStudent(transformedScores);
-          console.log("Transformed scores", transformedScores);
+          console.log("Transformed Scores:", transformedScores);
         } else {
           console.error("Expected particles to be an array but got", typeof particles);
         }
