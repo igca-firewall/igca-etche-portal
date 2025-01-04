@@ -1,8 +1,8 @@
-"use client"
+"use client";
 import { useUserContext } from "@/context/AuthContext";
 import Image from "next/image";
 import ScratchCardOTP from "./GetCard";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const ProfileCard = ({
   name,
@@ -20,14 +20,25 @@ const ProfileCard = ({
   classRoom?: string;
 }) => {
   const draftKeys = "Permitted by Particles";
-  const AdminInLocalStorage = localStorage.getItem(`Access Rights_${draftKeys}`);
   const { user } = useUserContext();
-  if(!user ){
-    return "The page is Loading"
+
+  const [AdminInLocalStorage, setAdminInLocalStorage] = useState<string | null>(
+    null
+  );
+
+  useEffect(() => {
+    const adminRights = localStorage.getItem(`Access Rights_${draftKeys}`);
+    setAdminInLocalStorage(adminRights);
+  }, [draftKeys]);
+
+  if (!user) {
+    return <div>The page is loading...</div>;
   }
-  if (user.role !== "admin" && !AdminInLocalStorage ) {
+
+  if (user.role !== "admin" && !AdminInLocalStorage) {
     return <ScratchCardOTP />;
   }
+
   return (
     <div className="bg-white border border-gray-200 dark:border-neutral-700 shadow-lg rounded-2xl font-nunito dark:bg-neutral-800 h-full w-96 p-6 flex flex-col items-center transition-transform transform hover:scale-105">
       {/* Profile Image */}
@@ -60,4 +71,5 @@ const ProfileCard = ({
     </div>
   );
 };
+
 export default ProfileCard;
