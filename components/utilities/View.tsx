@@ -575,7 +575,7 @@ const CompiledResults: React.FC = () => {
                       <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
                         {user?.role === "admin" && (
                           <td className="px-4 py-2 flex items-center gap-3">
-                            {editStudentData?.$id === studentScore?.$id ? (
+                            {editStudentData && editStudentData?.$id === student?.$id ? (
                               <>
                                 <button
                                   className="text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 transition-all duration-200"
