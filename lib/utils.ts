@@ -682,7 +682,7 @@ export const classOrder = [
   "SS3B",
   "SS3C",
 ];
-export function generateAvatar(name: string, size = 50): string {
+export function generateavatar(name: string, size = 50): string {
   // Get the first two letters and convert them to uppercase
   const firstTwoLetters = name.charAt(0).toUpperCase() + name.charAt(1).toUpperCase() || "?";
 
