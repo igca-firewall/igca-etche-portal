@@ -682,7 +682,7 @@ export const classOrder = [
   "SS3C",
 ];
 export function generateavatar(name: string, size = 50): string {
-const firstTwoLetters = name.trim().slice(0, 2).toUpperCase() || "?";
+const firstTwoLetters = name || "?";
 const colors = [
     "#FF5733",
     "#FF6F61",
