@@ -405,99 +405,216 @@ const CompiledResults: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-  {students
-    .sort((a, b) => a.name.localeCompare(b.name)) // Sort alphabetically by name
-    .map((student) => {
-      const studentScore = scores.find(
-        (score) => score.studentId === student.studentId
-      );
+              {students
+                .sort((a, b) => a.name.localeCompare(b.name)) // Sort alphabetically by name
+                .map((student) => {
+                  const studentScore = scores.find(
+                    (score) => score.studentId === student.studentId
+                  );
 
-      return (
-        <tr key={student.studentId} className="border-b border-gray-200 dark:border-neutral-700">
-          <td className="px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300">
-            {student.name}
-          </td>
-          <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
-            {editStudentData?.$id === student.$id ? (
-              <Input
-                type="text"
-                value={editStudentData.firstTest || ''}
-                onChange={(e) =>
-                  setEditStudentData({
-                    ...editStudentData,
-                    firstTest: e.target.value,
-                  })
-                }
-                className="w-full px-2 py-1 border rounded-md dark:bg-neutral-700 dark:text-white"
-              />
-            ) : studentScore ? (
-              studentScore.firstTest
-            ) : (
-              "-"
-            )}
-          </td>
-          <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
-            {editStudentData?.$id === student.$id ? (
-              <Input
-                type="text"
-                value={editStudentData.secondTest || ''}
-                onChange={(e) =>
-                  setEditStudentData({
-                    ...editStudentData,
-                    secondTest: e.target.value,
-                  })
-                }
-                className="w-full px-2 py-1 border rounded-md dark:bg-neutral-700 dark:text-white"
-              />
-            ) : studentScore ? (
-              studentScore.secondTest
-            ) : (
-              "-"
-            )}
-          </td>
-          {/* Repeat for other fields */}
-          <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
-            {user?.role === "admin" && (
-              <td className="px-4 py-2 flex items-center gap-3">
-                {editStudentData?.$id === student.$id ? (
-                  <>
-                    <button
-                      className="text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 transition-all duration-200"
-                      onClick={handleEditSubmit}
+                  return (
+                    <tr
+                      key={student.studentId}
+                      className="border-b border-gray-200 dark:border-neutral-700"
                     >
-                      Save
-                    </button>
-                    <button
-                      className="text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-all duration-200"
-                      onClick={() => setEditStudentData(null)}
-                    >
-                      Cancel
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition-all duration-200"
-                      onClick={() => setEditStudentData(studentScore!)}
-                    >
-                      <FaEdit />
-                    </button>
-                    <button
-                      className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-all duration-200"
-                      onClick={() => handleDelete(student.$id)}
-                    >
-                      <FaTrashAlt />
-                    </button>
-                  </>
-                )}
-              </td>
-            )}
-          </td>
-        </tr>
-      );
-    })}
-</tbody>
-
+                      <td className="px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300">
+                        {student.name}
+                      </td>
+                      <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
+                        {editStudentData?.$id === student?.$id ? (
+                          <Input
+                            type="text"
+                            value={editStudentData?.firstTest}
+                            onChange={(e) =>
+                              setEditStudentData({
+                                ...editStudentData,
+                                firstTest: e.target.value,
+                              })
+                            }
+                            className="w-full px-2 py-1 border rounded-md dark:bg-neutral-700 dark:text-white"
+                          />
+                        ) : studentScore ? (
+                          studentScore.firstTest
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
+                      {editStudentData?.$id === student.$id ? (
+                          <Input
+                            type="text"
+                            value={editStudentData?.secondTest}
+                            onChange={(e) =>
+                              setEditStudentData({
+                                ...editStudentData,
+                                secondTest: e.target.value,
+                              })
+                            }
+                            className="w-full px-2 py-1 border rounded-md dark:bg-neutral-700 dark:text-white"
+                          />
+                        ) : studentScore ? (
+                          studentScore.secondTest
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
+                      {editStudentData?.$id === student.$id ? (
+                          <Input
+                            type="text"
+                            value={editStudentData?.bnb}
+                            onChange={(e) =>
+                              setEditStudentData({
+                                ...editStudentData,
+                                bnb: e.target.value,
+                              })
+                            }
+                            className="w-full px-2 py-1 border rounded-md dark:bg-neutral-700 dark:text-white"
+                          />
+                        ) : studentScore ? (
+                          studentScore.bnb
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
+                      {editStudentData?.$id === student.$id ? (
+                          <Input
+                            type="text"
+                            value={editStudentData?.project}
+                            onChange={(e) =>
+                              setEditStudentData({
+                                ...editStudentData,
+                                project: e.target.value,
+                              })
+                            }
+                            className="w-full px-2 py-1 border rounded-md dark:bg-neutral-700 dark:text-white"
+                          />
+                        ) : studentScore ? (
+                          studentScore.project
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
+                      {editStudentData?.$id === student.$id ? (
+                          <Input
+                            type="text"
+                            value={editStudentData?.assignment}
+                            onChange={(e) =>
+                              setEditStudentData({
+                                ...editStudentData,
+                                assignment: e.target.value,
+                              })
+                            }
+                            className="w-full px-2 py-1 border rounded-md dark:bg-neutral-700 dark:text-white"
+                          />
+                        ) : studentScore ? (
+                          studentScore.assignment
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
+                      {editStudentData?.$id === student.$id ? (
+                          <Input
+                            type="text"
+                            value={editStudentData?.exam}
+                            onChange={(e) =>
+                              setEditStudentData({
+                                ...editStudentData,
+                                exam: e.target.value,
+                              })
+                            }
+                            className="w-full px-2 py-1 border rounded-md dark:bg-neutral-700 dark:text-white"
+                          />
+                        ) : studentScore ? (
+                          studentScore.exam
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
+                      {editStudentData?.$id === student.$id ? (
+                          <Input
+                            type="text"
+                            value={editStudentData?.total}
+                            onChange={(e) =>
+                              setEditStudentData({
+                                ...editStudentData,
+                                total: e.target.value,
+                              })
+                            }
+                            className="w-full px-2 py-1 border rounded-md dark:bg-neutral-700 dark:text-white"
+                          />
+                        ) : studentScore ? (
+                          studentScore.total
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
+                      {editStudentData?.$id === student.$id ? (
+                          <Input
+                            type="text"
+                            value={editStudentData?.grade}
+                            onChange={(e) =>
+                              setEditStudentData({
+                                ...editStudentData,
+                                grade: e.target.value,
+                              })
+                            }
+                            className="w-full px-2 py-1 border rounded-md dark:bg-neutral-700 dark:text-white"
+                          />
+                        ) : studentScore ? (
+                          studentScore.grade
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
+                        {user?.role === "admin" && (
+                          <td className="px-4 py-2 flex items-center gap-3">
+                            {editStudentData && editStudentData?.$id === student?.$id ? (
+                              <>
+                                <button
+                                  className="text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 transition-all duration-200"
+                                  onClick={handleEditSubmit}
+                                >
+                                  Save
+                                </button>
+                                <button
+                                  className="text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-all duration-200"
+                                  onClick={() => setEditStudentData(null)}
+                                >
+                                  Cancel
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <button
+                                  className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition-all duration-200"
+                                  onClick={() =>
+                                    setEditStudentData(studentScore!)
+                                  }
+                                >
+                                  <FaEdit />
+                                </button>
+                                <button
+                                  className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-all duration-200"
+                                  onClick={() => handleDelete(student.$id)}
+                                >
+                                  <FaTrashAlt />
+                                </button>
+                              </>
+                            )}
+                          </td>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+            </tbody>
           </table>
         )}
       </div>
