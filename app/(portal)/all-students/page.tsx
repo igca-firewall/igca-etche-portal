@@ -279,7 +279,7 @@ const StudentList: React.FC = () => {
                         />
                       ) : (
                         <div className="flex gap-3 items-center justify-start text-center text-neutral-800 dark:text-white">
-                          <div className="w-16 h-16 sm:w-14 sm:h-14 rounded-full overflow-hidden bg-neutral-200 dark:bg-neutral-700 border-2 border-neutral-300 dark:border-neutral-600 shadow-md">
+                          <div className="w-12 h-12 sm:w-10 sm:h-10 rounded-full overflow-hidden bg-neutral-200 dark:bg-neutral-700 border-2 border-neutral-300 dark:border-neutral-600 shadow-md">
                             <Image
                               src={
                                 student.image !== undefined || student.image !== null 
