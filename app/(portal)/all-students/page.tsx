@@ -13,6 +13,7 @@ import { FaSearch } from "react-icons/fa";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import ConfirmationModal from "@/components/utilities/CustomModal"; // Import the modal
 import { classOrder } from "@/lib/utils";
+import Image from "next/image";
 
 interface Student {
   $id: string;
@@ -20,6 +21,7 @@ interface Student {
   dateOfBirth: string;
   studentId: string;
   classRoom: string;
+  image: string;
 }
 
 const StudentList: React.FC = () => {
@@ -66,6 +68,7 @@ const StudentList: React.FC = () => {
             name: student.name,
             dateOfBirth: student.dateOfBirth,
             studentId: student.studentId,
+            image: student.image,
             classRoom: student.classRoom,
             createdAt: student.$createdAt,
           }));
@@ -155,37 +158,36 @@ const StudentList: React.FC = () => {
 
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     if (editStudentData) {
       const { $id, ...updates } = editStudentData; // Extracting id and updates
-  
+
       try {
         const response = await editStudent({ id: $id, updates }); // API call
-  
+
         if (response) {
           // Show success popup
           setIsSuccess(true);
           autoClosePopup(setIsSuccess); // Automatically close success popup after 3 seconds
-  
+
           // Update the local state with the modified student data
           setStudents((prevStudents) =>
             prevStudents.map((student) =>
               student.$id === $id ? { ...student, ...updates } : student
             )
           );
-  
+
           setIsEditModalOpen(false); // Close the edit modal
         }
       } catch (error) {
         console.error("Error updating student:", error);
-  
+
         // Show failure popup
         setIsFailure(true);
         autoClosePopup(setIsFailure); // Automatically close failure popup after 3 seconds
       }
     }
   };
-  
 
   return (
     <div className="w-full h-full bg-gray-50 dark:bg-neutral-900 p-6 sm:p-8 flex flex-col">
@@ -229,6 +231,7 @@ const StudentList: React.FC = () => {
             <thead className="bg-gray-100 dark:bg-neutral-800 dark:text-gray-100 text-gray-600">
               <tr>
                 <th className="px-4 py-3 text-left">#</th>
+
                 <th className="px-4 py-3 text-left">Name</th>
                 <th className="px-4 py-3 text-left">Student ID</th>
                 <th className="px-4 py-3 text-left">Class</th>
@@ -260,6 +263,7 @@ const StudentList: React.FC = () => {
                     <td className="px-4 py-2">{index + 1}</td>
 
                     {/* Name column */}
+
                     <td className="px-4 py-2">
                       {editStudentData?.$id === student.$id ? (
                         <Input
@@ -274,7 +278,24 @@ const StudentList: React.FC = () => {
                           className="w-full px-2 py-1 border rounded-md dark:bg-neutral-700 dark:text-white"
                         />
                       ) : (
-                        student.name
+                        <div className="flex gap-3 items-center justify-start text-center text-neutral-800 dark:text-white">
+                          <div className="w-16 h-16 sm:w-14 sm:h-14 rounded-full overflow-hidden bg-neutral-200 dark:bg-neutral-700 border-2 border-neutral-300 dark:border-neutral-600 shadow-md">
+                            <Image
+                              src={
+                                student.image !== undefined || student.image !== null 
+                                  ? student.image
+                                  : "/images/th.png"
+                              }
+                              alt={student.studentId}
+                              width={64}
+                              height={64}
+                              className="object-cover w-full h-full"
+                            />
+                          </div>
+                          <div className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+                            {student.name}
+                          </div>
+                        </div>
                       )}
                     </td>
 
@@ -338,7 +359,7 @@ const StudentList: React.FC = () => {
                     {/* Actions column */}
                     {user?.role === "admin" && (
                       <td className="px-4 py-2 flex items-center gap-3">
-                        {editStudentData?.$id === student.$id  ? (
+                        {editStudentData?.$id === student.$id ? (
                           <>
                             <button
                               className="text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 transition-all duration-200"
@@ -353,7 +374,7 @@ const StudentList: React.FC = () => {
                               Cancel
                             </button>
                           </>
-                        ) : ( 
+                        ) : (
                           <>
                             <button
                               className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition-all duration-200"
@@ -377,8 +398,8 @@ const StudentList: React.FC = () => {
           </table>
         </div>
       </div>
-         {/* Confirmation Modal */}
-         <ConfirmationModal
+      {/* Confirmation Modal */}
+      <ConfirmationModal
         isOpen={isModalOpen}
         onConfirm={confirmDelete}
         onCancel={cancelDelete}

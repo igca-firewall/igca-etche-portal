@@ -681,3 +681,84 @@ export const classOrder = [
   "SS3B",
   "SS3C",
 ];
+export function generateavatar(name: string, size = 50): string {
+  const firstLetter = name.trim().charAt(0).toUpperCase() || "?";
+  const colors = [
+    "#FF5733",
+    "#FF6F61",
+    "#FF8D3B",
+    "#FFA07A",
+    "#FF9F00",
+    "#FFB300",
+    "#FFBF00",
+    "#FFCC00",
+    "#FFDD00",
+    "#FFEC00",
+    "#FFD700",
+    "#FFEB3B",
+    "#FFCD00",
+    "#FF9100",
+    "#FF6F00",
+    "#F44336",
+    "#FF4081",
+    "#FF1F4C",
+    "#FF33B5",
+    "#FF63A0",
+    "#FF66CC",
+    "#FF80FF",
+    "#D500F9",
+    "#9C27B0",
+    "#673AB7",
+    "#3F51B5",
+    "#2196F3",
+    "#03A9F4",
+    "#00BCD4",
+    "#009688",
+    "#4CAF50",
+    "#8BC34A",
+    "#CDDC39",
+    "#FFC107",
+    "#FF9800",
+    "#FF5722",
+    "#9E9E9E",
+    "#607D8B",
+    "#00FF7F",
+    "#00FA9A",
+    "#32CD32",
+    "#98FB98",
+    "#40E0D0",
+    "#00BFFF",
+    "#1E90FF",
+    "#00CED1",
+    "#00FF00",
+    "#8A2BE2",
+    "#E91E63",
+    "#00BFAE",
+  ];
+
+  const backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+
+  // Create a canvas element
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    throw new Error("Failed to get canvas context");
+  }
+
+  // Draw background
+  ctx.fillStyle = backgroundColor;
+  ctx.fillRect(0, 0, size, size);
+
+  // Draw text
+  ctx.fillStyle = "white";
+  ctx.font = `${size / 2}px Arial`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(firstLetter, size / 2, size / 2);
+
+  // Convert canvas to data URL
+  return canvas.toDataURL("image/png");
+}

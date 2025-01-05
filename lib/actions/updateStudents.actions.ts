@@ -1,7 +1,7 @@
 "use server";
 import { Query } from "appwrite";
 import { createAdminClient } from "../appwrite";
-import { parseStringify } from "../utils";
+import { generateavatar, generateAvatar, parseStringify } from "../utils";
 import { getStudentsByClass, listAllStudents } from "./studentsData.actions";
 import { addresults } from "./results.actions";
 
@@ -74,6 +74,7 @@ export const updateScoresWithClassRoom = async ({
   const allScores = await Promise.all(
     students.map(async (student) => {
       const studentId = student.studentId;
+      const avatarUrl= generateAvatar(`${student.name[0]}${student.studentId[12]}`);
       const scores = await listAllScores({ studentId });
       return scores
         .filter((score) => score.classRoom !== studentClassRoomMap[studentId]) // Filter scores that need updates
@@ -268,3 +269,90 @@ export const listAllScoresBy = async ({
 
   return allScores; // Return the full list of scores for the given studentId
 };
+export const updateStudentsImages = async ({
+  classRoom,
+  imageMap, // Map of student ids to image URLs
+}: {
+  classRoom: string;
+  imageMap: { [studentId: string]: string }; // Student ID to image URL mapping
+}) => {
+  const { database } = await createAdminClient();
+
+  // Step 1: Fetch all students in the specified class
+  const students = await getStudentsByClass({ classRoom });
+  console.log("Fetched Students:", students);
+
+  if (students.length === 0) {
+    console.log("No students found in the specified class.");
+    return { updatedCount: 0, failed: [] }; // Return empty results when no students are found
+  }
+
+  // Sequentially generate and update each student's image
+  let updatedCount = 0;
+  const failed = [];
+
+  for (const student of students) {
+    try {
+      // Get the image URL for the current student from the imageMap
+      const imageUrl = imageMap[student.$id]; // Find the image based on the student's ID
+
+      if (!imageUrl) {
+        throw new Error(`No image URL found for student with ID: ${student.$id}`);
+      }
+
+      // Update the student's document with the new image URL
+      await database.updateDocument(
+        DATABASE_ID!,
+        STUDENTS_COLLECTION_ID!,
+        student.$id,
+        { image: imageUrl } // Update the image attribute
+      );
+
+      console.log(`Successfully updated student with ID: ${student.$id} with image: ${imageUrl}`);
+      updatedCount++;
+    } catch (error) {
+      console.error(`Failed to update student with ID: ${student.$id}`, error);
+      failed.push(student.$id); // Record the failed student IDs
+    }
+  }
+
+  if (updatedCount === 0) {
+    console.log("No updates were performed.");
+    return { updatedCount: 0, failed }; // Return failed updates
+  }
+
+  console.log(`Successfully updated ${updatedCount} student documents.`);
+  return { updatedCount, failed }; // Return count of successful updates and list of failed updates
+};
+
+
+
+// export function generateAvatar(name: string): string {
+//   const firstLetter = name.trim().charAt(0).toUpperCase() || "?"; // Default to "?" if no valid name
+
+//   // Predefined set of 15 colors that complement orange
+//   const colors = ["#FF5722", "#FF9800", "#FFC107", "#FFEB3B", "#F57C00"];
+
+//   const backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+
+//   // Create a smaller canvas
+//   const size = 50; // Smaller size
+//   const canvas = createCanvas(size, size);
+//   const context = canvas.getContext("2d");
+
+//   if (context) {
+//     // Fill background color
+//     context.fillStyle = backgroundColor;
+//     context.fillRect(0, 0, size, size);
+
+//     // Draw the first letter
+//     context.font = "bold 20px Arial"; // Smaller font
+//     context.textAlign = "center";
+//     context.textBaseline = "middle";
+//     context.fillStyle = "#fff"; // Text color
+//     context.fillText(firstLetter, size / 2, size / 2);
+//   }
+
+//   // Return the avatar as a Base64-encoded PNG
+//   return canvas.toDataURL("image/png");
+// }

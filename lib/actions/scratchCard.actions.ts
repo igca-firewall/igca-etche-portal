@@ -87,6 +87,7 @@ export const useScratchCards = async ({ code }: { code: string }) => {
     }
     if (gotten) {
     const deletedScratchcard=  await deleteScratchCard({ id: gotten.documents[0].$id });
+    
       console.log("Fetched and Updated the status of the card All-Done");
       return parseStringify(gotten.documents);
     }
