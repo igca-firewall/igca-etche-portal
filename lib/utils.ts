@@ -682,61 +682,45 @@ export const classOrder = [
   "SS3B",
   "SS3C",
 ];
-export function generateavatar(name: string, size = 50): string {
-const firstTwoLetters = name.charAt(0).toUpperCase() + name.charAt(1).toUpperCase() || "?";
-const colors = [
-    "#FF5733",
-    "#FF6F61",
-    "#FF8D3B",
-    "#FFA07A",
-    "#FF9F00",
-    "#FFB300",
-    "#FFBF00",
-    "#FFCC00",
-    "#FFDD00",
-    "#FFEC00",
-    "#FFD700",
-    "#FFEB3B",
-    "#FFCD00",
-    "#FF9100",
-    "#FF6F00",
-    "#F44336",
-    "#FF4081",
-    "#FF1F4C",
-    "#FF33B5",
-    "#FF63A0",
-    "#FF66CC",
-    "#FF80FF",
-    "#D500F9",
-    "#9C27B0",
-    "#673AB7",
-    "#3F51B5",
-    "#2196F3",
-    "#03A9F4",
-    "#00BCD4",
-    "#009688",
-    "#4CAF50",
-    "#8BC34A",
-    "#CDDC39",
-    "#FFC107",
-    "#FF9800",
-    "#FF5722",
-    "#9E9E9E",
-    "#607D8B",
-    "#00FF7F",
-    "#00FA9A",
-    "#32CD32",
-    "#98FB98",
-    "#40E0D0",
-    "#00BFFF",
-    "#1E90FF",
-    "#00CED1",
-    "#00FF00",
-    "#8A2BE2",
-    "#E91E63",
-    "#00BFAE",
+export function generateAvatar(name: string, size = 50): string {
+  // Get the first two letters and convert them to uppercase
+  const firstTwoLetters = name.charAt(0).toUpperCase() + name.charAt(1).toUpperCase() || "?";
+
+  // New bright and vibrant color palette
+  const colors = [
+    "#FF0000", // Bright Red
+    "#FF5733", // Funshi Orange
+    "#FF4081", // Bright Pink
+    "#FF1F4C", // Bright Red-Pink
+    "#D500F9", // Bright Purple
+    "#00BFFF", // Deep Sky Blue
+    "#FF9800", // Bright Orange
+    "#E91E63", // Hot Pink
+    "#00FF00", // Neon Green
+    "#00BCD4", // Bright Cyan
+    "#3F51B5", // Bold Blue
+    "#009688", // Sharp Teal
+    "#8A2BE2", // Blue-Violet
+    "#FF33B5", // Fuchsia Pink
+    "#FF6F00", // Amber Orange
+    "#FF1493", // Deep Pink
+    "#1E90FF", // Dodger Blue
+    "#F44336", // Bright Red
+    "#FFEB3B", // Bright Yellow
+    "#9C27B0", // Vibrant Purple
+    "#673AB7", // Deep Purple
+    "#2196F3", // Vivid Blue
+    "#FF4500", // Orange Red
+    "#00FF7F", // Bright Spring Green
+    "#FF6600", // Vivid Orange
+    "#800080", // Purple
+    "#FF00FF", // Magenta
+    "#32CD32", // Lime Green
+    "#FF8C00", // Dark Orange
+    "#00FFFF", // Aqua
   ];
 
+  // Select a random color from the list
   const backgroundColor = colors[Math.floor(Math.random() * colors.length)];
 
   // Create a canvas element
@@ -753,12 +737,12 @@ const colors = [
   ctx.fillStyle = backgroundColor;
   ctx.fillRect(0, 0, size, size);
 
-  // Draw text
+  // Draw text (the first two letters of the name)
   ctx.fillStyle = "white";
   ctx.font = `${size / 2}px Arial`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText(firstLetter, size / 2, size / 2);
+  ctx.fillText(firstTwoLetters, size / 2, size / 2); // Use firstTwoLetters here
 
   // Convert canvas to data URL
   return canvas.toDataURL("image/png");
