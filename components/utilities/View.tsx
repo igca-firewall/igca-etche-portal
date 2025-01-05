@@ -420,11 +420,12 @@ const CompiledResults: React.FC = () => {
                       <td className="px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300">
                         {student.name}
                       </td>
+                      {/* First Test */}
                       <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
                         {editStudentData?.$id === student?.$id ? (
                           <Input
                             type="text"
-                            value={editStudentData?.firstTest}
+                            value={editStudentData.firstTest || ""}
                             onChange={(e) =>
                               setEditStudentData({
                                 ...editStudentData,
@@ -439,11 +440,12 @@ const CompiledResults: React.FC = () => {
                           "-"
                         )}
                       </td>
+                      {/* 2nd Test */}
                       <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
-                      {editStudentData?.$id === student.$id ? (
+                        {editStudentData?.$id === student?.$id ? (
                           <Input
                             type="text"
-                            value={editStudentData?.secondTest}
+                            value={editStudentData.secondTest || ""}
                             onChange={(e) =>
                               setEditStudentData({
                                 ...editStudentData,
@@ -458,49 +460,12 @@ const CompiledResults: React.FC = () => {
                           "-"
                         )}
                       </td>
+                      {/* Assignment */}
                       <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
-                      {editStudentData?.$id === student.$id ? (
+                        {editStudentData?.$id === student?.$id ? (
                           <Input
                             type="text"
-                            value={editStudentData?.bnb}
-                            onChange={(e) =>
-                              setEditStudentData({
-                                ...editStudentData,
-                                bnb: e.target.value,
-                              })
-                            }
-                            className="w-full px-2 py-1 border rounded-md dark:bg-neutral-700 dark:text-white"
-                          />
-                        ) : studentScore ? (
-                          studentScore.bnb
-                        ) : (
-                          "-"
-                        )}
-                      </td>
-                      <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
-                      {editStudentData?.$id === student.$id ? (
-                          <Input
-                            type="text"
-                            value={editStudentData?.project}
-                            onChange={(e) =>
-                              setEditStudentData({
-                                ...editStudentData,
-                                project: e.target.value,
-                              })
-                            }
-                            className="w-full px-2 py-1 border rounded-md dark:bg-neutral-700 dark:text-white"
-                          />
-                        ) : studentScore ? (
-                          studentScore.project
-                        ) : (
-                          "-"
-                        )}
-                      </td>
-                      <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
-                      {editStudentData?.$id === student.$id ? (
-                          <Input
-                            type="text"
-                            value={editStudentData?.assignment}
+                            value={editStudentData.assignment || ""}
                             onChange={(e) =>
                               setEditStudentData({
                                 ...editStudentData,
@@ -515,11 +480,52 @@ const CompiledResults: React.FC = () => {
                           "-"
                         )}
                       </td>
+                      {/* Midterm Project */}
                       <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
-                      {editStudentData?.$id === student.$id ? (
+                        {editStudentData?.$id === student?.$id ? (
                           <Input
                             type="text"
-                            value={editStudentData?.exam}
+                            value={editStudentData.project || ""}
+                            onChange={(e) =>
+                              setEditStudentData({
+                                ...editStudentData,
+                                project: e.target.value,
+                              })
+                            }
+                            className="w-full px-2 py-1 border rounded-md dark:bg-neutral-700 dark:text-white"
+                          />
+                        ) : studentScore ? (
+                          studentScore.project
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      {/* Book and Beyond */}
+                      <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
+                        {editStudentData?.$id === student?.$id ? (
+                          <Input
+                            type="text"
+                            value={editStudentData.bnb || ""}
+                            onChange={(e) =>
+                              setEditStudentData({
+                                ...editStudentData,
+                                bnb: e.target.value,
+                              })
+                            }
+                            className="w-full px-2 py-1 border rounded-md dark:bg-neutral-700 dark:text-white"
+                          />
+                        ) : studentScore ? (
+                          studentScore.bnb
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      {/* Examination */}
+                      <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
+                        {editStudentData?.$id === student?.$id ? (
+                          <Input
+                            type="text"
+                            value={editStudentData.exam || ""}
                             onChange={(e) =>
                               setEditStudentData({
                                 ...editStudentData,
@@ -534,11 +540,12 @@ const CompiledResults: React.FC = () => {
                           "-"
                         )}
                       </td>
+                      {/* Total */}
                       <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
-                      {editStudentData?.$id === student.$id ? (
+                        {editStudentData?.$id === student?.$id ? (
                           <Input
                             type="text"
-                            value={editStudentData?.total}
+                            value={editStudentData.total || ""}
                             onChange={(e) =>
                               setEditStudentData({
                                 ...editStudentData,
@@ -553,11 +560,12 @@ const CompiledResults: React.FC = () => {
                           "-"
                         )}
                       </td>
+                      {/* Grade */}
                       <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
-                      {editStudentData?.$id === student.$id ? (
+                        {editStudentData?.$id === student?.$id ? (
                           <Input
                             type="text"
-                            value={editStudentData?.grade}
+                            value={editStudentData.grade || ""}
                             onChange={(e) =>
                               setEditStudentData({
                                 ...editStudentData,
@@ -572,10 +580,11 @@ const CompiledResults: React.FC = () => {
                           "-"
                         )}
                       </td>
+                      {/* Actions */}
                       <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
                         {user?.role === "admin" && (
-                          <td className="px-4 py-2 flex items-center gap-3">
-                            {editStudentData && editStudentData?.$id === student?.$id ? (
+                          <div className="flex items-center gap-3">
+                            {editStudentData?.$id === student?.$id ? (
                               <>
                                 <button
                                   className="text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 transition-all duration-200"
@@ -585,7 +594,7 @@ const CompiledResults: React.FC = () => {
                                 </button>
                                 <button
                                   className="text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-all duration-200"
-                                  onClick={() => setEditStudentData(null)}
+                                  onClick={handleCancelEdit}
                                 >
                                   Cancel
                                 </button>
@@ -593,22 +602,22 @@ const CompiledResults: React.FC = () => {
                             ) : (
                               <>
                                 <button
-                                  className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition-all duration-200"
-                                  onClick={() =>
-                                    setEditStudentData(studentScore!)
-                                  }
+                                  className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-all duration-200"
+                                  onClick={() => handleEdit(student)}
                                 >
-                                  <FaEdit />
+                                  Edit
                                 </button>
                                 <button
                                   className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-all duration-200"
-                                  onClick={() => handleDelete(student.$id)}
+                                  onClick={() =>
+                                    handleDelete(student.studentId)
+                                  }
                                 >
-                                  <FaTrashAlt />
+                                  Delete
                                 </button>
                               </>
                             )}
-                          </td>
+                          </div>
                         )}
                       </td>
                     </tr>
@@ -618,6 +627,7 @@ const CompiledResults: React.FC = () => {
           </table>
         )}
       </div>
+
       {!scores && (
         <button
           onClick={() => handleSubmit()}
