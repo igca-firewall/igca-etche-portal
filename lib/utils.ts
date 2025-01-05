@@ -744,6 +744,6 @@ export function generateAvatar(name: string, size = 50): string {
   ctx.textBaseline = "middle";
   ctx.fillText(firstTwoLetters, size / 2, size / 2); // Use firstTwoLetters here
 
-  // Convert canvas to data URL
+  
   return canvas.toDataURL("image/png");
 }
