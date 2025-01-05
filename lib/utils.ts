@@ -1,3 +1,4 @@
+
 import { twMerge } from "tailwind-merge";
 import { type ClassValue, clsx } from "clsx";
 import qs from "query-string";
@@ -682,7 +683,7 @@ export const classOrder = [
   "SS3C",
 ];
 export function generateavatar(name: string, size = 50): string {
-const firstTwoLetters = name || "?";
+const firstTwoLetters = name.charAt(0).toUpperCase() + name.charAt(1).toUpperCase() || "?";
 const colors = [
     "#FF5733",
     "#FF6F61",
