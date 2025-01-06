@@ -1,15 +1,12 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import Select from "@/components/utilities/CustomSelect";
-import Popup from "@/components/utilities/PopUp";
 import { useUserContext } from "@/context/AuthContext";
-import { addComment } from "@/lib/actions/comment.actions";
 import { listAllStudents } from "@/lib/actions/studentsData.actions";
 import { Models } from "appwrite";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
-import ScratchCardOTP from "./GetCard";
 
 interface Student {
   $id: string;
@@ -28,18 +25,15 @@ const AllResults = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [term, setTerm] = useState<string>("");
   const [session, setSession] = useState<string>("");
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [isFailure, setIsFailure] = useState(false);
+  const [adminRights, setAdminRights] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchStudents = async () => {
       try {
         setIsLoading(true);
-        const xed: Models.Document[] = await listAllStudents();
-
-        if (xed) {
-          const transformedStudents = xed.map((student) => ({
+        const data: Models.Document[] = await listAllStudents();
+        if (data) {
+          const transformedStudents = data.map((student) => ({
             $id: student.$id,
             name: student.name,
             dateOfBirth: student.dateOfBirth,
@@ -56,13 +50,17 @@ const AllResults = () => {
         setIsLoading(false);
       }
     };
+
     if (term && session) {
       fetchStudents();
     }
   }, [term, session]);
 
-  const currentYear = new Date().getFullYear();
-  const nextYear = currentYear + 1;
+  useEffect(() => {
+    const uniqueKey = `${term}_${session} Granted Permission by Particles and to ${user?.name}`;
+    const storedAdminRights = localStorage.getItem(uniqueKey);
+    setAdminRights(storedAdminRights);
+  }, [user, term, session]);
 
   const calculateAge = (dateOfBirth: string): number => {
     const birthDate = new Date(dateOfBirth);
@@ -92,26 +90,12 @@ const AllResults = () => {
     groupedByClass[classRoom].sort((a, b) => a.name.localeCompare(b.name));
   });
 
-  // Checking the admin rights from localStorage based on the student's name
-  const [adminRights, setAdminRights] = useState<string | null>(null);
-
-  useEffect(() => {
-    const uniqueKey =`${term}_${session}_${name} Granted Permission by Particles and to ${user.name}`;
-  // Set the unique key based on the student name
-    const storedAdminRights = localStorage.getItem(uniqueKey);
-    setAdminRights(storedAdminRights);
-  }, [user]);
-
-  // Handle the "Check Result" button click
   const handleCheckResult = (studentName: string) => {
     if (user?.role === "admin") {
-      // Admin has permission by default
       alert("Permission granted: You are an admin.");
     } else if (adminRights) {
-      // If the user has rights for the specific student, grant permission
       alert(`Permission granted: You have rights for ${studentName}.`);
     } else {
-      // If no admin rights or specific student rights, show OT
       alert("OT: You do not have permission.");
     }
   };
@@ -120,13 +104,13 @@ const AllResults = () => {
     return <div>The page is loading...</div>;
   }
 
+  const currentYear = new Date().getFullYear();
+  const nextYear = currentYear + 1;
+
   return (
     <div className="p-6 items-center">
       <div className="mb-5 w-full sm:w-1/3">
-        <label
-          htmlFor="term"
-          className="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2"
-        >
+        <label htmlFor="term" className="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2">
           Select Term
         </label>
         <Select
@@ -142,10 +126,7 @@ const AllResults = () => {
         />
       </div>
       <div className="mb-5 w-full sm:w-1/3">
-        <label
-          htmlFor="session"
-          className="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2"
-        >
+        <label htmlFor="session" className="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2">
           Select Session
         </label>
         <Select
@@ -204,8 +185,13 @@ const AllResults = () => {
                       </span>{" "}
                       {calculateAge(student.dateOfBirth)} years old
                     </p>
-                    <Button onClick={() => handleCheckResult(`${classRoom}_${term}_${session}_${name} Granted Permission by Particles and to ${user.name}`
-)}>
+                    <Button
+                      onClick={() =>
+                        handleCheckResult(
+                          `${classRoom}_${term}_${session}_${student.name} Granted Permission by Particles and to ${user.name}`
+                        )
+                      }
+                    >
                       {`Check ${student.name === user.name ? "Your" : student.name + "'s"} Result`}
                     </Button>
                   </div>
