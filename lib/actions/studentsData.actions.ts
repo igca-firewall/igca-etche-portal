@@ -177,7 +177,8 @@ export const listAllStudents = async () => {
       STUDENTS_COLLECTION_ID!,
       [
         Query.limit(limit),    // Limit the number of students per request
-        Query.offset(offset),  // Skip the records we have already fetched
+        Query.offset(offset),
+        Query.notEqual("classRoom","GRADUATE")  // Skip the records we have already fetched
       ]
     );
     
@@ -218,7 +219,8 @@ export const getStudentsByClass = async ({classRoom}: {classRoom: string}) => {
       [
         Query.limit(limit),    // Limit the number of students per request
         Query.offset(offset),
-        Query.equal("classRoom",classRoom)  // Skip the records we have already fetched
+        Query.equal("classRoom",classRoom)
+          // Skip the records we have already fetched
       ]
     );
     

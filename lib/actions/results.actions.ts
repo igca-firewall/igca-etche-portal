@@ -241,15 +241,22 @@ export const editResults = async ({
     let updatedScores: any[] = JSON.parse(studentRecord.scores || "[]");
 
     if (action === "edit") {
-      // Update the specific student's score
+      // Ensure valid newScore JSON string
       if (!newScore) {
         console.error("No new score provided for editing.");
         return;
       }
 
-      const updatedScoreObj = JSON.parse(newScore);
+      let updatedScoreObj;
+      try {
+        updatedScoreObj = JSON.parse(newScore);
+      } catch (error) {
+        console.error("Invalid newScore JSON format.");
+        return;
+      }
+
       updatedScores = updatedScores.map((score) =>
-        score.studentId === studentId ? updatedScoreObj : score
+        score.studentId === studentId ? { ...score, ...updatedScoreObj } : score
       );
 
       console.log(`Updated scores for student ${studentId}`, updatedScores);
@@ -276,10 +283,15 @@ export const editResults = async ({
       `${action === "edit" ? "Edited" : "Deleted"} result for student ${studentId}`,
       updatedResult
     );
+
+    // Optionally return updated data
+    return updatedResult;
   } else {
     console.error("No data found to edit or delete for the provided parameters.");
+    return null;
   }
 };
+
 
 export const fetchResults = async ({
   classRoom,
