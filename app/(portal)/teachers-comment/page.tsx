@@ -108,7 +108,7 @@ const Teachers = () => {
         .filter((student) => comments[student.$id]?.trim())
         .map((student) => ({
           studentName: student.name,
-          studentId: student.$id,
+          studentId: student.studentId,
           comment: comments[student.$id],
         }));
 
