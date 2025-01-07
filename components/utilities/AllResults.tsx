@@ -116,8 +116,7 @@ const router = useRouter()
     if (storedAdminRights || user.role === 'admin') {
       setAdminRights(storedAdminRights);
       console.log("Admin rights retrieved");
-  const encrypted = encrypt(studentId)
-      router.push(`/result-details/${encrypted}`)
+      router.push(`/result-details/${studentId}`)
       
     } else if (user.role !== "admin" && !storedAdminRights && term) {
       console.log("Not an admin or has no admin rights assigned");
