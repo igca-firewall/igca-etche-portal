@@ -2,7 +2,7 @@
 import { twMerge } from "tailwind-merge";
 import { type ClassValue, clsx } from "clsx";
 import qs from "query-string";
-
+import CryptoJS from "crypto-js";
 import { z } from "zod";
 import { nanoid } from "nanoid";
 // import QRCode from "qrcode";
@@ -747,3 +747,12 @@ export function generateavatar(name: string, size = 50): string {
   
   return canvas.toDataURL("image/png");
 }
+export const encrypt = (text: string) => {
+  return CryptoJS.AES.encrypt(text, "Xed").toString();
+};
+
+// Function to decrypt the string
+export const decrypt = (encryptedText: string) => {
+  const bytes = CryptoJS.AES.decrypt(encryptedText, "Xed");
+  return bytes.toString(CryptoJS.enc.Utf8);
+};

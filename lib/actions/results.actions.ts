@@ -1,6 +1,6 @@
 "use server";
 
-import { ID, Query } from "node-appwrite";
+import { ID, Models, Query } from "node-appwrite";
 import { createAdminClient } from "../appwrite";
 import { parseStringify } from "../utils";
 
@@ -82,7 +82,9 @@ export const addresults = async ({
           typeof item.grade === "string"
       )
     ) {
-      throw new Error("Invalid 'scores' format. Expected an array of objects with valid fields.");
+      throw new Error(
+        "Invalid 'scores' format. Expected an array of objects with valid fields."
+      );
     }
     const formattedScores = scores.map((score) => JSON.stringify(score));
 
@@ -141,6 +143,39 @@ export const addresults = async ({
     throw error;
   }
 };
+export const getStudentResults = async (
+  studentId: string | undefined,
+  term: string,
+  classRoom: string
+) => {
+  try {
+    const { database } = await createAdminClient();
+
+    // Fetch all collections for terms
+    const hem =
+      term === "1st Term" ? FIRST : term === "2nd Term" ? SECOND : THIRD;
+
+    const listStudentsResults = await database.listDocuments(
+      DATABASE_ID!,
+      hem!,
+      [
+        Query.equal("scores.*.studentName", studentId || ""),
+        Query.equal("term", term),
+        Query.equal("classRoom", classRoom),
+      ]
+    );
+
+    // Return compiled results
+    console.log(
+      `Compiled results for student ${studentId}:`,
+      listStudentsResults
+    );
+    return parseStringify(listStudentsResults);
+  } catch (error) {
+    console.error(`Error fetching results for student ${studentId}:`, error);
+    throw error;
+  }
+};
 
 export const fetchResultData = async ({
   classRoom,
@@ -193,7 +228,7 @@ export const deleteClassResult = async ({
   if (dataToDelete) {
     console.log("Metadata retrieved successfully:", dataToDelete);
     await database.deleteDocument(DATABASE_ID!, hem!, dataToDelete[0].$id);
-    console.log("Class scores deleted successfullt");
+    console.log("Class scores deleted successful");
   }
   console.log("Nothing found ");
 };
@@ -280,18 +315,21 @@ export const editResults = async ({
     );
 
     console.log(
-      `${action === "edit" ? "Edited" : "Deleted"} result for student ${studentId}`,
+      `${
+        action === "edit" ? "Edited" : "Deleted"
+      } result for student ${studentId}`,
       updatedResult
     );
 
     // Optionally return updated data
     return updatedResult;
   } else {
-    console.error("No data found to edit or delete for the provided parameters.");
+    console.error(
+      "No data found to edit or delete for the provided parameters."
+    );
     return null;
   }
 };
-
 
 export const fetchResults = async ({
   classRoom,
@@ -325,9 +363,106 @@ export const fetchResults = async ({
 
     console.log("Fetched results:", result);
     return result;
-
   } catch (error) {
     console.error("Error fetching results:", error);
     throw error;
   }
 };
+interface Score {
+  studentId: string;
+  studentName: string;
+  firstTest: string;
+  secondTest: string;
+  project: string;
+  bnb: string;
+  assignment: string;
+  exam: string;
+  total: string;
+  grade: string;
+}
+
+export const myArray = async ({
+  term,
+  session,
+  classRoom,
+  studentId,
+}: {
+  term: string;
+  classRoom: string;
+  session: string;
+  studentId: string;
+}) => {
+  try {
+    const { database } = await createAdminClient();
+    const hem =
+      term === "1st Term" ? FIRST : term === "2nd Term" ? SECOND : THIRD;
+
+    const AllResults = await database.listDocuments(DATABASE_ID!, hem!, [
+      Query.equal("classRoom", classRoom),
+      Query.equal("session", session),
+      Query.equal("term", term),
+    ]);
+
+    if (AllResults.documents.length === 0) {
+      throw new Error("No results found for the given query.");
+    }
+
+    console.log("All Results:", AllResults.documents);
+
+    const studentScores = AllResults.documents
+      .map((item) => {
+        // Skip if no scores available
+        if (!item.scores || item.scores.length === 0) {
+          return null;
+        }
+
+        // Parse the stringified scores
+        const parsedScores: Score[] = item.scores
+          .map((scoreStr) => {
+            try {
+              const parsed = JSON.parse(scoreStr) as Score; // Cast to Score type
+              console.log("Parsed Score:", parsed); // Log parsed score
+              return parsed;
+            } catch (e) {
+              console.error("Error parsing score:", e);
+              return null;
+            }
+          })
+          .filter((score: Score): score is Score => score !== null); // Type guard for null filtering
+
+        console.log("Parsed Scores for Document:", parsedScores); // Log parsed scores
+
+        // Find the student by ID within the parsed scores
+        const studentScore = parsedScores.find((score) => score.studentId === studentId) ?? null;
+
+        if (studentScore) {
+          // Add the subject to the filtered result
+          return { subject: item.subject, score: studentScore };
+        }
+        return null;
+      })
+      .filter((result): result is { subject: string; score: Score } => result !== null); // Type guard for null filtering
+
+    console.log("Filtered Student Scores with Subject:", studentScores);
+
+    return studentScores;
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
+
+// export const getStudentData = async (
+//   dataArray: Models.Document[], // Array of Document objects, not stringified
+//   studentId: string // The specific studentId
+// ) => {
+//   // Step 1: Filter out any invalid or null items
+//   const validData = dataArray.filter(item => item !== null && item !== undefined);
+
+//   // Step 2: Find the specific student by studentId
+//   const student = validData.find((item) => item?.studentId === studentId);
+
+//   // Step 3: Return the student as a stringified JSON, or undefined if not found
+//   return student ? JSON.stringify(student) : undefined;
+// };
+

@@ -25,6 +25,7 @@
     "chart.js": "^4.4.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "crypto-js": "^4.2.0",
     "eslint": "^9.16.0",
     "eslint-config-next": "^15.0.3",
     "framer-motion": "^11.14.4",
@@ -54,6 +55,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/crypto-js": "^4.2.2",
     "@types/howler": "^2.2.12",
     "@types/jspdf": "^2.0.0",
     "@types/node": "^20",

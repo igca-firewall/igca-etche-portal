@@ -10,6 +10,8 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import ScratchCardOTP from "./GetCard";
+import { useRouter } from "next/navigation";
+import { encrypt } from "@/lib/utils";
 
 interface Student {
   $id: string;
@@ -30,6 +32,14 @@ const AllResults = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isFailure, setIsFailure] = useState(false);
+  
+  const [isFish, setIsFish] = useState<{
+    studentName: string;
+    Namer: string;
+    term: string;
+    classRoom: string;
+    studentId: string
+  } | null>(null);
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -89,41 +99,64 @@ const AllResults = () => {
 
   // Checking the admin rights from localStorage based on the student's name
   const [adminRights, setAdminRights] = useState<string | null>(null);
-
-  useEffect(() => {}, [user]);
-
+const router = useRouter()
   // Handle the "Check Result" button click
-  const handleCheckResult = (studentName: string) => {
+  const handleCheckResult = (
+    studentName: string,
+    Namer: string,
+    term: string,
+    classRoom: string,
+    studentId: string
+  ) => {
     const uniqueKey = studentName;
-    // Set the unique key based on the student name
+
+    // Retrieve admin rights from localStorage
     const storedAdminRights = localStorage.getItem(uniqueKey);
-    if (storedAdminRights) {
+
+    if (storedAdminRights || user.role === 'admin') {
       setAdminRights(storedAdminRights);
-    } else return null;
+      console.log("Admin rights retrieved");
+  const encrypted = encrypt(studentId)
+      router.push(`/result-details/${encrypted}`)
+      
+    } else if (user.role !== "admin" && !storedAdminRights && term) {
+      console.log("Not an admin or has no admin rights assigned");
+      const fishData = {
+        studentName,
+        Namer,
+        term,
+        classRoom,
+        studentId
+      };
+      setIsFish(fishData);
+    } else {
+      console.log("Admin access detected");
+      return <div>You have access to this result</div>;
+    }
   };
+
+  useEffect(() => {
+    // React to isFish changes or perform other effects
+    if (isFish) {
+      console.log("isFish has been set to true");
+      // Additional logic when isFish is true
+    }
+  }, [isFish]); // Run whenever isFish changes
 
   if (!user) {
     return <div>The page is loading...</div>;
   }
-  if (user && user.role !== "admin" && !adminRights && term) {
+  if (isFish) {
     return (
       <div>
-        {students ? (
-          students.map((student) => (
-            <div
-              key={student.$id}
-              className="bg-white border border-gray-200 dark:border-neutral-700 shadow-lg rounded-2xl font-nunito dark:bg-neutral-800 p-6 flex flex-col items-center"
-            >
-              <ScratchCardOTP
-                name={student.name}
-                classRoom={student.classRoom}
-                term={term}
-              />
-            </div>
-          ))
-        ) : (
-          <div>The page is loading...</div>
-        )}
+        <div className="bg-white border border-gray-200 dark:border-neutral-700 shadow-lg rounded-2xl font-nunito dark:bg-neutral-800 p-6 flex flex-col items-center">
+          <ScratchCardOTP
+            name={isFish.Namer}
+            classRoom={isFish.classRoom}
+            term={isFish.term}
+            studentId={isFish.studentId}
+          />
+        </div>
       </div>
     );
   }
@@ -160,7 +193,9 @@ const AllResults = () => {
       </div>
 
       {isLoading ? (
-        <p className="text-center">Loading...</p>
+        <p className="text-center">
+          {!term ? "Select a term 👆" : "Loading..."}
+        </p>
       ) : (
         Object.keys(groupedByClass)
           .sort()
@@ -195,11 +230,15 @@ const AllResults = () => {
                       {calculateAge(student.dateOfBirth)} years old
                     </p>
                     <Button
-                      className="w-full mt-4 text-white bg-purple-500 hover:bg-purple-400 rounded-md focus:outline-none"
+                      className="px-8 py-8 mt-4 text-purple-800 border border-neutral-300 dark:border-neutral-700 rounded-full  bg-neutral-200 dark:bg-neutral-800 focus:outline-none"
                       disabled={isProcessing}
                       onClick={() =>
                         handleCheckResult(
-                          `Particles granted you permission : ${student.name}_${term}_${classRoom}`
+                          `Particles granted you permission : ${student.name}_${term}_${classRoom}`,
+                          student.name,
+                          term,
+                          classRoom,
+                          student.studentId
                         )
                       }
                     >
@@ -215,7 +254,11 @@ const AllResults = () => {
             </div>
           ))
       )}
-      {adminRights ? <div>You have been granted permission to view this </div> : <div></div>}
+      {adminRights ? (
+        <div>You have been granted permission to view this result</div>
+      ) : (
+        <div>Failed the process the result/</div>
+      )}
     </div>
   );
 };
