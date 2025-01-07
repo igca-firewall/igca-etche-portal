@@ -9,12 +9,11 @@ import { useUserContext } from "@/context/AuthContext";
 const ScratchCardOTP = ({
   classRoom,
   term,
-  session,
   name,
 }: {
   classRoom?: string;
   name?: string;
-  session?: string;
+
   term?: string;
 }) => {
   const [code, setCode] = useState<string>("");
@@ -31,7 +30,7 @@ const ScratchCardOTP = ({
 
   const hem = code.length === 8;
   const draftKey = "Permitted by Particles";
-  const draftKeyGranted = `${term}_${session}_${name} Granted Permission by Particles and to ${user.name}`;
+  const draftKeyGranted = `Particles granted you permission : ${name}_${term}_${classRoom}`;
 
   useEffect(() => {
     const fetchScratchCard = async () => {
@@ -51,7 +50,7 @@ const ScratchCardOTP = ({
             });
             setCode(""); // Reset code after successful validation
             setIsAllowed(true);
-            localStorage.setItem(`Access Rights_${draftKey}`, draftKeyGranted);
+            localStorage.setItem(`${draftKeyGranted}`, draftKeyGranted);
           } else {
             setFeedback({
               message:

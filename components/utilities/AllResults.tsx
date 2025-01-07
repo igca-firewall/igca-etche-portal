@@ -1,12 +1,15 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import Select from "@/components/utilities/CustomSelect";
+import Popup from "@/components/utilities/PopUp";
 import { useUserContext } from "@/context/AuthContext";
+import { addComment } from "@/lib/actions/comment.actions";
 import { listAllStudents } from "@/lib/actions/studentsData.actions";
 import { Models } from "appwrite";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
+import ScratchCardOTP from "./GetCard";
 
 interface Student {
   $id: string;
@@ -24,16 +27,18 @@ const AllResults = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [term, setTerm] = useState<string>("");
-  const [session, setSession] = useState<string>("");
-  const [adminRights, setAdminRights] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isFailure, setIsFailure] = useState(false);
 
   useEffect(() => {
     const fetchStudents = async () => {
       try {
         setIsLoading(true);
-        const data: Models.Document[] = await listAllStudents();
-        if (data) {
-          const transformedStudents = data.map((student) => ({
+        const xed: Models.Document[] = await listAllStudents();
+
+        if (xed) {
+          const transformedStudents = xed.map((student) => ({
             $id: student.$id,
             name: student.name,
             dateOfBirth: student.dateOfBirth,
@@ -50,18 +55,10 @@ const AllResults = () => {
         setIsLoading(false);
       }
     };
-
-    if (term && session) {
+    if (term) {
       fetchStudents();
     }
-  }, [term, session]);
-
-  useEffect(() => {
-    const uniqueKey = `${term}_${session} Granted Permission by Particles and to ${user?.name}`;
-    const storedAdminRights = localStorage.getItem(uniqueKey);
-    setAdminRights(storedAdminRights);
-  }, [user, term, session]);
-
+  }, [term]);
   const calculateAge = (dateOfBirth: string): number => {
     const birthDate = new Date(dateOfBirth);
     const today = new Date();
@@ -90,27 +87,54 @@ const AllResults = () => {
     groupedByClass[classRoom].sort((a, b) => a.name.localeCompare(b.name));
   });
 
+  // Checking the admin rights from localStorage based on the student's name
+  const [adminRights, setAdminRights] = useState<string | null>(null);
+
+  useEffect(() => {}, [user]);
+
+  // Handle the "Check Result" button click
   const handleCheckResult = (studentName: string) => {
-    if (user?.role === "admin") {
-      alert("Permission granted: You are an admin.");
-    } else if (adminRights) {
-      alert(`Permission granted: You have rights for ${studentName}.`);
-    } else {
-      alert("OT: You do not have permission.");
-    }
+    const uniqueKey = studentName;
+    // Set the unique key based on the student name
+    const storedAdminRights = localStorage.getItem(uniqueKey);
+    if (storedAdminRights) {
+      setAdminRights(storedAdminRights);
+    } else return null;
   };
 
   if (!user) {
     return <div>The page is loading...</div>;
   }
-
-  const currentYear = new Date().getFullYear();
-  const nextYear = currentYear + 1;
+  if (user && user.role !== "admin" && !adminRights && term) {
+    return (
+      <div>
+        {students ? (
+          students.map((student) => (
+            <div
+              key={student.$id}
+              className="bg-white border border-gray-200 dark:border-neutral-700 shadow-lg rounded-2xl font-nunito dark:bg-neutral-800 p-6 flex flex-col items-center"
+            >
+              <ScratchCardOTP
+                name={student.name}
+                classRoom={student.classRoom}
+                term={term}
+              />
+            </div>
+          ))
+        ) : (
+          <div>The page is loading...</div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 items-center">
       <div className="mb-5 w-full sm:w-1/3">
-        <label htmlFor="term" className="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2">
+        <label
+          htmlFor="term"
+          className="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2"
+        >
           Select Term
         </label>
         <Select
@@ -122,21 +146,6 @@ const AllResults = () => {
           value={term}
           onChange={(value) => setTerm(value)}
           placeholder="Choose a Term"
-          className="w-full border-2 border-gray-300 dark:border-neutral-700 rounded-md focus:ring-purple-500 focus:border-purple-500"
-        />
-      </div>
-      <div className="mb-5 w-full sm:w-1/3">
-        <label htmlFor="session" className="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2">
-          Select Session
-        </label>
-        <Select
-          options={[
-            { value: `${currentYear}/${nextYear}`, label: `${currentYear}/${nextYear}` },
-            { value: "2024/2025", label: "2024/2025" },
-          ]}
-          value={session}
-          onChange={(value) => setSession(value)}
-          placeholder="Choose a Session"
           className="w-full border-2 border-gray-300 dark:border-neutral-700 rounded-md focus:ring-purple-500 focus:border-purple-500"
         />
       </div>
@@ -186,13 +195,19 @@ const AllResults = () => {
                       {calculateAge(student.dateOfBirth)} years old
                     </p>
                     <Button
+                      className="w-full mt-4 text-white bg-purple-500 hover:bg-purple-400 rounded-md focus:outline-none"
+                      disabled={isProcessing}
                       onClick={() =>
                         handleCheckResult(
-                          `${classRoom}_${term}_${session}_${student.name} Granted Permission by Particles and to ${user.name}`
+                          `Particles granted you permission : ${student.name}_${term}_${classRoom}`
                         )
                       }
                     >
-                      {`Check ${student.name === user.name ? "Your" : student.name + "'s"} Result`}
+                      {`Check ${
+                        student.name === user.name
+                          ? "Your"
+                          : student.name + "'s"
+                      } Result`}
                     </Button>
                   </div>
                 ))}
@@ -200,6 +215,7 @@ const AllResults = () => {
             </div>
           ))
       )}
+      {adminRights ? <div>You have been granted permission to view this </div> : <div></div>}
     </div>
   );
 };
