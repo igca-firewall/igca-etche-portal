@@ -421,8 +421,10 @@ export const myArray = async ({
           .map((scoreStr) => {
             try {
               const parsed = JSON.parse(scoreStr) as Score; // Cast to Score type
-              console.log("Parsed Score:", parsed); // Log parsed score
+              console.log("Parsed Score:", parsed);
+               // Log parsed score
               return parsed;
+
             } catch (e) {
               console.error("Error parsing score:", e);
               return null;
@@ -436,10 +438,12 @@ export const myArray = async ({
         const studentScore = parsedScores.find((score) => score.studentId === studentId) ?? null;
 
         if (studentScore) {
+          
           // Add the subject to the filtered result
           return {
-            studentName: item.studentName,  // Assuming the name is stored in studentName field
-            studentId: item.studentId,      // Assuming studentId is available in the document
+            studentName: studentScore.studentName,  // Assuming the name is stored in studentName field
+            studentId: studentScore.studentId,
+            classRoom: item.classRoom,      // Assuming studentId is available in the document
             term: item.term,
             session: item.session,
             subject: item.subject,
@@ -448,7 +452,7 @@ export const myArray = async ({
         }
         return null;
       })
-      .filter((result): result is { subject: string; term: string; session:string;studentId:string;
+      .filter((result): result is { subject: string; classRoom: string; term: string; session:string;studentId:string;
         studentName: string; score: Score } => result !== null); // Type guard for null filtering
 
     console.log("Filtered Student Scores with Subject:", studentScores);

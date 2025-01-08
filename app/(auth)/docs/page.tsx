@@ -22,21 +22,21 @@ const Docs = () => {
  
 
   return (
-    <div className="px-4 sm:px-6 md:px-8 lg:px-16 flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-gray-50 via-gray-100 to-gray-200">
-      <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-6 text-center">
+    <div className="px-4 sm:px-6 md:px-8 lg:px-16 flex flex-col items-center justify-center min-h-screen bg-gradient-to-r dark:from-neutral-900 dark:via-neutral-900 dark:to-neutral-900 from-gray-50 via-gray-100 to-gray-200">
+      <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-white mb-6 text-center">
         We Shape the Future
       </h1>
-      <p className="text-base sm:text-lg text-gray-700 mb-7 text-center max-w-lg leading-relaxed font-semibold">
+      <p className="text-base sm:text-lg text-gray-700 dark:text-neutral-300 mb-7 text-center max-w-lg leading-relaxed font-semibold">
         Join the Intellectual Giants Christian Academy now!
       </p>
-      <p className="text-base sm:text-lg text-gray-700 mb-5 text-center max-w-lg leading-relaxed">
+      <p className="text-base sm:text-lg text-gray-700 dark:text-neutral-300 mb-5 text-center max-w-lg leading-relaxed">
         Join our community and unlock the potential of learning and growth.
         Empower yourself and others by stepping into the future with us.
       </p>
 <div className="flex flex-col gap-4 items-center justify-center ">
  <button
         onClick={handleSignInNavigation}
-        className="flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-purple-600 rounded-full hover:bg-purple-700 focus:outline-none focus:ring-4 focus:ring-purple-300 shadow-lg transform transition-transform hover:scale-105"
+        className="flex items-center justify-center px-8 py-4 text-lg font-semibold text-white  bg-purple-600 rounded-full hover:bg-purple-700 focus:outline-none focus:ring-4 focus:ring-purple-300 shadow-lg transform transition-transform hover:scale-105"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -73,7 +73,7 @@ const Docs = () => {
             </Link>
           </div> */}
       <div className="flex flex-col items-center w-full sm:w-auto">
-        <p className="text-lg text-start mt-16 text-gray-700 mb-6 max-w-lg leading-relaxed font-semibold">
+        <p className="text-lg text-start mt-16 text-gray-700 dark:text-gray-300 mb-6 max-w-lg leading-relaxed font-semibold">
           Contact us @
         </p>
 

@@ -165,8 +165,11 @@ const Teachers = () => {
   });
 
   return (
-    <div className="p-6 items-center">
-      <div className="mb-5 w-full sm:w-1/3">
+    <div className="w-full h-full flex flex-col items-center justify-start bg-gray-50 dark:bg-neutral-900 p-8 rounded-[25px] border border-neutral-200 dark:border-neutral-800">
+       <h1 className="text-12 lg:text-18 font-nunito font-semibold">
+        Teacher's comment</h1>
+      <div className="flex flex-wrap justify-between gap-5 w-full mb-8">
+         <div className="mb-5 w-full sm:w-1/3">
         <label
           htmlFor="term"
           className="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2"
@@ -208,7 +211,9 @@ const Teachers = () => {
           placeholder="Choose a Session"
           className="w-full border-2 border-gray-300 dark:border-neutral-700 rounded-md focus:ring-purple-500 focus:border-purple-500"
         />
-      </div>
+      </div> 
+       </div>
+    
       <div className="mb-4">
         <Input
           type="text"

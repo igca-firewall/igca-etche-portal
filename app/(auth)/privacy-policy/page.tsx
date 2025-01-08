@@ -13,7 +13,7 @@ const PrivacyPolicy = () => {
   ];
 
   return (
-    <div className="max-w-3xl mx-auto p-6 space-y-8 text-gray-700">
+    <div className="max-w-3xl mx-auto p-6 space-y-8 text-gray-700 dark:text-gray-300">
       <h1 className="text-3xl font-semibold">Privacy Policy</h1>
 
       <section className="space-y-4">
@@ -104,8 +104,8 @@ const PrivacyPolicy = () => {
         </p>
         <p>
           <strong>Intellectual Giants Christian Academy</strong><br />
-          Email: <a href="mailto:tinahez3@gmail.com" className="text-blue-600">tinahez3@gmail.com</a><br />
-          Phone: <a href="tel:+2348038858159" className="text-blue-600">+2348038858159</a>
+          Email: <a href="mailto:tinahez3@gmail.com" className="text-purple-600">tinahez3@gmail.com</a><br />
+          Phone: <a href="tel:+2348038858159" className="text-purple-600">+2348038858159</a>
         </p>
 
         <p className="mt-4">Follow us on our social media platforms:</p>

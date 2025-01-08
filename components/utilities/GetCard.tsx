@@ -35,7 +35,7 @@ const ScratchCardOTP = ({
 
   const hem = code.length === 8;
   const draftKey = name;
-  const draftKeyGranted = `Particles granted you permission : ${name}_${term}_${classRoom}`;
+  const draftKeyGranted = `Particles granted you permission to: ${name}'s result for ${term}_${classRoom}`;
 
   useEffect(() => {
     const fetchScratchCard = async () => {

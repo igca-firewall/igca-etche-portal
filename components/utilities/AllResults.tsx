@@ -11,7 +11,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import ScratchCardOTP from "./GetCard";
 import { useRouter } from "next/navigation";
-import { encrypt } from "@/lib/utils";
+import { classOrder, encrypt, storeClassAndRest } from "@/lib/utils";
 
 interface Student {
   $id: string;
@@ -28,17 +28,21 @@ const AllResults = () => {
   const [students, setStudents] = useState<Student[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [classRoom, setClassRoom] = useState<string>("");
   const [term, setTerm] = useState<string>("");
+  const [session, setSession] = useState<string>(""); // State for Term
+  const [ter, setTer] = useState<string>("");
+
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isFailure, setIsFailure] = useState(false);
-  
+
   const [isFish, setIsFish] = useState<{
     studentName: string;
     Namer: string;
     term: string;
     classRoom: string;
-    studentId: string
+    studentId: string;
   } | null>(null);
 
   useEffect(() => {
@@ -99,7 +103,7 @@ const AllResults = () => {
 
   // Checking the admin rights from localStorage based on the student's name
   const [adminRights, setAdminRights] = useState<string | null>(null);
-const router = useRouter()
+  const router = useRouter();
   // Handle the "Check Result" button click
   const handleCheckResult = (
     studentName: string,
@@ -113,11 +117,10 @@ const router = useRouter()
     // Retrieve admin rights from localStorage
     const storedAdminRights = localStorage.getItem(uniqueKey);
 
-    if (storedAdminRights || user.role === 'admin') {
+    if (storedAdminRights || user.role === "admin") {
       setAdminRights(storedAdminRights);
       console.log("Admin rights retrieved");
-      router.push(`/result-details/${studentId}`)
-      
+      router.push(`/result-details/${studentId}`);
     } else if (user.role !== "admin" && !storedAdminRights && term) {
       console.log("Not an admin or has no admin rights assigned");
       const fishData = {
@@ -125,7 +128,7 @@ const router = useRouter()
         Namer,
         term,
         classRoom,
-        studentId
+        studentId,
       };
       setIsFish(fishData);
     } else {
@@ -133,7 +136,13 @@ const router = useRouter()
       return <div>You have access to this result</div>;
     }
   };
-
+  const currentYear = new Date().getFullYear();
+  const nextYear = currentYear + 1;
+  useEffect(() => {
+    if (term && session && classRoom) {
+      const addIt = storeClassAndRest(ter, term, session);
+    }
+  });
   useEffect(() => {
     // React to isFish changes or perform other effects
     if (isFish) {
@@ -161,39 +170,72 @@ const router = useRouter()
   }
 
   return (
-    <div className="p-6 items-center">
-      <div className="mb-5 w-full sm:w-1/3">
-        <label
-          htmlFor="term"
-          className="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2"
-        >
-          Select Term
-        </label>
-        <Select
-          options={[
-            { value: "1st Term", label: "1st Term" },
-            { value: "2nd Term", label: "2nd Term" },
-            { value: "3rd Term", label: "3rd Term" },
-          ]}
-          value={term}
-          onChange={(value) => setTerm(value)}
-          placeholder="Choose a Term"
-          className="w-full border-2 border-gray-300 dark:border-neutral-700 rounded-md focus:ring-purple-500 focus:border-purple-500"
-        />
-      </div>
-      <div className="mb-4">
-        <Input
-          type="text"
-          placeholder="Search students..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="border px-4 py-2 rounded-lg shadow focus:outline-none w-full"
-        />
+    <div className="w-full h-full flex flex-col items-center justify-start bg-gray-50 dark:bg-neutral-900 p-8 rounded-[25px] border border-neutral-200 dark:border-neutral-800">
+      <h1 className="text-24 lg:text-36 font-semibold">Check Results</h1>
+      <div className="flex flex-wrap justify-between gap-5 w-full mb-8">
+        <div className="mb-5 w-full sm:w-1/3">
+          <label
+            htmlFor="term"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2"
+          >
+            Select Term
+          </label>
+          <Select
+            options={[
+              { value: "1st Term", label: "1st Term" },
+              { value: "2nd Term", label: "2nd Term" },
+              { value: "3rd Term", label: "3rd Term" },
+            ]}
+            value={term}
+            onChange={(value) => setTerm(value)}
+            placeholder="Choose a Term"
+            className="w-full border-2 border-gray-300 dark:border-neutral-700 rounded-md focus:ring-purple-500 focus:border-purple-500"
+          />
+        </div>
+        <div className="mb-5 w-full sm:w-1/3">
+          <label
+            htmlFor="term"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2"
+          >
+            Select Session
+          </label>
+          <Select
+            options={[
+              {
+                value: ` ${currentYear}/${nextYear}`,
+                label: `${currentYear}/${nextYear}`,
+              },
+              {
+                value: ` 2024/2025`,
+                label: `2024/2025`,
+              },
+            ]}
+            value={session}
+            onChange={(value) => setSession(value)}
+            placeholder="Choose a Session"
+            className="w-full border-2 border-gray-300 dark:border-neutral-700 rounded-md focus:ring-purple-500 focus:border-purple-500"
+          />
+        </div>
+        <div className="mb-4">
+          <Input
+            type="text"
+            placeholder="Search students..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="border px-4 py-2 rounded-lg w-full"
+          />
+        </div>
       </div>
 
       {isLoading ? (
         <p className="text-center">
-          {!term ? "Select a term 👆" : "Loading..."}
+          {!term && session
+            ? "Select a term 👆"
+            : !session && term
+            ? "Select a Session 👆"
+            : !term && !session
+            ? "Utilize the selections"
+            : "Loading..."}
         </p>
       ) : (
         Object.keys(groupedByClass)
@@ -207,7 +249,7 @@ const router = useRouter()
                 {groupedByClass[classRoom].map((student) => (
                   <div
                     key={student.$id}
-                    className="bg-white border border-gray-200 dark:border-neutral-700 shadow-lg rounded-2xl font-nunito dark:bg-neutral-800 p-6 flex flex-col items-center"
+                    className="bg-white border hover:scale-110 transition-all transform duration-800 hover:bg-neutral-300 hover:dark:bg-neutral-700 border-gray-200 dark:border-neutral-700 shadow-lg rounded-2xl font-nunito dark:bg-neutral-800 p-6 flex flex-col items-center"
                   >
                     <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-gray-300 dark:border-gray-600 shadow-md">
                       <Image
@@ -222,23 +264,23 @@ const router = useRouter()
                       {student.name}
                     </h2>
                     <p className="text-base text-gray-600 dark:text-gray-400 mt-2">
-                      {student.classRoom}{" "}
+                      {student.classRoom}
                       <span className="mx-2 text-gray-500 dark:text-gray-600">
                         &#8226;
                       </span>{" "}
                       {calculateAge(student.dateOfBirth)} years old
                     </p>
                     <Button
-                      className="px-8 py-8 mt-4 text-purple-800 border border-neutral-300 dark:border-neutral-700 rounded-full  bg-neutral-200 dark:bg-neutral-800 focus:outline-none"
+                      className="px-8 py-8 mt-4 text-purple-800 dark:text-white border border-neutral-300 dark:border-purple-800 rounded-full  bg-neutral-200 dark:bg-neutral-800 focus:outline-none"
                       disabled={isProcessing}
                       onClick={() =>
                         handleCheckResult(
-                          `Particles granted you permission : ${student.name}_${term}_${classRoom}`,
+                         `Particles granted you permission to: ${student.name}'s result for ${term}_${classRoom}`,
                           student.name,
                           term,
                           classRoom,
                           student.studentId
-                        )
+                        ) && setTer(classRoom)
                       }
                     >
                       {`Check ${
@@ -253,10 +295,8 @@ const router = useRouter()
             </div>
           ))
       )}
-      {adminRights ? (
+      {adminRights && (
         <div>You have been granted permission to view this result</div>
-      ) : (
-        <div>Failed the process the result/</div>
       )}
     </div>
   );

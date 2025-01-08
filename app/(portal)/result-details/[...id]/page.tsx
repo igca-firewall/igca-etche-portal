@@ -1,59 +1,62 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/AuthContext";
+import { toPng } from "html-to-image";
+import { saveAs } from "file-saver";
+import { useParams } from "next/navigation";
+import { myArray } from "@/lib/actions/results.actions";
 import Image from "next/image";
-
-import { decrypt, decryptKey, multiFormatDateString } from "@/lib/utils";
-import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
-import { getStudentResults, myArray } from "@/lib/actions/results.actions";
+import { decryptKey, formatSubject } from "@/lib/utils";
+import { number } from "zod";
 
 const PostDetails = (term: string, classRoom: string) => {
   const { user } = useUserContext();
   const [localUserData, setLocalUserData] = useState<any>(null);
   const [scores, setScores] = useState<any[]>([]);
-const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [fullUrl, setFullUrl] = useState<string | null>(null);
-
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [extractedPart, setExtractedPart] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const fullUrl = window.location.href;
-
-      // Check if the URL contains 'localhost'
-      if (fullUrl.includes("localhost")) {
-        // Extract part after 'result-details/'
-        const result = fullUrl.split("result-details/")[1];
-        setExtractedPart(result || null);
-      }
-      // Check if the URL contains 'igca-etche-portal.vercel.app'
-      else if (fullUrl.includes("https://igca-etche-portal.vercel.app")) {
-        // Extract part after 'result-details/'
-        const result = fullUrl.split("result-details/")[1];
+      const keyword = "result-details/";
+      const startIndex = fullUrl.indexOf(keyword);
+      if (startIndex !== -1) {
+        const result = fullUrl.substring(
+          startIndex + keyword.length,
+          startIndex + keyword.length + 18
+        );
         setExtractedPart(result || null);
       } else {
-        // Default case if neither condition matches
         setExtractedPart(null);
       }
     }
   }, []);
 
-  const { id } = useParams(); // ID of the post being viewed
-  const singleId = Array.isArray(id) ? id[0] : id;
+  useEffect(() => {
+    const storedData = localStorage.getItem("Trash");
+    if (storedData) {
+      const decryptedData = decryptKey(storedData);
+      const parsedData = JSON.parse(decryptedData);
+      setLocalUserData(parsedData);
+    }
+  }, []);
+
   useEffect(() => {
     const fetch = async () => {
       try {
+        setIsLoading(true);
         const response = await myArray({
           studentId: extractedPart!,
-          session: " 2024/2025",
-          term: "1st Term",
-          classRoom: "SS3A",
+          session: ` ${localUserData.session}`,
+          term: `${localUserData.term}`,
+          classRoom: `${localUserData.classRoom}`,
         });
-        console.log(response, singleId, extractedPart);
         setScores(response || []);
       } catch (error) {
         console.error(error);
+      } finally {
+        setIsLoading(false);
       }
     };
     if (extractedPart) {
@@ -61,11 +64,14 @@ const [isLoading, setIsLoading] = useState<boolean>(false)
     }
   }, [extractedPart]);
 
-  const totalScore = scores.reduce((sum, score) => sum + score.score.total, 0);
+  const totalScore = scores.reduce((sum, score) => {
+    const scoreTotal = Number(score.score.total) || 0;
+    return sum + scoreTotal;
+  }, 0);
+
   const averageScore = (totalScore / scores.length).toFixed(2);
 
-  // Function to determine the principal's comment
-  const getPrincipalsComment = (average) => {
+  const getPrincipalsComment = (average: number) => {
     if (average >= 80) return "Excellent result, keep it up.";
     if (average >= 65) return "A very good result, keep it up.";
     if (average >= 60) return "Good result, you can do better.";
@@ -77,111 +83,278 @@ const [isLoading, setIsLoading] = useState<boolean>(false)
       return "Fairly poor result, work harder for an improved performance.";
     return "Poor result, sit up to perform well in your result.";
   };
+  const getRemarks = (total: number): string => {
+    if (total >= 80) return "Excellent";
+    if (total >= 70) return "Good";
+    if (total >= 60) return "Credit";
+    if (total >= 50) return "Fair";
+    if (total >= 40) return "Poor";
+    return "Fail";
+  };
+  const printPage = () => {
+    window.print();
+  };
 
+  const exportToCSV = () => {
+    const csvContent =
+      "data:text/csv;charset=utf-8," +
+      [
+        [
+          "Subject",
+          "First Test",
+          "Second Test",
+          "Project",
+          "BNB",
+          "Assignment",
+          "Exam",
+          "Total",
+          "Grade",
+        ],
+        ...scores.map((score) => [
+          score.subject,
+          score.score.firstTest,
+          score.score.secondTest,
+          score.score.project,
+          score.score.bnb,
+          score.score.assignment,
+          score.score.exam,
+          score.score.total,
+          score.score.grade,
+        ]),
+      ]
+        .map((row) => row.join(","))
+        .join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "results.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const downloadAsImage = async () => {
+    const element = document.getElementById("results-section");
+    if (element) {
+      const image = await toPng(element);
+      saveAs(image, "results.png");
+    }
+  };
+  if (isLoading) {
+    return (
+      <div className="p-56 rounded-[25px] z-50 dark:border-neutral-200 border-neutral-800 backdrop-blur-md items-center justify-self-center dark:bg-neutral-100 bg-neutral-700 "></div>
+    );
+  }
   return (
-    <div className="p-6 bg-gray-100 dark:bg-gray-900">
-      {isLoading ? (
-        // Skeleton loader while loading
-        <div className="space-y-4">
-          <div className="h-8 w-1/3 bg-gray-300 dark:bg-gray-700 rounded-md animate-pulse"></div>
-          <div className="h-6 w-1/2 bg-gray-300 dark:bg-gray-700 rounded-md animate-pulse"></div>
-          <div className="h-6 w-1/4 bg-gray-300 dark:bg-gray-700 rounded-md animate-pulse"></div>
-          <div className="h-4 w-1/5 bg-gray-300 dark:bg-gray-700 rounded-md animate-pulse"></div>
-        </div>
-      ) : (
-        <>
-          {/* Student Information */}
-          <div className="mb-6 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-            <h1 className="text-3xl font-bold text-purple-500 dark:text-purple-400">
-              {scores && scores[0].score?.studentName}
-            </h1>
-            {/* <p className="text-sm text-gray-600 dark:text-gray-400">
-              <span className="font-semibold">Class:</span> {className}
-            </p> */}
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              <span className="font-semibold">Student ID:</span> { scores && scores[0].score?.studentId}
-            </p>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-4">
-              <span className="font-semibold">Total Score:</span> {totalScore}
-            </p>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              <span className="font-semibold">Average Score:</span>{" "}
-              {averageScore}
-            </p>
-            <p className="mt-4 text-md font-medium text-purple-600 dark:text-purple-400">
-              Principal's Comment:{" "}
-              <span className="italic">
-                {getPrincipalsComment(averageScore)}
-              </span>
-            </p>
+    <div className="p-12 bg-gray-100 dark:bg-neutral-900 rounded-[25px] border-neutral-200 dark:border-neutral-700 ">
+      <div id="results-section">
+        <div className="flex flex-col items-center justify-center space-y-4">
+          {/* Logo Section */}
+          <div className="w-[100px] h-[100px] ">
+            <Image
+              src="/images/logo.jpg"
+              alt="Logo"
+              width={50}
+              height={50}
+              className="rounded-full shadow-md"
+              layout="intrinsic"
+              quality={90}
+            />
           </div>
 
-          {/* Scores Table */}
-          <div className="overflow-x-auto bg-white dark:bg-gray-800 shadow-md rounded-lg">
-            <table className="min-w-full border-collapse table-auto">
-              <thead className="bg-purple-500 dark:bg-purple-600 text-white">
-                <tr>
-                  {[
-                    "Subject",
-                    "First Test",
-                    "Second Test",
-                    "Project",
-                    "BNB",
-                    "Assignment",
-                    "Exam",
-                    "Total",
-                    "Grade",
-                  ].map((header, index) => (
-                    <th
-                      key={index}
-                      className="px-6 py-3 border-b-2 border-gray-200 text-left text-sm font-semibold uppercase"
-                    >
-                      {header}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                {scores.map((score, index) => (
-                  <tr
-                    key={index}
-                    className={`hover:bg-purple-100 dark:hover:bg-purple-700 transition duration-300 ${
-                      index % 2 === 0
-                        ? "bg-gray-50 dark:bg-gray-700"
-                        : "bg-white dark:bg-gray-800"
-                    }`}
-                  >
-                    <td className="px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200 border-gray-200">
-                      {score.subject}
-                    </td>
-                    {[
-                      score.score.firstTest,
-                      score.score.secondTest,
-                      score.score.project,
-                      score.score.bnb,
-                      score.score.assignment,
-                      score.score.exam,
-                      score.score.total,
-                      score.score.grade,
-                    ].map((value, i) => (
-                      <td
-                        key={i}
-                        className={`px-6 py-4 text-sm ${
-                          i === 7
-                            ? "font-semibold"
-                            : "text-gray-600 dark:text-gray-300"
-                        } border-gray-200`}
-                      >
-                        {value}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          {/* Academy Name */}
+          <h1 className="text-center text-black font-semibold font-nunito text-2xl sm:text-3xl">
+            INTELLECTUAL GIANTS CHRISTIAN ACADEMY
+          </h1>
+
+          {/* Information Section */}
+        </div>
+        <div className="flex flex-col space-y-4">
+          <div className="flex justify-between items-center">
+            <h1 className="font-nunito font-semibold text-[14px] text-neutral-900 dark:text-neutral-100">
+              Name: {scores[0]?.studentName}
+            </h1>
+            <h2 className="font-nunito font-semibold text-[14px] text-neutral-800 dark:text-neutral-200">
+              Class: {scores[0]?.classRoom}
+            </h2>
           </div>
-        </>
-      )}
+          <div className="flex justify-between items-start">
+            <h2 className="font-nunito font-semibold text-[14px] text-neutral-800 dark:text-neutral-200">
+              Term: {scores[0]?.term}
+            </h2>
+            <h2 className="font-nunito font-semibold text-[14px] text-neutral-800 dark:text-neutral-200">
+              Academic Session: {scores[0]?.session}
+            </h2>
+          </div>
+          <div className="flex justify-end items-center">
+            <p className="text-sm text-neutral-600 dark:text-neutral-400">
+              <span className="font-semibold">Student ID:</span> {extractedPart}
+            </p>
+          </div>
+        </div>
+        {/* Scores Table */}
+        <div className="overflow-x-auto bg-white dark:bg-neutral-800 shadow-md rounded-lg mt-2">
+          <table className="min-w-full border-collapse table-auto">
+            <thead className="bg-neutral-400 rounded-full dark:bg-neutral-800 text-white">
+              <tr>
+                {[
+                  "Subject",
+                  "1st Summarize Test",
+                  "2nd Summarize Test",
+                  "MidTerm Project",
+                  "Assignment",
+                  "Book/Beyond",
+                  "Exam",
+                  "Total",
+                  "Highest",
+                  "Lowest",
+                  "Grade",
+                  "Remarks",
+                ].map((header, index) => (
+                  <th
+                    key={index}
+                    className="px-6 py-3 border-b-2 border-neutral-200 text-left text-sm font-semibold uppercase"
+                  >
+                    {header}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-neutral-200 dark:divide-neutral-700">
+              {scores.map((score, index) => (
+                <tr
+                  key={index}
+                  className={`hover:bg-purple-100 dark:hover:bg-neutral-700 transition duration-300 ${
+                    index % 2 === 0
+                      ? "bg-neutral-50 dark:bg-neutral-700"
+                      : "bg-white dark:bg-neutral-800"
+                  }`}
+                >
+                  <td className="px-6 py-4 text-sm font-medium text-neutral-800 dark:text-neutral-200 border-neutral-200">
+                    {formatSubject(score.subject)}
+                  </td>
+                  {[
+                    score.score.firstTest,
+                    score.score.secondTest,
+                    score.score.project,
+                    score.score.bnb,
+                    score.score.assignment,
+                    score.score.exam,
+                    score.score.total,
+                    score.score.grade,
+                  ].map((value, i) => (
+                    <td
+                      key={i}
+                      className={`px-6 py-4 text-sm ${
+                        i === 7
+                          ? "font-semibold"
+                          : "text-neutral-600 dark:text-neutral-300"
+                      } border-neutral-200`}
+                    >
+                      {value}
+                    </td>
+                  ))}
+                  <td>{getRemarks(score.score.total)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {}
+        </div>{" "}
+        <div className="flex flex-col items-end justify-end">
+          {/* Particles Image Above Text */}
+
+          {/* Information Text */}
+          <i className="text-center text-gray-700 font-normal font-nunito">
+            For more information visit:
+            <span className="text-blue-600">
+              {" "}
+              ...https://igca-etche-portal.vercel.app/docs
+            </span>
+          </i>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <div className="w-[180px] h-full">
+            <Image
+              src="/images/particlesm.png"
+              alt="Particles"
+              width={100}
+              height={70}
+              className="dark:invert-white w-full h-auto"
+              layout="intrinsic"
+              quality={100}
+            />
+          </div>
+        </div>
+      </div>
+      <div className="flex space-x-4 mb-4 items-center justify-center">
+        <button
+          disabled={
+            user.role === undefined ||
+            scores.length < 0 ||
+            extractedPart === null ||
+            extractedPart === undefined ||
+            isLoading
+          }
+          onClick={printPage}
+          className={`bg-gray-300 dark:bg-neutral-700 border-gray-400 dark:border-gray-900 text-neutral-500 dark:text-purple-50 rounded-full px-6 py-4 mt-10 mb-10 items-center text-center flex gap-2 justify-items-center ${
+            !user ||
+            !scores ||
+            !extractedPart ||
+            (isLoading && "bg-gray-200 text-neutral-400")
+          }`}
+        >
+          <Image src="/images/printtf.png" alt="Print" width={25} height={25} />{" "}
+          Print
+        </button>
+        <button
+          disabled={!user || !scores || !extractedPart || isLoading}
+          onClick={exportToCSV}
+          className={`bg-gray-300 dark:bg-neutral-700 border-gray-400 dark:border-gray-900 text-neutral-500 dark:text-purple-50 rounded-full px-6 py-4 mt-10 mb-10 items-center text-center flex gap-2 justify-items-center ${
+            !user ||
+            !scores ||
+            !extractedPart ||
+            (isLoading && "bg-gray-200 text-neutral-400")
+          }`}
+        >
+          <Image src="/images/csv.png" alt="Print" width={25} height={25} />
+          Export to CSV
+        </button>
+        <button
+          disabled={!user || !scores || !extractedPart || isLoading}
+          onClick={downloadAsImage}
+          className={`bg-gray-300 dark:bg-neutral-700 border-gray-400 dark:border-gray-900 text-neutral-500 dark:text-purple-50 rounded-full px-6 py-4 mt-10 mb-10 items-center text-center flex gap-2 justify-items-center ${
+            !user ||
+            !scores ||
+            !extractedPart ||
+            (isLoading && "bg-gray-200 text-neutral-400")
+          }`}
+        >
+          <Image src="/images/asimage.png" alt="Print" width={25} height={25} />
+          Download as Image
+        </button>
+        <button
+          disabled={!user || !scores || !extractedPart || isLoading}
+          // onClick={downloadAsImage}
+          className={`bg-gray-300 dark:bg-neutral-700 border-gray-400 dark:border-gray-900 text-neutral-500 dark:text-purple-50 rounded-full px-6 py-4 mt-10 mb-10 items-center text-center flex gap-2 justify-items-center ${
+            !user ||
+            !scores ||
+            !extractedPart ||
+            (isLoading && "bg-gray-200 text-neutral-400")
+          }`}
+        >
+          <Image
+            src="/images/shareresult.png"
+            alt="Print"
+            width={25}
+            height={25}
+          />
+          Share
+        </button>
+        {isLoading && (
+          <div className="p-56 rounded-[25px] z-40 dark:border-neutral-200 border-neutral-800 backdrop-blur-md items-center justify-self-center dark:bg-neutral-100 bg-neutral-700 "></div>
+        )}
+      </div>
     </div>
   );
 };

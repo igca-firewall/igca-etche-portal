@@ -398,17 +398,17 @@ export function generateAvatar(name: string): string {
 }
 
 // export const generatedImage = generateAvatar(localUserData?.firstName || localUserData?.lastName || "")
-export const storeSessionInLocal = (
-  firstName: string,
-  lastName: string,
-  email: string,
-  phone: string
+export const storeClassAndRest = (
+  classRoom: string,
+  term: string,
+  session: string,
+ 
 ) => {
-  const userData = { firstName, lastName, email, phone };
+  const userData = { classRoom, session, term };
   // Encrypt the user data
   const encryptedData = encryptKey(JSON.stringify(userData));
   // Store encrypted data in localStorage
-  localStorage.setItem("Trash", encryptedData);
+  localStorage.setItem("Particles_Class_Stuff_Just_Leave it...", encryptedData);
 };
 export const store = (color: string) => {
   const userData = { color };
@@ -756,3 +756,6 @@ export const decrypt = (encryptedText: string) => {
   const bytes = CryptoJS.AES.decrypt(encryptedText, "Xed");
   return bytes.toString(CryptoJS.enc.Utf8);
 };
+export function formatSubject(subject: string): string {
+  return subject.replace(/([a-z])([A-Z])/g, '$1 $2');
+}
