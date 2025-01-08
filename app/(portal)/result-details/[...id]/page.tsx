@@ -206,8 +206,6 @@ const PostDetails = (term: string, classRoom: string) => {
                   "Book/Beyond",
                   "Exam",
                   "Total",
-                  "Highest",
-                  "Lowest",
                   "Grade",
                   "Remarks",
                 ].map((header, index) => (
