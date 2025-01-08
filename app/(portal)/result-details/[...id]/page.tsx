@@ -160,11 +160,7 @@ const PostDetails = (term: string, classRoom: string) => {
       saveAs(image, "results.png");
     }
   };
-  if (isLoading) {
-    return (
-      <div className="p-56 rounded-[25px] z-50 dark:border-neutral-200 border-neutral-800 backdrop-blur-md items-center justify-self-center dark:bg-neutral-100 bg-neutral-700 "></div>
-    );
-  }
+
   return (
     <div className="p-12 bg-gray-100 dark:bg-neutral-900 rounded-[25px] border-neutral-200 dark:border-neutral-700 ">
       <div id="results-section">
@@ -370,23 +366,25 @@ const PostDetails = (term: string, classRoom: string) => {
           Share
         </button>
         <>
-      {isLoading && (
-        <div className="p-10 rounded-[25px] z-50 flex flex-col items-center justify-center border-neutral-200 dark:border-neutral-800 backdrop-blur-md bg-neutral-100 dark:bg-neutral-700">
-          <div className="flex flex-col items-center justify-center space-y-4 animate-pulse">
-            <span className="text-4xl">⏳</span>
-            <p className="text-center text-lg text-gray-800 dark:text-gray-200 font-semibold">
+     
+    </>
+      </div> {isLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div className="p-8 rounded-2xl bg-white shadow-xl dark:bg-neutral-900 flex flex-col items-center justify-center space-y-6">
+          <div className="flex flex-col items-center space-y-4 animate-pulse">
+            <span className="text-5xl">⏳</span>
+            <p className="text-center text-lg text-gray-800 dark:text-gray-200 font-medium">
               {currentMessage}
             </p>
           </div>
-          <div className="mt-8 flex space-x-2">
+          <div className="mt-4 flex space-x-2">
             <span className="animate-bounce text-3xl">🔄</span>
             <span className="animate-bounce text-3xl delay-150">✨</span>
             <span className="animate-bounce text-3xl delay-300">🌟</span>
           </div>
         </div>
-      )}
-    </>
       </div>
+      )}
     </div>
   );
 };
