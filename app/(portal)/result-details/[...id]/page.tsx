@@ -34,13 +34,33 @@ const PostDetails = (term: string, classRoom: string) => {
   }, []);
 
   useEffect(() => {
-    const storedData = localStorage.getItem("Trash");
+    const storedData = localStorage.getItem("Particles_Class_Stuff_Just_Leave it...");
     if (storedData) {
       const decryptedData = decryptKey(storedData);
       const parsedData = JSON.parse(decryptedData);
       setLocalUserData(parsedData);
     }
   }, []);
+  const messages = [
+    "Hang tight! We're fetching the data... 🚀",
+    "Just a moment... Great things are loading! 🔄",
+    "Almost there... Magic is happening! ✨",
+    "Thanks for waiting... We appreciate your patience! 🌟",
+  ];
+
+  const [currentMessage, setCurrentMessage] = useState(messages[0]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentMessage((prevMessage) => {
+        const currentIndex = messages.indexOf(prevMessage);
+        const nextIndex = (currentIndex + 1) % messages.length;
+        return messages[nextIndex];
+      });
+    }, 3000); // Change the message every 3 seconds
+
+    return () => clearInterval(interval);
+  }, [messages]);
 
   useEffect(() => {
     const fetch = async () => {
@@ -349,9 +369,23 @@ const PostDetails = (term: string, classRoom: string) => {
           />
           Share
         </button>
-        {isLoading && (
-          <div className="p-56 rounded-[25px] z-40 dark:border-neutral-200 border-neutral-800 backdrop-blur-md items-center justify-self-center dark:bg-neutral-100 bg-neutral-700 "></div>
-        )}
+        <>
+      {isLoading && (
+        <div className="p-10 rounded-[25px] z-50 flex flex-col items-center justify-center border-neutral-200 dark:border-neutral-800 backdrop-blur-md bg-neutral-100 dark:bg-neutral-700">
+          <div className="flex flex-col items-center justify-center space-y-4 animate-pulse">
+            <span className="text-4xl">⏳</span>
+            <p className="text-center text-lg text-gray-800 dark:text-gray-200 font-semibold">
+              {currentMessage}
+            </p>
+          </div>
+          <div className="mt-8 flex space-x-2">
+            <span className="animate-bounce text-3xl">🔄</span>
+            <span className="animate-bounce text-3xl delay-150">✨</span>
+            <span className="animate-bounce text-3xl delay-300">🌟</span>
+          </div>
+        </div>
+      )}
+    </>
       </div>
     </div>
   );
