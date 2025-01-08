@@ -12,6 +12,7 @@ import { Button } from "../ui/button";
 import ScratchCardOTP from "./GetCard";
 import { useRouter } from "next/navigation";
 import { classOrder, encrypt, storeClassAndRest } from "@/lib/utils";
+import { FaSearch } from "react-icons/fa";
 
 interface Student {
   $id: string;
@@ -112,6 +113,7 @@ const AllResults = () => {
     classRoom: string,
     studentId: string
   ) => {
+    setTer(classRoom);
     const uniqueKey = studentName;
 
     // Retrieve admin rights from localStorage
@@ -139,7 +141,7 @@ const AllResults = () => {
   const currentYear = new Date().getFullYear();
   const nextYear = currentYear + 1;
   useEffect(() => {
-    if (term && session && classRoom) {
+    if (ter && session && classRoom) {
       const addIt = storeClassAndRest(ter, term, session);
     }
   });
@@ -171,8 +173,10 @@ const AllResults = () => {
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-start bg-gray-50 dark:bg-neutral-900 p-8 rounded-[25px] border border-neutral-200 dark:border-neutral-800">
-      <h1 className="text-24 lg:text-36 font-semibold">Check Results</h1>
-      <div className="flex flex-wrap justify-between gap-5 w-full mb-8">
+      <h1 className="text-12 lg:text-18 font-nunito font-semibold">
+        Check Results
+      </h1>
+      <div className="flex flex-wrap justify-between  items-center gap-5 w-full mb-8">
         <div className="mb-5 w-full sm:w-1/3">
           <label
             htmlFor="term"
@@ -216,7 +220,9 @@ const AllResults = () => {
             className="w-full border-2 border-gray-300 dark:border-neutral-700 rounded-md focus:ring-purple-500 focus:border-purple-500"
           />
         </div>
-        <div className="mb-4">
+        <div className="relative w-full sm:w-2/3">
+            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+                     
           <Input
             type="text"
             placeholder="Search students..."
@@ -275,12 +281,12 @@ const AllResults = () => {
                       disabled={isProcessing}
                       onClick={() =>
                         handleCheckResult(
-                         `Particles granted you permission to: ${student.name}'s result for ${term}_${classRoom}`,
+                          `Particles granted you permission to: ${student.name}'s result for ${term}_${classRoom}`,
                           student.name,
                           term,
                           classRoom,
                           student.studentId
-                        ) && setTer(classRoom)
+                        )
                       }
                     >
                       {`Check ${

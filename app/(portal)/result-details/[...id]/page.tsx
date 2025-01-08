@@ -84,10 +84,10 @@ const PostDetails = (term: string, classRoom: string) => {
     return "Poor result, sit up to perform well in your result.";
   };
   const getRemarks = (total: number): string => {
-    if (total >= 80) return "Excellent";
-    if (total >= 70) return "Good";
-    if (total >= 60) return "Credit";
-    if (total >= 50) return "Fair";
+    if (total >= 80) return "Distinction";
+    if (total >= 70) return "Very Good";
+    if (total >= 60) return "Good";
+    if (total >= 50) return "Credit";
     if (total >= 40) return "Poor";
     return "Fail";
   };
