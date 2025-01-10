@@ -2,11 +2,20 @@
 import StudentForm from "@/components/utilities/StudentsForm";
 import Unauthorized from "@/components/utilities/Unauthorized";
 import { useUserContext } from "@/context/AuthContext";
+import { getMe } from "@/lib/actions/user.actions";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const Registration = () => {
   const { user } = useUserContext();
+    const [admin, setAdmin] = useState(false);
+    useEffect(() => {
+      const fetchMe = async () => {
+        const me = await getMe();
+        if (me === "PARTICLES_ADMINISTRATOR_IGCA") setAdmin(true);
+      };
+      fetchMe();
+    }, []);
   if (!user) {
     // Show loader and loading message if user is not yet known
     return (
@@ -21,7 +30,7 @@ const Registration = () => {
   return (
     <div className="flex justify-center items-center min-h-screen ">
       <div className="w-full h-full">
-        {!user ? <div>Loading</div> :user.role === "admin" ? <StudentForm /> : <Unauthorized />}
+        {!user ? <div>Loading</div> :user.role === "admin" || admin ? <StudentForm /> : <Unauthorized />}
       </div>
     </div>
   );

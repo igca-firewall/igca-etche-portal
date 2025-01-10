@@ -18,7 +18,7 @@ const Home = () => {
     const checkAuthentication = async () => {
       const xed = await getMe(); // Assuming getMe is asynchronous
       if (!xed) {
-        return null
+        redirect("/sign-in")
       }
     };
 

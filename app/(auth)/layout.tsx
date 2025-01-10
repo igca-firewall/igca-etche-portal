@@ -1,9 +1,5 @@
 "use client"
 
-import { getMe } from "@/lib/actions/user.actions";
-import { redirect } from "next/navigation";
-import { useEffect } from "react";
-
 export default function RootLayout({
   children,
 }: Readonly<{

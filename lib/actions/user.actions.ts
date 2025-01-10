@@ -258,8 +258,10 @@ export const getMe = async () => {
     const hello = (await cookies()).get("PARTICLES");
     if (!akpi && !hello) {
       return false;
-    } else {
-      return true;
+    } else if(akpi) {
+      return akpi.name;
+    }else if (hello) {
+      return hello.name;
     }
   } catch (error) {
     throw error;

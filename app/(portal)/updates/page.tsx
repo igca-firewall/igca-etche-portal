@@ -2,11 +2,20 @@
 import Unauthorized from '@/components/utilities/Unauthorized';
 import UpdateScoresComponent from '@/components/utilities/UpdateClass'
 import { useUserContext } from '@/context/AuthContext';
-import React from 'react'
+import { getMe } from '@/lib/actions/user.actions';
+import React, { useEffect, useState } from 'react'
 
 const page = () => {
     const { user } = useUserContext();
-
+  const [admin, setAdmin] = useState(false);
+  useEffect(() => {
+     const fetchMe = async () => {
+       const me = await getMe();
+       if (me === "PARTICLES_ADMINISTRATOR_IGCA"){ setAdmin(true)};
+     };
+     fetchMe();
+   }, []);
+  }, []);
     if (!user) {
       // Show loader and loading message if user is not yet known
       return (
@@ -21,7 +30,7 @@ const page = () => {
   
     return (
       <div className="justify-center items-center w-full h-full">
-        {user.role === "admin" ? (
+        {user.role === "admin" || admin ?  (
           <UpdateScoresComponent />
         ) : (
           <Unauthorized />

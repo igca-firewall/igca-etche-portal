@@ -50,7 +50,11 @@ export const rightBarLinks = [
     label: "Entering Result",
   },
  
- 
+  {
+    imgURL: "/icons/report.png",
+    route: "/results",
+    label: "View Results",
+  },
 ];
 export const sidebarLinks = [
   {
@@ -74,8 +78,8 @@ export const sidebarLinks = [
   },
   {
     imgURL: "/icons/report.png",
-    route: "/results",
-    label: "View Results",
+    route: "/check-results",
+    label: "Check Results",
   },
 ];
 export const home = [

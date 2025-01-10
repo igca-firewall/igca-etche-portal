@@ -13,6 +13,7 @@ import ScratchCardOTP from "./GetCard";
 import { useRouter } from "next/navigation";
 import { classOrder, encrypt, storeClassAndRest } from "@/lib/utils";
 import { FaSearch } from "react-icons/fa";
+import { getMe } from "@/lib/actions/user.actions";
 
 interface Student {
   $id: string;
@@ -42,6 +43,14 @@ const AllResults = () => {
     classRoom: string;
     studentId: string;
   } | null>(null);
+    const [admin, setAdmin] = useState(false);
+    useEffect(() => {
+      const fetchMe = async () => {
+        const me = await getMe();
+        if (me === "PARTICLES_ADMINISTRATOR_IGCA") setAdmin(true);
+      };
+      fetchMe();
+    }, []);
   const fetchStudents = async () => {
     try {
       setIsFailure(false);
@@ -129,10 +138,10 @@ const AllResults = () => {
     // Retrieve admin rights from localStorage
     const storedAdminRights = localStorage.getItem(uniqueKey);
 
-    if (storedAdminRights || user.role === "admin") {
+    if (storedAdminRights || user.role === "admin" || admin) {
      console.log("Admin rights retrieved");
       router.push(`/result-details/${studentId}`);
-    } else if (user.role !== "admin" && !storedAdminRights && term) {
+    } else if (user.role !== "admin" && !admin && !storedAdminRights && term) {
       console.log("Not an admin or has no admin rights assigned");
       const fishData = {
         studentName,

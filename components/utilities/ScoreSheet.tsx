@@ -8,9 +8,12 @@ import { classOrder } from "@/lib/utils";
 import { useUserContext } from "@/context/AuthContext";
 
 import Image from "next/image";
-import { addresults, fetchResultData, fetchResults } from "@/lib/actions/results.actions";
+import {
+  addresults,
+  fetchResultData,
+  fetchResults,
+} from "@/lib/actions/results.actions";
 import Popup from "./PopUp";
-
 
 // Interfaces for student and result data
 const fields = [
@@ -60,9 +63,8 @@ const SubjectResultUploader: React.FC = () => {
 
   const closePopup = () => {
     setShowPopup(false);
-
   };
- 
+
   const max = fields.map((field) => {
     return field === "bnb" ? 20 : field === "exam" ? 40 : 10; // Adjust max values accordingly
   });
@@ -98,17 +100,17 @@ const SubjectResultUploader: React.FC = () => {
   // Handle form submission
   const handleSubmit = async () => {
     if (!validateForm()) return;
-  
+
     setIsProcessing(true);
     setIsSuccess(false);
     setIsFailure(false);
-  
-  
+
     try {
       // Transform results into an array of scores (array of objects)
       const scoresArray = results.map((result) => {
-        const [firstTest, secondTest, project, bnb, assignment, exam] = result.grades;
-  
+        const [firstTest, secondTest, project, bnb, assignment, exam] =
+          result.grades;
+
         // Validate grades
         const grades = [
           firstTest || "0",
@@ -116,12 +118,15 @@ const SubjectResultUploader: React.FC = () => {
           project || "0",
           bnb || "0",
           assignment || "0",
-          exam || "0"
+          exam || "0",
         ];
-  
-        const totalScore = grades.reduce((sum, grade) => sum + parseInt(grade), 0);
+
+        const totalScore = grades.reduce(
+          (sum, grade) => sum + parseInt(grade),
+          0
+        );
         const grade = calculateGrade(totalScore);
-  
+
         return {
           studentId: result.studentId,
           studentName: result.studentName,
@@ -135,7 +140,7 @@ const SubjectResultUploader: React.FC = () => {
           grade,
         };
       });
-  
+
       // Prepare data for the upload
       const uploadData = {
         classRoom,
@@ -144,21 +149,21 @@ const SubjectResultUploader: React.FC = () => {
         subject,
         scores: scoresArray, // Transformed scores array
       };
-  
+
       // Call the addresults function with the transformed data
       const uploadResponse = await addresults(uploadData);
-  
+
       if (uploadResponse) {
         setIsSuccess(true);
         console.log("All results uploaded successfully.");
-  
+
         // Clear state if the upload is successful
         setClassRoom("");
         setSubject("");
         setTerm("");
         setResults([]);
         setSession("");
-  
+
         // Remove draft from localStorage
         const draftKey = `${classRoom}_${subject}_${session}`;
         localStorage.removeItem(draftKey);
@@ -167,15 +172,17 @@ const SubjectResultUploader: React.FC = () => {
       }
     } catch (error) {
       console.error("Error during submission:", error);
-      setErrors((prev) => [...prev, "An unexpected error occurred. Please try again."]);
+      setErrors((prev) => [
+        ...prev,
+        "An unexpected error occurred. Please try again.",
+      ]);
       setIsFailure(true); // Handle failure
       autoClosePopup(setIsFailure); // Close failure popup after 3 seconds
     } finally {
       setIsProcessing(false); // Reset processing state
     }
   };
-  
-  
+
   const closeSuccessPopup = () => {
     setIsSuccess(false);
   };
@@ -187,7 +194,6 @@ const SubjectResultUploader: React.FC = () => {
   };
   // Handle adding results for a student
   const handleAddResult = (studentId: string, grades: string[]) => {
-
     const student = students.find((student) => student.studentId === studentId);
     if (student) {
       const sum = grades.reduce(
@@ -285,13 +291,15 @@ const SubjectResultUploader: React.FC = () => {
               };
             });
           });
-        
+
           setScores(transformedScores);
           console.log("Transformed Scores:", transformedScores);
         } else {
-          console.error("Expected particles to be an array but got", typeof particles);
+          console.error(
+            "Expected particles to be an array but got",
+            typeof particles
+          );
         }
-        
       } catch (error) {
         console.error("Error fetching students:", error);
       } finally {
@@ -425,7 +433,8 @@ const SubjectResultUploader: React.FC = () => {
               {
                 value: ` ${currentYear}/${nextYear}`,
                 label: `${currentYear}/${nextYear}`,
-              }, {
+              },
+              {
                 value: ` 2024/2025`,
                 label: `2024/2025`,
               },
@@ -454,40 +463,43 @@ const SubjectResultUploader: React.FC = () => {
           </div>
         ) : (
           <table className="min-w-full table-auto border-collapse bg-white dark:bg-neutral-800 rounded-lg shadow-md overflow-hidden">
-            <thead className="bg-gray-100 dark:bg-neutral-700">
-              <tr>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Student Name
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                  {`1st Summarize Test (10%)`}
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                  {`2nd Summarize Test (10%)`}
-                </th>{" "}
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                  {`Assignment (10%)    `}
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                  {` Midterm Project (10%)    `}
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                  {`Book and-Beyond (20%)`}
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                  {`Examination (40%)`}
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Sum
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Grade
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Scored?
-                </th>
-              </tr>
-            </thead>
+            {students.length > 0 && (
+              <thead className="bg-gray-100 dark:bg-neutral-700">
+                <tr>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Student Name
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {`1st Summarize Test (10%)`}
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {`2nd Summarize Test (10%)`}
+                  </th>{" "}
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {`Assignment (10%)    `}
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {` Midterm Project (10%)    `}
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {`Book and-Beyond (20%)`}
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {`Examination (40%)`}
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Sum
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Grade
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Scored?
+                  </th>
+                </tr>
+              </thead>
+            )}
+
             <tbody>
               {
                 // Sort students alphabetically by name before mapping
@@ -500,20 +512,22 @@ const SubjectResultUploader: React.FC = () => {
                     );
 
                     // Filter the students based on the latest `scores` data
-                // Parse the JSON strings in the `scores` array
-// Assuming 'scores' is already an array of 'Scores' objects (not strings):
-const filteredScores = scores; // If it's an array of objects, no parsing needed.
+                    // Parse the JSON strings in the `scores` array
+                    // Assuming 'scores' is already an array of 'Scores' objects (not strings):
+                    const filteredScores = scores; // If it's an array of objects, no parsing needed.
 
-// Filter the students based on the parsed `scores` data
-const filteredStudents = students.filter((student) =>
-  filteredScores.some((score) => score.studentId === student.studentId)
-);
+                    // Filter the students based on the parsed `scores` data
+                    const filteredStudents = students.filter((student) =>
+                      filteredScores.some(
+                        (score) => score.studentId === student.studentId
+                      )
+                    );
 
-// Ensure you are always working with the most recent `filteredStudents`
-const isVerified = filteredStudents.some(
-  (filteredStudent) => filteredStudent.studentId === student.studentId
-);
-
+                    // Ensure you are always working with the most recent `filteredStudents`
+                    const isVerified = filteredStudents.some(
+                      (filteredStudent) =>
+                        filteredStudent.studentId === student.studentId
+                    );
 
                     // You can now use `isVerified` to render the correct icon for each student
                     return (
@@ -619,7 +633,7 @@ const isVerified = filteredStudents.some(
                                 inputRefs.current[idx] = el;
                               }} // Store refs for each input
                               className="w-24 text-sm text-gray-700 dark:text-gray-300 border-2 border-gray-300 dark:border-neutral-700 rounded-md focus:ring-purple-500 focus:border-purple-500"
-                              />
+                            />
                           </td>
                         ))}
 

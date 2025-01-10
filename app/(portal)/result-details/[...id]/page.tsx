@@ -8,7 +8,6 @@ import { myArray } from "@/lib/actions/results.actions";
 import Image from "next/image";
 import { decryptKey, formatSubject } from "@/lib/utils";
 
-
 const PostDetails = (term: string, classRoom: string) => {
   const { user } = useUserContext();
   const [localUserData, setLocalUserData] = useState<any>(null);
@@ -114,9 +113,10 @@ const PostDetails = (term: string, classRoom: string) => {
     return "Fail";
   };
   const printPage = () => {
-    const printContents = document?.getElementById('results-section')?.innerHTML; // Replace 'results-section' with your specific div's ID
-    const printWindow = window.open('', '', 'width=800,height=600');
-    
+    const printContents =
+      document?.getElementById("results-section")?.innerHTML; // Replace 'results-section' with your specific div's ID
+    const printWindow = window.open("", "", "width=800,height=600");
+
     if (printWindow) {
       printWindow.document.write(`
         <!DOCTYPE html>
@@ -152,7 +152,6 @@ const PostDetails = (term: string, classRoom: string) => {
       printWindow.close(); // Close the print window after printing
     }
   };
-  
 
   const exportToCSV = () => {
     const csvContent =
@@ -204,8 +203,11 @@ const PostDetails = (term: string, classRoom: string) => {
   };
 
   return (
-    <div id="results-section" className="p-12 bg-gray-100 dark:bg-neutral-900 rounded-[25px] border-neutral-200 dark:border-neutral-700 ">
-      <div >
+    <div
+      id="results-section"
+      className="p-12 bg-gray-100 dark:bg-neutral-900 rounded-[25px] border-neutral-200 dark:border-neutral-700 "
+    >
+      <div>
         <div className="flex flex-col items-center justify-center space-y-4">
           {/* Logo Section */}
           <div className="flex flex-col items-center space-y-4">
@@ -227,22 +229,28 @@ const PostDetails = (term: string, classRoom: string) => {
           {/* Information Section */}
         </div>
         <div className="flex flex-col space-y-4">
-          <div className="flex justify-between items-center">
-            <h1 className="font-nunito font-semibold text-[14px] text-neutral-900 dark:text-neutral-100">
-              Name: {scores[0]?.studentName}
-            </h1>
-            <h2 className="font-nunito font-semibold text-[14px] text-neutral-800 dark:text-neutral-200">
-              Class: {scores[0]?.classRoom}
-            </h2>
-          </div>
-          <div className="flex justify-between items-start">
-            <h2 className="font-nunito font-semibold text-[14px] text-neutral-800 dark:text-neutral-200">
-              Term: {scores[0]?.term}
-            </h2>
-            <h2 className="font-nunito font-semibold text-[14px] text-neutral-800 dark:text-neutral-200">
-              Academic Session: {scores[0]?.session}
-            </h2>
-          </div>
+          {scores.length > 0 && (
+            <>
+              {" "}
+              <div className="flex justify-between items-center">
+                <h1 className="font-nunito font-semibold text-[14px] text-neutral-900 dark:text-neutral-100">
+                  Name: {scores[0]?.studentName}
+                </h1>
+                <h2 className="font-nunito font-semibold text-[14px] text-neutral-800 dark:text-neutral-200">
+                  Class: {scores[0]?.classRoom}
+                </h2>
+              </div>
+              <div className="flex justify-between items-start">
+                <h2 className="font-nunito font-semibold text-[14px] text-neutral-800 dark:text-neutral-200">
+                  Term: {scores[0]?.term}
+                </h2>
+                <h2 className="font-nunito font-semibold text-[14px] text-neutral-800 dark:text-neutral-200">
+                  Academic Session: {scores[0]?.session}
+                </h2>
+              </div>
+            </>
+          )}
+
           <div className="flex justify-end items-center">
             <p className="text-sm text-neutral-600 dark:text-neutral-400">
               <span className="font-semibold">Student ID:</span> {extractedPart}
@@ -253,8 +261,8 @@ const PostDetails = (term: string, classRoom: string) => {
         <div className="overflow-x-auto bg-white dark:bg-neutral-800 shadow-md rounded-lg mt-2">
           {" "}
           {scores.length > 0 && (
-            <table className="min-w-full border-collapse table-auto">
-              <thead className="bg-neutral-400 rounded-full dark:bg-neutral-800 text-white">
+            <table className="min-w-full px-6 py-3 border-collapse table-auto">
+              <thead className="bg-neutral-400  rounded-full dark:bg-neutral-800 text-white">
                 <tr>
                   {[
                     "Subject",
@@ -319,50 +327,73 @@ const PostDetails = (term: string, classRoom: string) => {
           )}
           {}
         </div>{" "}
-        <div className="p-6 mt-6 dark:bg-neutral-800 bg-white dark:bg-black rounded-lg shadow-sm border border-neutral-300 dark:border-neutral-700 space-y-4">
-         
-          <div className="text-base text-neutral-800 dark:text-neutral-200 flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-4">
-            <p className="text-lg font-medium text-center text-neutral-900 dark:text-neutral-100">
-            Average Score: <span className="font-bold">{averageScore}</span>
-          </p> <p>
-              <span className="font-medium">Total Score:</span>{" "}
-              <span className="font-semibold">{totalScore}</span>
-            </p>
-            <p>
-              <span className="font-medium">Principal's Comment:</span>{" "}
-              <span className="italic">
-                {getPrincipalsComment(averageScore)}
-              </span>
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className="flex space-x-4 mb-4 items-center justify-center">
-  <button
-    disabled={!user || scores.length <1 || !extractedPart || (isLoading)}
-    onClick={printPage}
-    className="bg-gray-300 dark:bg-neutral-700 border-gray-400 dark:border-gray-900 text-neutral-500 dark:text-purple-50 rounded-full px-6 py-4 mt-10 mb-10 flex gap-2 items-center justify-center"
-  >
-    <Image src="/images/printtf.png" alt="Print" width={25} height={25} /> Print
-  </button>
-  <button
-    disabled={!user || !scores || !extractedPart || isLoading}
-    onClick={exportToCSV}
-    className="bg-gray-300 dark:bg-neutral-700 border-gray-400 dark:border-gray-900 text-neutral-500 dark:text-purple-50 rounded-full px-6 py-4 mt-10 mb-10 flex gap-2 items-center justify-center"
-  >
-    <Image src="/images/export.png" alt="Export" width={25} height={25} /> Export
-  </button>
-  <button
-    disabled={!user || !scores || !extractedPart || isLoading}
-    onClick={downloadAsImage}
-    className="bg-gray-300 dark:bg-neutral-700 border-gray-400 dark:border-gray-900 text-neutral-500 dark:text-purple-50 rounded-full px-6 py-4 mt-10 mb-10 flex gap-2 items-center justify-center"
-  >
-    <Image src="/images/asimage.png" alt="Download" width={25} height={25} /> Download as Image
-  </button>
-
-  
-</div>
-{" "}
+        {scores.length > 0 && (
+          <>
+            {" "}
+            <div className="p-6 mt-6 dark:bg-neutral-800 bg-white dark:bg-black rounded-lg shadow-sm border border-neutral-300 dark:border-neutral-700 space-y-4">
+              <div className="text-base text-neutral-800 dark:text-neutral-200 flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-4">
+                <p className="text-lg font-medium text-center text-neutral-900 dark:text-neutral-100">
+                  Average Score:{" "}
+                  <span className="font-bold">{averageScore}</span>
+                </p>{" "}
+                <p>
+                  <span className="font-medium">Total Score:</span>{" "}
+                  <span className="font-semibold">{totalScore}</span>
+                </p>
+                <p>
+                  <span className="font-medium">Principal's Comment:</span>{" "}
+                  <span className="italic">
+                    {getPrincipalsComment(averageScore)}
+                  </span>
+                </p>
+              </div>
+            </div>
+            <div className="flex space-x-4 mb-4 items-center justify-center">
+              <button
+                disabled={
+                  !user || scores.length < 1 || !extractedPart || isLoading
+                }
+                onClick={printPage}
+                className="bg-gray-300 dark:bg-neutral-700 border-gray-400 dark:border-gray-900 text-neutral-500 dark:text-purple-50 rounded-full px-6 py-4 mt-10 mb-10 flex gap-2 items-center justify-center"
+              >
+                <Image
+                  src="/images/printtf.png"
+                  alt="Print"
+                  width={25}
+                  height={25}
+                />{" "}
+                Print
+              </button>
+              <button
+                disabled={!user || !scores || !extractedPart || isLoading}
+                onClick={exportToCSV}
+                className="bg-gray-300 dark:bg-neutral-700 border-gray-400 dark:border-gray-900 text-neutral-500 dark:text-purple-50 rounded-full px-6 py-4 mt-10 mb-10 flex gap-2 items-center justify-center"
+              >
+                <Image
+                  src="/images/csv.png"
+                  alt="Export"
+                  width={25}
+                  height={25}
+                />{" "}
+                Export
+              </button>
+              <button
+                disabled={!user || !scores || !extractedPart || isLoading}
+                onClick={downloadAsImage}
+                className="bg-gray-300 dark:bg-neutral-700 border-gray-400 dark:border-gray-900 text-neutral-500 dark:text-purple-50 rounded-full px-6 py-4 mt-10 mb-10 flex gap-2 items-center justify-center"
+              >
+                <Image
+                  src="/images/asimage.png"
+                  alt="Download"
+                  width={25}
+                  height={25}
+                />{" "}
+                Download as Image
+              </button>
+            </div>
+          </>
+        )}
+      </div>{" "}
       {isLoading && (
         <div className="fixed inset-0 z-50  flex items-center justify-center backdrop-blur-sm">
           <div className="p-8 rounded-2xl bg-white shadow-xl dark:bg-neutral-900 flex flex-col items-center justify-center space-y-6">

@@ -10,6 +10,7 @@ import { useUserContext } from "@/context/AuthContext";
 import { Sheet, SheetTrigger, SheetContent } from '../ui/sheet';
 import { HiMenu } from 'react-icons/hi'; // Hamburger icon for the trigger button
 import DarkModeToggle from "./DarkModeToggle";
+import { getMe } from "@/lib/actions/user.actions";
 
 const LeftSidebar = () => {
   const pathname = usePathname();
@@ -21,7 +22,14 @@ const LeftSidebar = () => {
   // Variables to handle swipe gesture
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
-
+  const [admin, setAdmin] = useState(false);
+ useEffect(() => {
+    const fetchMe = async () => {
+      const me = await getMe();
+      if (me === "PARTICLES_ADMINISTRATOR_IGCA"){ setAdmin(true)};
+    };
+    fetchMe();
+  }, []);
   // Handle swipe start
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
@@ -126,7 +134,7 @@ const LeftSidebar = () => {
                 </Link>
               );
             })}
-                 {user.role==="admin" && 
+                 {user.role==="admin" || admin && 
         
         rightBarLinks.map((item) => {
           const isActive =

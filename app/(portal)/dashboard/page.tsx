@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import Unauthorized from "@/components/utilities/Unauthorized";
 import { useUserContext } from "@/context/AuthContext";
 import { compileResult } from "@/lib/actions/rexults.actions";
-import React from "react";
+import { getMe } from "@/lib/actions/user.actions";
+import React, { useEffect, useState } from "react";
 
 const page = () => {
   const handleCompile =  async()=>{
@@ -12,6 +13,14 @@ const page = () => {
     console.log(contest)
   }
   const { user } = useUserContext();
+    const [admin, setAdmin] = useState(false);
+    useEffect(() => {
+      const fetchMe = async () => {
+        const me = await getMe();
+        if (me === "PARTICLES_ADMINISTRATOR_IGCA") setAdmin(true);
+      };
+      fetchMe();
+    }, []);
   if (!user) {
     // Show loader and loading message if user is not yet known
     return (
@@ -23,7 +32,7 @@ const page = () => {
       </div>
     );
   }
-  return     <div className="justify-center items-center w-full h-full">{user.role === "admin" ? <div> <Dashboard />  <Button className="py-12 px-12 bg-purple-500 rounded-full " onClick={() => handleCompile()}>
+  return     <div className="justify-center items-center w-full h-full">{user.role === "admin" || admin ? <div> <Dashboard />  <Button className="py-12 px-12 bg-purple-500 rounded-full " onClick={() => handleCompile()}>
         Compile  Results
       </Button></div> :(
     <Unauthorized />   )}

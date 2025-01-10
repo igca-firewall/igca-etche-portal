@@ -222,7 +222,7 @@ const CompiledResults: React.FC = () => {
   return (
     <div className="w-full h-full flex flex-col items-center justify-start bg-gray-50 dark:bg-neutral-900 p-8">
       <h2 className="text-3xl font-semibold mb-8 text-gray-800 dark:text-gray-200 transition duration-200">
-        Upload Results
+        View Results
       </h2>
 
       {/* Display Errors */}
@@ -370,40 +370,42 @@ const CompiledResults: React.FC = () => {
           </div>
         ) : (
           <table className="min-w-full table-auto border-collapse bg-white dark:bg-neutral-800 rounded-lg shadow-md overflow-hidden">
-            <thead className="bg-gray-100 dark:bg-neutral-700">
-              <tr>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Student Name
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                  1st Summarize Test (10%)
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                  2nd Summarize Test (10%)
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Assignment (10%)
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Midterm Project (10%)
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Book and Beyond (20%)
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Examination (40%)
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Sum
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Grade
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Actions
-                </th>
-              </tr>
-            </thead>
+            {students.length > 0 && (
+              <thead className="bg-gray-100 dark:bg-neutral-700">
+                <tr>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Student Name
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                    1st Summarize Test (10%)
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                    2nd Summarize Test (10%)
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Assignment (10%)
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Midterm Project (10%)
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Book and Beyond (20%)
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Examination (40%)
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Sum
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Grade
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+            )}
             <tbody>
               {students
                 .sort((a, b) => a.name.localeCompare(b.name)) // Sort alphabetically by name
@@ -440,7 +442,7 @@ const CompiledResults: React.FC = () => {
                         )}
                       </td>
                       <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
-                      {editStudentData?.$id === student.$id ? (
+                        {editStudentData?.$id === student.$id ? (
                           <Input
                             type="text"
                             value={editStudentData?.secondTest}
@@ -459,7 +461,7 @@ const CompiledResults: React.FC = () => {
                         )}
                       </td>
                       <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
-                      {editStudentData?.$id === student.$id ? (
+                        {editStudentData?.$id === student.$id ? (
                           <Input
                             type="text"
                             value={editStudentData?.bnb}
@@ -478,7 +480,7 @@ const CompiledResults: React.FC = () => {
                         )}
                       </td>
                       <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
-                      {editStudentData?.$id === student.$id ? (
+                        {editStudentData?.$id === student.$id ? (
                           <Input
                             type="text"
                             value={editStudentData?.project}
@@ -497,7 +499,7 @@ const CompiledResults: React.FC = () => {
                         )}
                       </td>
                       <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
-                      {editStudentData?.$id === student.$id ? (
+                        {editStudentData?.$id === student.$id ? (
                           <Input
                             type="text"
                             value={editStudentData?.assignment}
@@ -516,7 +518,7 @@ const CompiledResults: React.FC = () => {
                         )}
                       </td>
                       <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
-                      {editStudentData?.$id === student.$id ? (
+                        {editStudentData?.$id === student.$id ? (
                           <Input
                             type="text"
                             value={editStudentData?.exam}
@@ -535,7 +537,7 @@ const CompiledResults: React.FC = () => {
                         )}
                       </td>
                       <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
-                      {editStudentData?.$id === student.$id ? (
+                        {editStudentData?.$id === student.$id ? (
                           <Input
                             type="text"
                             value={editStudentData?.total}
@@ -554,7 +556,7 @@ const CompiledResults: React.FC = () => {
                         )}
                       </td>
                       <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
-                      {editStudentData?.$id === student.$id ? (
+                        {editStudentData?.$id === student.$id ? (
                           <Input
                             type="text"
                             value={editStudentData?.grade}
@@ -575,7 +577,8 @@ const CompiledResults: React.FC = () => {
                       <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
                         {user?.role === "admin" && (
                           <td className="px-4 py-2 flex items-center gap-3">
-                            {editStudentData && editStudentData?.$id === student?.$id ? (
+                            {editStudentData &&
+                            editStudentData?.$id === student?.$id ? (
                               <>
                                 <button
                                   className="text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 transition-all duration-200"

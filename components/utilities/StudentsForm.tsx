@@ -1,9 +1,11 @@
+"use client"
 import { inputStudentInfo } from "@/lib/actions/studentsData.actions";
 import { generateStudentId } from "@/lib/utils";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Select from "./CustomSelect";
 import { useUserContext } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import { getMe } from "@/lib/actions/user.actions";
 
 const StudentForm = () => {
   // Initial state for managing student details
@@ -239,7 +241,14 @@ const StudentForm = () => {
   const goToPreviousPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
-
+  const [admin, setAdmin] = useState(false);
+ useEffect(() => {
+    const fetchMe = async () => {
+      const me = await getMe();
+      if (me === "PARTICLES_ADMINISTRATOR_IGCA"){ setAdmin(true)};
+    };
+    fetchMe();
+  }, []);
   // Open the modal for confirmation
   const populated = students.filter(isValidStudent);
 
@@ -273,7 +282,7 @@ const StudentForm = () => {
     </div>
     )
   
-  return user.role === "admin" ? (
+  return user.role === "admin" || admin? (
     //  return (
     <div className="p-6  shadow-lg rounded-lg max-w-[90%] mx-auto">
       <h1 className="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">
