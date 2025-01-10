@@ -55,6 +55,16 @@ export const rightBarLinks = [
     route: "/results",
     label: "View Results",
   },
+  {
+    imgURL: "/icons/report.png",
+    route: "/teachers-comment",
+    label: "Teacher's Comment",
+  },
+  {
+    imgURL: "/icons/report.png",
+    route: "/allcards",
+    label: "All Scratch Cards",
+  },
 ];
 export const sidebarLinks = [
   {
