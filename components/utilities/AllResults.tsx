@@ -115,23 +115,8 @@ const AllResults = () => {
       fetchStudents();
     }
   }, [term, session, classRoom]);
-  const calculateAge = (dateOfBirth: string): number => {
-    const birthDate = new Date(dateOfBirth);
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-
-    const monthDifference = today.getMonth() - birthDate.getMonth();
-    const dayDifference = today.getDate() - birthDate.getDate();
-    if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
-      age--;
-    }
-
-    return age;
-  };
-
   // Checking the admin rights from localStorage based on the student's name
-  const [adminRights, setAdminRights] = useState<string | null>(null);
-  const router = useRouter();
+ const router = useRouter();
   // Handle the "Check Result" button click
   const handleCheckResult = (
     studentName: string,
@@ -144,11 +129,10 @@ const AllResults = () => {
     // Retrieve admin rights from localStorage
     const storedAdminRights = localStorage.getItem(uniqueKey);
 
-    if (storedAdminRights || user.$id === "admin") {
-      setAdminRights(storedAdminRights);
-      console.log("Admin rights retrieved");
+    if (storedAdminRights || user.role === "admin") {
+     console.log("Admin rights retrieved");
       router.push(`/result-details/${studentId}`);
-    } else if (user.$id !== "admin" && !storedAdminRights && term) {
+    } else if (user.role !== "admin" && !storedAdminRights && term) {
       console.log("Not an admin or has no admin rights assigned");
       const fishData = {
         studentName,

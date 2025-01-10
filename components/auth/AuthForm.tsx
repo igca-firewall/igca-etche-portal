@@ -19,7 +19,6 @@ import { useRouter } from "next/navigation";
 import CustomRadio from "../utilities/CustomRoleRadio";
 import { createScratchCard } from "@/lib/actions/scratchCard.actions";
 
-
 const AuthForm = ({
   type,
   role,
@@ -68,8 +67,12 @@ const AuthForm = ({
           password: data.password,
           role: data.role!,
           image: avatarUrl,
-          name: `${data.firstName} ${data.lastName}` || "User",
-       
+          name:
+            `${data.firstName!.replace(/\s+/g, "")} ${data.lastName!.replace(
+              /\s+/g,
+              ""
+            )}` || "Guest Mode",
+
           ...(data.role === "admin" && {
             adminContact: data.adminContact,
             adminId: data.adminId,
@@ -167,8 +170,7 @@ const AuthForm = ({
             </div>
           </>
         );
-     
-     
+
       case "viewer":
         return (
           <>
@@ -229,7 +231,7 @@ const AuthForm = ({
                 control={form.control}
                 options={[
                   { label: "Admin", value: "admin" },
-                  
+
                   { label: "Student", value: "viewer" },
                 ]}
                 className="space-y-2"
