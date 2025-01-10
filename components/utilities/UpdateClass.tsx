@@ -2,10 +2,8 @@
 import { useState } from "react";
 import { getStudentsByClass } from "@/lib/actions/studentsData.actions";
 import {
-  listAllScores,
-  prepareAndAddResults,
-  updateScoresWithClassRoom,
-} from "@/lib/actions/updateStudents.actions";
+  updateIdIChanged
+} from "@/lib/actions/results.actions";
 import { Button } from "../ui/button";
 import { classOrder } from "@/lib/utils";
 import Select from "./CustomSelect";
@@ -40,12 +38,7 @@ const UpdateScoresComponent: React.FC = () => {
      
       // const updates = fetchedScores.map(async (score) => {
         // if (!updatedStudents.has(score.id)) {
-          const result = await prepareAndAddResults({
-            classRoom,
-            subject,
-            session,
-            term,
-          });
+          const result = await updateIdIChanged()
           if (result) {
             setProgress((prev) => ({
               ...prev,
@@ -66,7 +59,7 @@ const UpdateScoresComponent: React.FC = () => {
       setStatus("failure");
     } finally {
       setIsLoading(false);
-      setClassRoom("");
+
     }
   };
 

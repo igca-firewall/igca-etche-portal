@@ -12,6 +12,7 @@ const {
   APPWRITE_2ND_TERM_COLLECTION_ID: SECOND,
   APPWRITE_3RD_TERM_COLLECTION_ID: THIRD,
   APPWRITE_1ST_TERM_COLLECTION_ID: FIRST,
+  APPWRITE_STUDENTS_COLLECTION_ID: STUDENTS_COLLECTION_ID,
 
   //     NEXT_PUBLIC_APPWRITE_ENDPOINT: ENDPOINT,
   //     NEXT_PUBLIC_APPWRITE_PROJECT: PROJECT_ID,
@@ -418,13 +419,12 @@ export const myArray = async ({
 
         // Parse the stringified scores
         const parsedScores: Score[] = item.scores
-          .map((scoreStr) => {
+          .map((scoreStr: any) => {
             try {
               const parsed = JSON.parse(scoreStr) as Score; // Cast to Score type
               console.log("Parsed Score:", parsed);
-               // Log parsed score
+              // Log parsed score
               return parsed;
-
             } catch (e) {
               console.error("Error parsing score:", e);
               return null;
@@ -435,15 +435,15 @@ export const myArray = async ({
         console.log("Parsed Scores for Document:", parsedScores); // Log parsed scores
 
         // Find the student by ID within the parsed scores
-        const studentScore = parsedScores.find((score) => score.studentId === studentId) ?? null;
+        const studentScore =
+          parsedScores.find((score) => score.studentId === studentId) ?? null;
 
         if (studentScore) {
-          
           // Add the subject to the filtered result
           return {
-            studentName: studentScore.studentName,  // Assuming the name is stored in studentName field
+            studentName: studentScore.studentName, // Assuming the name is stored in studentName field
             studentId: studentScore.studentId,
-            classRoom: item.classRoom,      // Assuming studentId is available in the document
+            classRoom: item.classRoom, // Assuming studentId is available in the document
             term: item.term,
             session: item.session,
             subject: item.subject,
@@ -452,8 +452,19 @@ export const myArray = async ({
         }
         return null;
       })
-      .filter((result): result is { subject: string; classRoom: string; term: string; session:string;studentId:string;
-        studentName: string; score: Score } => result !== null); // Type guard for null filtering
+      .filter(
+        (
+          result
+        ): result is {
+          subject: string;
+          classRoom: string;
+          term: string;
+          session: string;
+          studentId: string;
+          studentName: string;
+          score: Score;
+        } => result !== null
+      ); // Type guard for null filtering
 
     console.log("Filtered Student Scores with Subject:", studentScores);
 
@@ -462,7 +473,6 @@ export const myArray = async ({
     console.error("Error:", error);
   }
 };
-
 
 // export const getStudentData = async (
 //   dataArray: Models.Document[], // Array of Document objects, not stringified
@@ -478,3 +488,63 @@ export const myArray = async ({
 //   return student ? JSON.stringify(student) : undefined;
 // };
 
+export const updateIdIChanged = async () => {
+  const { database } = await createAdminClient();
+  const limit = 1000; // Max number of documents per page
+  const maxRecords = 10000; // Maximum number of students to fetch (10,000 students in this case)
+  let allStudents: any[] = []; // Array to hold all fetched students
+  let offset = 0; // Start from the first document
+  let totalFetched = 0; // Keep track of how many records have been fetched
+
+  try {
+    // Fetch all documents
+    const studentDocuments = await database.listDocuments(
+      DATABASE_ID!,
+      STUDENTS_COLLECTION_ID!,
+      [
+        Query.limit(limit), // Limit the number of students per request
+        Query.offset(offset),
+      ]
+    );
+
+    console.log("Fetched documents:", studentDocuments);
+
+    const updateResults = []; // Collect results here
+
+    // Iterate over each document
+    for (const student of studentDocuments.documents) {
+      // Check if the session field is already set
+      if (student.session) {
+        console.log(
+          `Skipping document ID: ${student.$id}, session already set.`
+        );
+        continue; // Skip this document
+      }
+
+      try {
+        // Update the document if session is not set
+        const updatedDocument = await database.updateDocument(
+          DATABASE_ID!,
+          STUDENTS_COLLECTION_ID!,
+          student.$id,
+          {
+            session: "2024/2025",
+          }
+        );
+        console.log(`Successfully updated document ID: ${student.$id}`);
+        updateResults.push(updatedDocument);
+      } catch (updateError) {
+        console.error(
+          `Error updating document ID: ${student.$id}`,
+          updateError
+        );
+      }
+    }
+
+    // Return all update results
+    return updateResults;
+  } catch (error) {
+    console.error("Error fetching student documents", error);
+    throw error; // Re-throw error for caller to handle if needed
+  }
+};

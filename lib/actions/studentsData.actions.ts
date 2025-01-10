@@ -152,11 +152,11 @@ export async function getStudentById(id: string) {
       STUDENTS_COLLECTION_ID!,
       [Query.equal("studentId", id)]
     );
- if(!result){
-   console.log("No student found with this ID.");
-   return null;
- }
- console.log("the student found with this ID:", result.documents)
+    if (!result) {
+      console.log("No student found with this ID.");
+      return null;
+    }
+    console.log("the student found with this ID:", result.documents);
     return parseStringify(result.documents[0]);
   } catch (error) {
     console.log(error);
@@ -164,126 +164,180 @@ export async function getStudentById(id: string) {
 }
 export const listAllStudents = async () => {
   const { database } = await createAdminClient();
-  
-  const limit = 1000;             // Max number of documents per page
-  const maxRecords = 10000;      // Maximum number of students to fetch (10,000 students in this case)
-  let allStudents: any[] = [];   // Array to hold all fetched students
-  let offset = 0;                // Start from the first document
-  let totalFetched = 0;          // Keep track of how many records have been fetched
-  
+
+  const limit = 1000; // Max number of documents per page
+  const maxRecords = 10000; // Maximum number of students to fetch (10,000 students in this case)
+  let allStudents: any[] = []; // Array to hold all fetched students
+  let offset = 0; // Start from the first document
+  let totalFetched = 0; // Keep track of how many records have been fetched
+
   while (totalFetched < maxRecords) {
     const newStudentInfo = await database.listDocuments(
       DATABASE_ID!,
       STUDENTS_COLLECTION_ID!,
       [
-        Query.limit(limit),    // Limit the number of students per request
+        Query.limit(limit), // Limit the number of students per request
         Query.offset(offset),
-        Query.notEqual("classRoom","GRADUATE")  // Skip the records we have already fetched
+        Query.notEqual("classRoom", "GRADUATE"), // Skip the records we have already fetched
       ]
     );
-    
+
     const students = newStudentInfo.documents; // Get the documents (students)
-    
+
     allStudents = [...allStudents, ...students]; // Append to the results array
-    totalFetched += students.length;  // Update the total count of fetched students
-    
+    totalFetched += students.length; // Update the total count of fetched students
+
     // If the number of documents returned is less than the limit, we've reached the end
     if (students.length < limit) {
-      break;  // Exit the loop when there are no more students to fetch
+      break; // Exit the loop when there are no more students to fetch
     }
-    
+
     // Increment the offset for the next page
     offset += limit;
-    
+
     // If we've already fetched the maximum number of students, exit the loop
     if (totalFetched >= maxRecords) {
       break;
     }
   }
-  
-  return allStudents;  // Return the full list of students (up to 10,000)
+
+  return allStudents; // Return the full list of students (up to 10,000)
 };
-export const getStudentsByClass = async ({classRoom}: {classRoom: string}) => {
+export const getStudentsByClass = async ({
+  classRoom,
+}: {
+  classRoom: string;
+}) => {
   const { database } = await createAdminClient();
-  
-  const limit = 100;             // Max number of documents per page
-  const maxRecords = 10000;      // Maximum number of students to fetch (10,000 students in this case)
-  let allStudents: any[] = [];   // Array to hold all fetched students
-  let offset = 0;                // Start from the first document
-  let totalFetched = 0;          // Keep track of how many records have been fetched
-  
+
+  const limit = 100; // Max number of documents per page
+  const maxRecords = 10000; // Maximum number of students to fetch (10,000 students in this case)
+  let allStudents: any[] = []; // Array to hold all fetched students
+  let offset = 0; // Start from the first document
+  let totalFetched = 0; // Keep track of how many records have been fetched
+
   while (totalFetched < maxRecords) {
     const newStudentInfo = await database.listDocuments(
       DATABASE_ID!,
       STUDENTS_COLLECTION_ID!,
       [
-        Query.limit(limit),    // Limit the number of students per request
+        Query.limit(limit), // Limit the number of students per request
         Query.offset(offset),
-        Query.equal("classRoom",classRoom)
-          // Skip the records we have already fetched
+        Query.equal("classRoom", classRoom),
+        // Skip the records we have already fetched
       ]
     );
-    
+
     const students = newStudentInfo.documents; // Get the documents (students)
-    
+
     allStudents = [...allStudents, ...students]; // Append to the results array
-    totalFetched += students.length;  // Update the total count of fetched students
-    
+    totalFetched += students.length; // Update the total count of fetched students
+
     // If the number of documents returned is less than the limit, we've reached the end
     if (students.length < limit) {
-      break;  // Exit the loop when there are no more students to fetch
+      break; // Exit the loop when there are no more students to fetch
     }
-    
+
     // Increment the offset for the next page
     offset += limit;
-    
+
     // If we've already fetched the maximum number of students, exit the loop
     if (totalFetched >= maxRecords) {
       break;
     }
   }
-  
-  return allStudents;  // Return the full list of students (up to 10,000)
+
+  return allStudents; // Return the full list of students (up to 10,000)
 };
 
 export const getStudentsByClassRoom = async () => {
   const { database } = await createAdminClient();
-  
-  const limit = 100;             // Max number of documents per page
-  const maxRecords = 10000;      // Maximum number of students to fetch (10,000 students in this case)
-  let allStudents: any[] = [];   // Array to hold all fetched students
-  let offset = 0;                // Start from the first document
-  let totalFetched = 0;          // Keep track of how many records have been fetched
-  
+
+  const limit = 100; // Max number of documents per page
+  const maxRecords = 10000; // Maximum number of students to fetch (10,000 students in this case)
+  let allStudents: any[] = []; // Array to hold all fetched students
+  let offset = 0; // Start from the first document
+  let totalFetched = 0; // Keep track of how many records have been fetched
+
   while (totalFetched < maxRecords) {
     const newStudentInfo = await database.listDocuments(
       DATABASE_ID!,
       STUDENTS_COLLECTION_ID!,
       [
-        Query.limit(limit),    // Limit the number of students per request
+        Query.limit(limit), // Limit the number of students per request
         Query.offset(offset),
-        Query.equal("classRoom","JSS2B")  // Skip the records we have already fetched
+        Query.equal("classRoom", "JSS2B"), // Skip the records we have already fetched
       ]
     );
     //676984a00023abe907c6
     const students = newStudentInfo.documents; // Get the documents (students)
-    
+
     allStudents = [...allStudents, ...students]; // Append to the results array
-    totalFetched += students.length;  // Update the total count of fetched students
-    
+    totalFetched += students.length; // Update the total count of fetched students
+
     // If the number of documents returned is less than the limit, we've reached the end
     if (students.length < limit) {
-      break;  // Exit the loop when there are no more students to fetch
+      break; // Exit the loop when there are no more students to fetch
     }
-    
+
     // Increment the offset for the next page
     offset += limit;
-    
+
     // If we've already fetched the maximum number of students, exit the loop
     if (totalFetched >= maxRecords) {
       break;
     }
   }
-  
-  return allStudents;  // Return the full list of students (up to 10,000)
+
+  return allStudents; // Return the full list of students (up to 10,000)
+};
+export const getS = async ({
+  classRoom,
+
+  session,
+}: {
+  classRoom: string;
+
+  session: string;
+}) => {
+  const { database } = await createAdminClient();
+
+  const limit = 100; // Max number of documents per page
+  const maxRecords = 10000; // Maximum number of students to fetch (10,000 students in this case)
+  let allStudents: any[] = []; // Array to hold all fetched students
+  let offset = 0; // Start from the first document
+  let totalFetched = 0; // Keep track of how many records have been fetched
+
+  while (totalFetched < maxRecords) {
+    const newStudentInfo = await database.listDocuments(
+      DATABASE_ID!,
+      STUDENTS_COLLECTION_ID!,
+      [
+        Query.limit(limit), // Limit the number of students per request
+        Query.offset(offset),
+        Query.equal("session", session),
+        Query.equal("classRoom", classRoom), // Skip the records we have already fetched
+      ]
+    );
+
+    const students = newStudentInfo.documents; // Get the documents (students)
+
+    allStudents = [...allStudents, ...students]; // Append to the results array
+    totalFetched += students.length; // Update the total count of fetched students
+
+    // If the number of documents returned is less than the limit, we've reached the end
+    if (students.length < limit) {
+      break; // Exit the loop when there are no more students to fetch
+    }
+
+    // Increment the offset for the next page
+    offset += limit;
+
+    // If we've already fetched the maximum number of students, exit the loop
+    if (totalFetched >= maxRecords) {
+      break;
+    }
+  }
+
+  return allStudents; // Return the full list of students (up to 10,000)
 };

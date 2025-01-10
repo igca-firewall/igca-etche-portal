@@ -4,10 +4,7 @@ import Select from "@/components/utilities/CustomSelect";
 import Popup from "@/components/utilities/PopUp";
 import { useUserContext } from "@/context/AuthContext";
 import { addComment } from "@/lib/actions/comment.actions";
-import {
-  getStudentsByClass,
-  listAllStudents,
-} from "@/lib/actions/studentsData.actions";
+import { getS } from "@/lib/actions/studentsData.actions";
 import { Models } from "appwrite";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -37,7 +34,7 @@ const AllResults = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isFailure, setIsFailure] = useState(false);
-
+  const [xed, setXed] = useState(false);
   const [isFish, setIsFish] = useState<{
     studentName: string;
     Namer: string;
@@ -45,13 +42,50 @@ const AllResults = () => {
     classRoom: string;
     studentId: string;
   } | null>(null);
+  const fetchStudents = async () => {
+    try {
+      setIsFailure(false);
+      setXed(false);
+      setIsLoading(true);
+      const xed: Models.Document[] = await getS({
+        classRoom,
 
+        session: session,
+      });
+
+      if (xed) {
+        const transformedStudents = xed.map((student) => ({
+          $id: student.$id,
+          name: student.name,
+          dateOfBirth: student.dateOfBirth,
+          studentId: student.studentId,
+          image: student.image,
+
+          createdAt: student.$createdAt,
+        }));
+        setStudents(transformedStudents);
+        console.log("Students", transformedStudents);
+        if (transformedStudents.length === 0) {
+          setIsFailure(true);
+        }
+      }
+    } catch (error) {
+      setIsFailure(true);
+      console.error("Error fetching students:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   useEffect(() => {
     const fetchStudents = async () => {
       try {
+        setIsFailure(false);
+        setXed(false);
         setIsLoading(true);
-        const xed: Models.Document[] = await getStudentsByClass({
+        const xed: Models.Document[] = await getS({
           classRoom,
+
+          session: session,
         });
 
         if (xed) {
@@ -61,13 +95,18 @@ const AllResults = () => {
             dateOfBirth: student.dateOfBirth,
             studentId: student.studentId,
             image: student.image,
-            
+
             createdAt: student.$createdAt,
           }));
           setStudents(transformedStudents);
+          console.log("Students", transformedStudents);
+          if (transformedStudents.length === 0) {
+            setIsFailure(true);
+          }
         }
       } catch (error) {
-        console.error("Error fetching students:", error);
+        setIsFailure(true);
+        console.log("Error fetching Student:", error);
       } finally {
         setIsLoading(false);
       }
@@ -75,7 +114,7 @@ const AllResults = () => {
     if (term && session && classRoom) {
       fetchStudents();
     }
-  }, [term, session,classRoom]);
+  }, [term, session, classRoom]);
   const calculateAge = (dateOfBirth: string): number => {
     const birthDate = new Date(dateOfBirth);
     const today = new Date();
@@ -90,7 +129,6 @@ const AllResults = () => {
     return age;
   };
 
-
   // Checking the admin rights from localStorage based on the student's name
   const [adminRights, setAdminRights] = useState<string | null>(null);
   const router = useRouter();
@@ -102,15 +140,15 @@ const AllResults = () => {
     studentId: string
   ) => {
     const uniqueKey = studentName;
-
+    setXed(true);
     // Retrieve admin rights from localStorage
     const storedAdminRights = localStorage.getItem(uniqueKey);
 
-    if (storedAdminRights || user.role === "admin") {
+    if (storedAdminRights || user.$id === "admin") {
       setAdminRights(storedAdminRights);
       console.log("Admin rights retrieved");
       router.push(`/result-details/${studentId}`);
-    } else if (user.role !== "admin" && !storedAdminRights && term) {
+    } else if (user.$id !== "admin" && !storedAdminRights && term) {
       console.log("Not an admin or has no admin rights assigned");
       const fishData = {
         studentName,
@@ -120,9 +158,7 @@ const AllResults = () => {
         studentId,
       };
       setIsFish(fishData);
-    } else {
-      console.log("Admin access detected");
-      return <div>You have access to this result</div>;
+      setXed(false);
     }
   };
   const currentYear = new Date().getFullYear();
@@ -226,7 +262,7 @@ const AllResults = () => {
           />
         </div>
       </div>
-  
+
       {isLoading ? (
         <p className="text-center">
           {!term && session
@@ -240,52 +276,79 @@ const AllResults = () => {
             : "Loading..."}
         </p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {students.map((student) => (
-            <div
-              key={student.$id}
-              className="bg-white border hover:scale-110 transition-all transform duration-800 hover:bg-neutral-300 hover:dark:bg-neutral-700 border-gray-200 dark:border-neutral-700 shadow-lg rounded-2xl font-nunito dark:bg-neutral-800 p-6 flex flex-col items-center"
-            >
-              <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-gray-300 dark:border-gray-600 shadow-md">
-                <Image
-                  src={student.image || "/images/th.jpg"}
-                  alt={student.name}
-                  className="object-cover"
-                  width={112}
-                  height={112}
-                />
-              </div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mt-5">
-                {student.name}
-              </h2>
-              <p className="text-base text-gray-600 dark:text-gray-400 mt-2">
-                {classRoom}
-                <span className="mx-2 text-gray-500 dark:text-gray-600">&#8226;</span>
-                {calculateAge(student.dateOfBirth)} years old
-              </p>
-              <Button
-                className="px-8 py-8 mt-4 text-purple-800 dark:text-white border border-neutral-300 dark:border-purple-800 rounded-full bg-neutral-200 dark:bg-neutral-800 focus:outline-none"
-                disabled={isProcessing}
-                onClick={() =>
-                  handleCheckResult(
-                    `Particles granted you permission to: ${student.name}'s result for ${term}_${classRoom}`,
-                    student.name,
-                    term,
-                    student.studentId
-                  )
-                }
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+          {students
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .filter((student) =>
+              student.name.toLowerCase().includes(searchQuery.toLowerCase())
+            ) // Alphabetically sort by name
+            .map((student) => (
+              <div
+                key={student.$id}
+                className="bg-white border hover:scale-110 transition-all transform duration-800 hover:bg-neutral-300 hover:dark:bg-neutral-700 border-gray-200 dark:border-neutral-700 shadow-lg rounded-2xl font-nunito dark:bg-neutral-800 p-6 flex flex-col items-center"
               >
-                {`Check ${
-                  student.name === user.name ? "Your" : student.name + "'s"
-                } Result`}
-              </Button>
-            </div>
-          ))}
+                <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-gray-300 dark:border-gray-600 shadow-md">
+                  <Image
+                    src={student.image || "/images/th.jpg"}
+                    alt={student.name}
+                    className="object-cover"
+                    width={112}
+                    height={112}
+                  />
+                </div>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mt-5">
+                  {student.name}
+                </h2>
+                <p className="text-base text-gray-600 dark:text-gray-400 mt-2">
+                  {classRoom}
+                  <span className="mx-2 text-gray-500 dark:text-gray-600">
+                    &#8226;
+                  </span>
+                  {student.studentId}
+                </p>
+                <Button
+                  className={`px-8 ${
+                    xed && " bg-gray-300 animate-bounce"
+                  } py-8 mt-4 text-purple-800 dark:text-white border border-neutral-300 dark:border-purple-800 rounded-full bg-neutral-200 dark:bg-neutral-800 focus:outline-none`}
+                  disabled={isProcessing || xed}
+                  onClick={() =>
+                    handleCheckResult(
+                      `Particles granted you permission to: ${student.name}'s result for ${term}_${classRoom}`,
+                      student.name,
+                      term,
+                      student.studentId
+                    )
+                  }
+                >
+                  {xed
+                    ? "Analyzing"
+                    : `Check ${
+                        student.name === user.name
+                          ? "Your"
+                          : student.name + "'s"
+                      } Result`}
+                </Button>
+              </div>
+            ))}
+        </div>
+      )}
+      {isFailure && (
+        <div
+          className="
+          flex flex-col items-center gap-2 text-red-200"
+        >
+          No student found, Please check your internet connection or provided
+          credentials.{" "}
+          <button
+            className="px-6 py-2 bg-purple-500 rounded-full "
+            onClick={() => fetchStudents()}
+          >
+            Retry
+          </button>
         </div>
       )}
     </div>
   );
-  
 };
 
 export default AllResults;

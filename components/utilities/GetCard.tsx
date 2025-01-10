@@ -24,13 +24,12 @@ const ScratchCardOTP = ({
   const [code, setCode] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isAllowed, setIsAllowed] = useState(false);
-  const [isContinueLoading, setIsContinueLoading] = useState(false);
+  const [xed, setXed] = useState(false);
   const [feedback, setFeedback] = useState<{
     message: string;
     type: "success" | "error" | "info";
   } | null>(null);
 
-  const { user } = useUserContext();
   const router = useRouter();
 
   const hem = code.length === 8;
@@ -55,6 +54,7 @@ const ScratchCardOTP = ({
             });
             setCode(""); // Reset code after successful validation
             setIsAllowed(true);
+            router.push(`/result-details/${studentId}`);
             localStorage.setItem(`${draftKeyGranted}`, draftKeyGranted);
           } else {
             setFeedback({
@@ -80,37 +80,7 @@ const ScratchCardOTP = ({
     }
   }, [hem, code]);
 
-  const handleContinue = async () => {
-    setIsContinueLoading(true);
 
-    try {
-      const accessRights = localStorage.getItem(`${draftKeyGranted}`);
-
-      if (accessRights) {
-        setFeedback({
-          message: "Access granted. Redirecting...",
-          type: "success",
-        });
-        // Simulate a delay before redirecting
-        setTimeout(() => {
-          router.push(`/result-details/${studentId}`); // Redirect to the home page or desired route
-        }, 1500);
-      } else {
-        setFeedback({
-          message: "Access rights not found. Please try again.",
-          type: "error",
-        });
-      }
-    } catch (error) {
-      console.error("Error during access validation:", error);
-      setFeedback({
-        message: "An error occurred while checking access rights.",
-        type: "error",
-      });
-    } finally {
-      setIsContinueLoading(false);
-    }
-  };
   const handleShit = async () => {
     try {
       const result = await useScratchCards({ code });
@@ -119,8 +89,9 @@ const ScratchCardOTP = ({
           message: "Scratch card validated and processed successfully!",
           type: "success",
         });
-        setCode("12345678"); // Reset code after successful validation
-        setIsAllowed(true);
+    // Reset code after successful validation
+       
+        setXed(true);
         localStorage.setItem(`${draftKeyGranted}`, draftKeyGranted);
       } else {
         setFeedback({
@@ -181,7 +152,7 @@ const ScratchCardOTP = ({
         )}
 
         <button
-          onClick={isAllowed ? handleContinue : handleShit}
+          onClick={handleShit}
           className={`w-full p-3 px-6 py-5 mt-4 text-white font-semibold rounded-full transition 
             ${
               isLoading || code.length < 8
@@ -190,13 +161,7 @@ const ScratchCardOTP = ({
             }`}
           disabled={isLoading || (!isAllowed && code.length < 8)}
         >
-          {isLoading
-            ? "Processing..."
-            : isAllowed
-            ? isContinueLoading
-              ? "Loading..."
-              : "Continue"
-            : "Verify Code"}
+          {isLoading ? "Processing..." : xed ? "Redirecting..." : "Verify Code"}
         </button>
       </div>
     </div>
