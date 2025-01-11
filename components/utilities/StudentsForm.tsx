@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { inputStudentInfo } from "@/lib/actions/studentsData.actions";
 import { generateStudentId } from "@/lib/utils";
 import React, { useState, useRef, useEffect } from "react";
@@ -46,8 +46,7 @@ const StudentForm = () => {
     "SS2C",
     "SS3A",
     "SS3B",
-    "SS3C"
-    
+    "SS3C",
   ];
 
   // Transform the array into an array of Option objects
@@ -151,25 +150,25 @@ const StudentForm = () => {
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     const isValidStudent = (student: (typeof students)[0]) =>
       student.fullName.trim() &&
       student.dateOfBirth.trim() &&
       student.parentInfo.trim();
-  
+
     const populatedStudents = students.filter(isValidStudent);
-  
+
     if (!populatedStudents.length) {
       alert("No valid student data found!");
       return;
     }
-  
+
     setTotal(populatedStudents.length);
     setIsProcessing(true);
     setIsSuccess(false); // Reset before submission
     setIsFailure(false); // Reset before submission
     setCompletedSubmissions(0);
-  
+
     try {
       const expirationTime = new Date();
       expirationTime.setFullYear(expirationTime.getFullYear() + 6);
@@ -177,10 +176,10 @@ const StudentForm = () => {
         .toISOString()
         .split(".")[0]
         .replace("T", " ");
-  
+
       // Keep track of updated students after submission
       const updatedStudents = [...students];
-  
+
       // Submit each student data individually and check each result
       for (const student of populatedStudents) {
         try {
@@ -192,12 +191,12 @@ const StudentForm = () => {
             expirationTime: formattedExpirationTime,
             studentId: `IGCA/ETCHE/${generateStudentId()}${generateStudentId()}`,
           });
-  
+
           if (submitted) {
             setCompletedSubmissions((prev) => prev + 1);
             setIsSuccess(true); // Show success popup for this submission
             autoClosePopup(setIsSuccess); // Close success popup after 3 seconds
-  
+
             // Remove successfully submitted student from updatedStudents
             const index = updatedStudents.findIndex(
               (s) => s.fullName === student.fullName
@@ -216,19 +215,21 @@ const StudentForm = () => {
           break; // Stop processing further students if an error occurs
         }
       }
-  
+
       // Update the student list with only unsubmitted students
       setStudents(updatedStudents);
     } catch (error) {
       console.error("Error in the process:", error);
-      setErrorMessage("An error occurred while submitting student information.");
+      setErrorMessage(
+        "An error occurred while submitting student information."
+      );
       setIsFailure(true); // Handle any other errors
       autoClosePopup(setIsFailure); // Close failure popup after 3 seconds
     } finally {
       setIsProcessing(false); // Reset processing state
     }
   };
-  
+
   const handleRoute = () => {
     router.push("/");
   };
@@ -242,10 +243,12 @@ const StudentForm = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
   const [admin, setAdmin] = useState(false);
- useEffect(() => {
+  useEffect(() => {
     const fetchMe = async () => {
       const me = await getMe();
-      if (me === "PARTICLES_ADMINISTRATOR_IGCA"){ setAdmin(true)};
+      if (me === "PARTICLES_ADMINISTRATOR_IGCA") {
+        setAdmin(true);
+      }
     };
     fetchMe();
   }, []);
@@ -262,27 +265,27 @@ const StudentForm = () => {
     setIsFailure(false);
   };
 
-  if (!user) 
+  if (!user)
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white">
-      <div className="flex flex-col items-center gap-6">
-        {/* Animated Spinner */}
-        <div className="w-20 h-20 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
-        
-        {/* Anticipation Message */}
-        <h1 className="text-2xl font-semibold animate-pulse"> 
-          We're preparing something amazing for you...
-        </h1>
+        <div className="flex flex-col items-center gap-6">
+          {/* Animated Spinner */}
+          <div className="w-20 h-20 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
 
-        {/* Subtle Progress Indicator */}
-        <p className="text-sm opacity-80">
-          Hang tight! This won't take long.
-        </p>
+          {/* Anticipation Message */}
+          <h1 className="text-2xl font-semibold animate-pulse">
+            We're preparing something amazing for you...
+          </h1>
+
+          {/* Subtle Progress Indicator */}
+          <p className="text-sm opacity-80">
+            Hang tight! This won't take long.
+          </p>
+        </div>
       </div>
-    </div>
-    )
-  
-  return user.role === "admin" || admin? (
+    );
+
+  return user.role === "admin" || admin ? (
     //  return (
     <div className="p-6  shadow-lg rounded-lg max-w-[90%] mx-auto">
       <h1 className="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">
@@ -300,7 +303,7 @@ const StudentForm = () => {
                   Date of Birth
                 </th>
                 <th className="px-4 py-2 text-left font-semibold">
-                  Parent Info
+                  Parent Phone number
                 </th>
                 <th className="px-4 py-2 text-left font-semibold">Class</th>
               </tr>
@@ -310,7 +313,9 @@ const StudentForm = () => {
                 <tr
                   key={index}
                   className={`${
-                    index % 2 === 0 ? "bg-white dark:bg-neutral-950" : "bg-neutral-50 dark:bg-neutral-900"
+                    index % 2 === 0
+                      ? "bg-white dark:bg-neutral-950"
+                      : "bg-neutral-50 dark:bg-neutral-900"
                   } hover:bg-purple-100 dark:hover:bg-neutral-800 transition`}
                 >
                   <td className="px-4 py-2 text-gray-600 font-medium text-center">

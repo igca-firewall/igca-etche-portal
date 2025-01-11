@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import {
   authFormSchema,
+  generateavatar,
   generateAvatar,
   storeSessionInLocalStorage,
 } from "@/lib/utils";
@@ -18,6 +19,7 @@ import { useSignIn, useSignUp } from "@/lib/react-query/queriesAndMutation";
 import { useRouter } from "next/navigation";
 import CustomRadio from "../utilities/CustomRoleRadio";
 import { createScratchCard } from "@/lib/actions/scratchCard.actions";
+import Popup from "../utilities/PopUp";
 
 const AuthForm = ({
   type,
@@ -29,9 +31,17 @@ const AuthForm = ({
   const [isLoading, setIsLoading] = useState(false);
   const { mutateAsync: createUser } = useSignUp();
   const { mutateAsync: signUser } = useSignIn();
-
+  const [isFailed, setIsFailed] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const formSchema = authFormSchema(type, role);
+  const closeSuccessPopup = () => {
+    setIsSuccess(false);
+  };
 
+  // Close the failure popup
+  const closeFailurePopup = () => {
+    setIsFailed(false);
+  };
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -57,13 +67,16 @@ const AuthForm = ({
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsLoading(true);
+    setIsFailed(false);
     try {
       if (type === "sign-up") {
-        const avatarUrl = generateAvatar(
-          data.firstName || data.lastName || "User"
+        const avatarUrl = generateavatar(
+          data.firstName!.replace(/\s+/g, "") ||
+            data.lastName!.replace(/\s+/g, "") ||
+            "User"
         );
         const userData = {
-          email: data.email,
+          email: data.email.replace(/\s+/g, ""),
           password: data.password,
           role: data.role!,
           image: avatarUrl,
@@ -74,21 +87,24 @@ const AuthForm = ({
             )}` || "Guest Mode",
 
           ...(data.role === "admin" && {
-            adminContact: data.adminContact,
-            adminId: data.adminId,
-            adminCode: data.adminCode,
+            adminContact: data.adminContact!.replace(/\s+/g, ""),
+            adminId: data.adminId!.replace(/\s+/g, ""),
+            adminCode: data.adminCode!.replace(/\s+/g, ""),
           }),
           ...(data.role === "viewer" && {
-            dob: data.dob,
-            guardianContact: data.guardianContact,
+            dob: data.dob!.replace(/\s+/g, ""),
+            guardianContact: data.guardianContact!.replace(/\s+/g, ""),
           }),
         };
 
         const newUser = await createUser(userData);
-        const scratchCard = await createScratchCard();
-
-        if (newUser) {
-          console.log("User and scratch card created", newUser, scratchCard);
+        if (!newUser || newUser === null || newUser === undefined) {
+          setIsFailed(true);
+          console.log("Failed to complete authentication");
+          return null;
+        } else if (newUser) {
+          setIsSuccess(true);
+          console.log("User and scratch card created", newUser);
           form.reset();
           router.push("/");
         }
@@ -97,7 +113,11 @@ const AuthForm = ({
           email: data.email,
           password: data.password,
         });
-        if (response) {
+        if (!response || response === undefined || response === null) {
+          console.log("Failed to sign in");
+          setIsFailed(true);
+          return null;
+        } else if (response) {
           form.reset();
           router.push("/");
         }
@@ -300,6 +320,24 @@ const AuthForm = ({
           </Link>
         </div>
       </Form>
+      {isSuccess && (
+        <Popup
+          type="success"
+          message="Authentication successful!"
+          onClose={closeSuccessPopup}
+          degree="Authenticated"
+        />
+      )}
+      {/* Failure Popup */}
+      {isFailed && (
+        <Popup
+          type="failure"
+          message="Your credentials were invalid, try rearranging them or check your connection settings"
+          onClose={closeFailurePopup}
+          contact={true}
+          degree="Authentication"
+        />
+      )}
     </section>
   );
 };

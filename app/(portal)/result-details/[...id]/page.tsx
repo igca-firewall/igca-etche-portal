@@ -8,7 +8,7 @@ import { myArray } from "@/lib/actions/results.actions";
 import Image from "next/image";
 import { decryptKey, formatSubject } from "@/lib/utils";
 
-const PostDetails = (term: string, classRoom: string) => {
+const PostDetails = () => {
   const { user } = useUserContext();
   const [localUserData, setLocalUserData] = useState<any>(null);
   const [scores, setScores] = useState<any[]>([]);
@@ -42,6 +42,7 @@ const PostDetails = (term: string, classRoom: string) => {
       setLocalUserData(parsedData);
     }
   }, []);
+  
   const messages = [
     "Hang tight! We're fetching the data... 🚀",
     "Just a moment... Great things are loading! 🔄",

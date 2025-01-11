@@ -43,14 +43,7 @@ const AllResults = () => {
     classRoom: string;
     studentId: string;
   } | null>(null);
-    const [admin, setAdmin] = useState(false);
-    useEffect(() => {
-      const fetchMe = async () => {
-        const me = await getMe();
-        if (me === "PARTICLES_ADMINISTRATOR_IGCA") setAdmin(true);
-      };
-      fetchMe();
-    }, []);
+
   const fetchStudents = async () => {
     try {
       setIsFailure(false);
@@ -125,7 +118,7 @@ const AllResults = () => {
     }
   }, [term, session, classRoom]);
   // Checking the admin rights from localStorage based on the student's name
- const router = useRouter();
+  const router = useRouter();
   // Handle the "Check Result" button click
   const handleCheckResult = (
     studentName: string,
@@ -138,10 +131,10 @@ const AllResults = () => {
     // Retrieve admin rights from localStorage
     const storedAdminRights = localStorage.getItem(uniqueKey);
 
-    if (storedAdminRights || user.role === "admin" || admin) {
-     console.log("Admin rights retrieved");
+    if (storedAdminRights || user.role === "admin" ) {
+      console.log("Admin rights retrieved");
       router.push(`/result-details/${studentId}`);
-    } else if (user.role !== "admin" && !admin && !storedAdminRights && term) {
+    } else if (user.role !== "admin" && !storedAdminRights && term) {
       console.log("Not an admin or has no admin rights assigned");
       const fishData = {
         studentName,
@@ -328,12 +321,12 @@ const AllResults = () => {
       {isFailure && (
         <div
           className="
-          flex flex-col items-center gap-2 text-red-200"
+          flex flex-col items-center gap-2 text-neutral-500 dark:text-red-200"
         >
           No student found, Please check your internet connection or provided
           credentials.{" "}
           <button
-            className="px-6 py-2 bg-purple-500 rounded-full "
+            className="px-6 py-2 bg-purple-500 text-white rounded-full "
             onClick={() => fetchStudents()}
           >
             Retry

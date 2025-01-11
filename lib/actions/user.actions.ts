@@ -93,7 +93,7 @@ export const signUp = async ({
   adminCode,
   adminId,
   dob,
-
+  guardianContact,
   ...userData
 }: SignUpParams) => {
   const { email } = userData;
@@ -106,7 +106,11 @@ export const signUp = async ({
     const studentQuery = await database.listDocuments(
       DATABASE_ID!,
       STUDENTS_COLLECTION_ID!,
-      [Query.equal("name", namees), Query.equal("dateOfBirth", dob || "")]
+      [
+        Query.equal("name", namees),
+        Query.equal("dateOfBirth", dob || ""),
+        Query.equal("guardianInfo", guardianContact || ""),
+      ]
     );
 
     // If not a student, check if the user is an admin
@@ -131,14 +135,14 @@ export const signUp = async ({
       // Admin exists: Sign in
       const session = await account.createEmailPasswordSession(email, password);
 
-  ( await cookies()).set("PARTICLES_ADMINISTRATOR_IGCA", session.secret, {
+      (await cookies()).set("PARTICLES_ADMINISTRATOR_IGCA", session.secret, {
         path: "/",
         httpOnly: true,
         sameSite: "strict",
         secure: true,
         maxAge: 6 * 30 * 24 * 60 * 60 * 1000,
       });
-    
+
       const user = await getAdminInfo({ userId: session.userId });
       console.log("User🧡🧡", session, user);
       return parseStringify(user);
@@ -199,7 +203,7 @@ export const signUp = async ({
     return parseStringify(newUser);
   } catch (error) {
     console.error("Error during sign-up process:", error);
-    return { error: "An unexpected error occurred" };
+    return null;
   }
 };
 
@@ -258,9 +262,9 @@ export const getMe = async () => {
     const hello = (await cookies()).get("PARTICLES");
     if (!akpi && !hello) {
       return false;
-    } else if(akpi) {
+    } else if (akpi) {
       return akpi.name;
-    }else if (hello) {
+    } else if (hello) {
       return hello.name;
     }
   } catch (error) {

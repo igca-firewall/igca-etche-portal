@@ -87,6 +87,7 @@ export const addresults = async ({
         "Invalid 'scores' format. Expected an array of objects with valid fields."
       );
     }
+
     const formattedScores = scores.map((score) => JSON.stringify(score));
 
     // Check for existing results
@@ -94,25 +95,57 @@ export const addresults = async ({
       Query.equal("index", index),
     ]);
 
+    let updatedScores = formattedScores; // Start with new scores
+
     if (existingResults.documents.length > 0) {
-      // Update existing document
-      const updatedExistingResults = await database.updateDocument(
+      const documentId = existingResults.documents[0].$id;
+      const existingResult = existingResults.documents[0];
+
+      // Update scores for each existing student
+      updatedScores = existingResult.scores.map((existingScoreStr: string) => {
+        const existingScore = JSON.parse(existingScoreStr);
+        const newScore = scores.find(s => s.studentId === existingScore.studentId);
+        
+        if (newScore) {
+          // If matching student found, update score details
+          return JSON.stringify({
+            ...existingScore,
+            ...newScore, // Update with new score data
+          });
+        }
+        return existingScoreStr; // Keep the old score if no match
+      });
+
+      // Add any new scores that weren't found in the existing scores
+      const existingStudentIds = existingResult.scores.map((s: string) => {
+        const parsed = JSON.parse(s);
+        return parsed.studentId;
+      });
+
+      // Filter for new scores that don't exist in the current list
+      const newScores = scores.filter(s => !existingStudentIds.includes(s.studentId));
+      const newFormattedScores = newScores.map(s => JSON.stringify(s));
+
+      // Combine existing updated scores with new scores
+      updatedScores = [...updatedScores, ...newFormattedScores];
+
+      // Log the final array of all scores (both updated and new)
+      console.log("All scores (updated + new):", updatedScores);
+
+      // Update the document with the combined scores
+      const updatedDocument = await database.updateDocument(
         DATABASE_ID!,
         hem!,
-        existingResults.documents[0].$id,
+        documentId,
         {
-          scores: formattedScores,
+          scores: updatedScores,
         }
       );
-      console.log(
-        "Updated Successfully the existing results",
-        updatedExistingResults
-      );
-      return parseStringify(updatedExistingResults);
-    } else {
-      // Create a new document
-      const formattedScores = scores.map((score) => JSON.stringify(score));
 
+      console.log("Updated Successfully the existing results", updatedDocument);
+      return parseStringify(updatedDocument);
+    } else {
+      // If no existing results, create a new document with all scores
       const resultCollection = await database.createDocument(
         DATABASE_ID!,
         hem!,
@@ -123,7 +156,7 @@ export const addresults = async ({
           session,
           term,
           subject,
-          scores: formattedScores,
+          scores: updatedScores,
         }
       );
       console.log("Result created successfully", resultCollection);
@@ -144,6 +177,7 @@ export const addresults = async ({
     throw error;
   }
 };
+
 export const getStudentResults = async (
   studentId: string | undefined,
   term: string,

@@ -182,12 +182,12 @@ const SubjectResultUploader: React.FC = () => {
       setIsProcessing(false); // Reset processing state
     }
   };
+ const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const closeSuccessPopup = () => {
     setIsSuccess(false);
   };
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-
+ 
   // Close the failure popup
   const closeFailurePopup = () => {
     setIsFailure(false);

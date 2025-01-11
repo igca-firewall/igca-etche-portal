@@ -111,6 +111,8 @@ interface Student {
   $id: string;
   name: string;
   studentId: string;
+  image? : string;
+  
 }
 
 interface Result {

@@ -11,11 +11,13 @@ const AddScore = () => {
   useEffect(() => {
     const fetchMe = async () => {
       const me = await getMe();
-      if (me === "PARTICLES_ADMINISTRATOR_IGCA"){ setAdmin(true)};
+      if (me === "PARTICLES_ADMINISTRATOR_IGCA") {
+        setAdmin(true);
+      }
     };
     fetchMe();
   }, []);
-  if (!user) {
+  if (user.role === undefined) {
     // Show loader and loading message if user is not yet known
     return (
       <div className="flex flex-col items-center justify-center w-full h-full bg-white dark:bg-neutral-900 text-neutral-950 dark:text-white">

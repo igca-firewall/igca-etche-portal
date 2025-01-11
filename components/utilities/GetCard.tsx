@@ -56,6 +56,7 @@ const ScratchCardOTP = ({
             setIsAllowed(true);
             router.push(`/result-details/${studentId}`);
             localStorage.setItem(`${draftKeyGranted}`, draftKeyGranted);
+            localStorage.setItem(`Universal permission for ${studentId}'s result`,"This is the permission to access the result of this student and if you delete it, you will loose permissions to this result")
           } else {
             setFeedback({
               message:

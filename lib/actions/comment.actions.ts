@@ -66,23 +66,57 @@ export const addComment = async ({
       Query.equal("index", index),
     ]);
 
+    let updatedComments = formattedComment; // Start with new comments
+
     if (existingComments.documents.length > 0) {
-      // Update existing comment document
-      const updatedExistingComment = await database.updateDocument(
+      const documentId = existingComments.documents[0].$id;
+      const existingComment = existingComments.documents[0];
+
+      // Update comments for each existing student
+      updatedComments = existingComment.comment.map((existingCommentStr: string) => {
+        const existing = JSON.parse(existingCommentStr);
+        const newComment = comment.find(c => c.studentId === existing.studentId);
+        
+        if (newComment) {
+          // If matching student found, update comment text
+          return JSON.stringify({
+            ...existing,
+            comment: newComment.comment,
+          });
+        }
+        return existingCommentStr; // Keep the old comment if no match
+      });
+
+      // Add any new comments that weren't found in the existing comments
+      const existingStudentIds = existingComment.comment.map((c: string) => {
+        const parsed = JSON.parse(c);
+        return parsed.studentId;
+      });
+
+      // Filter for new comments that don't exist in the current list
+      const newComments = comment.filter(c => !existingStudentIds.includes(c.studentId));
+      const newFormattedComments = newComments.map(c => JSON.stringify(c));
+
+      // Combine existing updated comments with new comments
+      updatedComments = [...updatedComments, ...newFormattedComments];
+
+      // Log the final array of all comments (both updated and new)
+      console.log("All comments (updated + new):", updatedComments);
+
+      // Update the document with the combined comments
+      const updatedDocument = await database.updateDocument(
         DATABASE_ID!,
         hem!,
-        existingComments.documents[0].$id,
+        documentId,
         {
-          comment: formattedComment,
+          comment: updatedComments,
         }
       );
-      console.log(
-        "Updated successfully the existing comment",
-        updatedExistingComment
-      );
-      return parseStringify(updatedExistingComment);
+
+      console.log("Updated successfully the existing comment", updatedDocument);
+      return parseStringify(updatedDocument);
     } else {
-      // Create a new comment document
+      // If no existing comments, create a new document with all comments
       const addedComment = await database.createDocument(
         DATABASE_ID!,
         hem!,
@@ -92,7 +126,7 @@ export const addComment = async ({
           term,
           index,
           classRoom,
-          comment: formattedComment,
+          comment: updatedComments,
         }
       );
       console.log("Comment added successfully", addedComment);
@@ -112,6 +146,7 @@ export const addComment = async ({
     throw error;
   }
 };
+
 export const fetchComments = async ({
   term,
   session,
