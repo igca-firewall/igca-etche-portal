@@ -64,7 +64,7 @@ const PostAd = () => {
         <p className="text-xs text-neutral-500 dark:text-neutral-400">
           Nigeria @
         </p>
-        <Link className="flex items-center gap-1" href={""}>
+        <Link className="flex items-center gap-1 animate-bounce" href={""}>
           <FaTiktok className="w-4 h-4 text-neutral-800 dark:text-neutral-200" />
           <p className="text-xs font-semibold text-neutral-800 dark:text-neutral-200">
             TikTok
