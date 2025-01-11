@@ -497,45 +497,33 @@ export const dummyPosts = [
     $id: "1",
     creator: {
       $id: "creator1",
-      firstName: "John",
-      lastName: "Doe",
-      imageUrl: "/images/d.jpg",
+      firstName: "Administrator",
+      lastName: "",
+      imageUrl: "/images/logo.jpg",
     },
-    caption: `The world we live in today is shaped by the technology we interact with. Every day, innovations are being made that fundamentally transform the way we live, work, and communicate. Whether it’s the smartphone in our pocket or the cloud storage that holds our precious memories, technology is everywhere. But have we stopped to ask ourselves how this constant evolution is affecting our daily lives and our sense of well-being?
-
-    Let’s start with something as simple as social media. Platforms like Instagram, Twitter, and TikTok have revolutionized how we communicate and share our lives with others. While they offer an incredible opportunity to stay connected with friends, family, and even people from around the globe, there’s no denying the growing concerns about mental health. The constant barrage of ‘perfect’ images, curated lifestyles, and 24/7 news cycles can leave many feeling inadequate, anxious, and overwhelmed.
-  
-    Research shows that excessive social media usage can increase feelings of loneliness and depression. It’s ironic, isn’t it? A tool meant to connect us sometimes leaves us feeling more isolated than ever. But it’s not all doom and gloom. Many people have found community, solidarity, and support through online platforms, especially when physical distance makes face-to-face interaction impossible. It all boils down to how we use these platforms and the boundaries we set.
-  
-    Beyond social media, there’s artificial intelligence. AI is no longer just the stuff of science fiction. It’s here, and it’s deeply integrated into our everyday experiences. From the algorithms that recommend which movie to watch next on Netflix to virtual assistants like Alexa and Siri, AI is quietly shaping our decisions and behaviors. The rise of AI-powered chatbots and machine learning models is also changing industries like healthcare, education, and finance. The potential for AI to revolutionize how we diagnose diseases or make personalized recommendations is enormous. Yet, with great power comes great responsibility. As AI becomes smarter, ethical questions arise. How much decision-making power should we hand over to machines? What about data privacy and security concerns?
-  
-    Now, let’s talk about work. Remote work, once a rare perk, has become the norm for millions globally, thanks to the COVID-19 pandemic. Digital transformation has accelerated faster than anyone could have predicted. Tools like Zoom, Slack, and Google Workspace allow teams to collaborate seamlessly, regardless of location. But this shift has its pros and cons. On one hand, people enjoy the flexibility of working from anywhere. On the other hand, the lines between work and personal life have blurred, leading to burnout for many. Without the clear boundary of ‘leaving the office,’ many find themselves working longer hours than ever before. The future of work is hybrid, and the challenge moving forward will be finding that elusive balance.
-  
-    Then there’s the question of the environment. As much as we love the convenience of same-day deliveries, ride-hailing apps, and streaming services, they all come with an environmental cost. The rise of e-commerce and the increasing demand for cloud storage are leading to higher energy consumption and carbon emissions. Tech giants like Amazon, Google, and Microsoft are making strides to reduce their environmental impact by investing in renewable energy and carbon offsetting. But can technology truly be sustainable?
-  
-    Finally, let's discuss the concept of digital minimalism. In a world where we’re constantly connected, many are pushing back and seeking ways to disconnect. Digital minimalism is the idea of intentionally curating the technology we use to focus on what truly matters. It’s about finding purpose in our interactions with technology rather than mindlessly consuming content. This trend is gaining traction as people seek to reclaim their time and attention in an increasingly noisy digital landscape.
-  
-    The relationship between humans and technology is complex, evolving, and deeply personal. As we continue to innovate and push boundaries, it’s essential to ask tough questions about how we want technology to shape our future. Will it be a tool that empowers us, or will it dominate our lives? The choice is ours.`,
+    caption: ` Joy Ezechikamnayo, a proud alumna of Intellectual Giants Christian Academy, makes history as the Governor of Abia State! 🎓✨ From our classrooms to the corridors of leadership, her journey is a testament to the excellence we nurture. Join us at IGCA, where future leaders are made. 🌟📚 #IntellectualGiants #LeadershipStartsHere #ProudAlumni"`,
 
     location: "Yosemite National Park, USA",
     tags: "#nature #peaceful #outdoors",
     $createdAt: "2024-08-01T10:00:00Z",
-    imageUrl: "/images/OutThere.png",
+    imageUrl: "/images/tenage.jpeg",
+    verified: true
   },
   {
     $id: "2",
     creator: {
       $id: "creator2",
-      firstName: "Jane",
-      lastName: "Smith",
-      imageUrl: "/images/d.jpg",
+      firstName: "Administrator",
+      lastName: "",
+      imageUrl: "/images/logo.jpg",
     },
     caption:
-      "A fantastic day spent gaming with friends! Time flies when you're having fun!",
-    location: "Tokyo, Japan",
-    tags: "#gaming #fun #friends",
+      "🌟 Meet Our Visionary Leader! 🌟The Director of Intellectual Giants Christian Academy is the driving force behind our commitment to excellence. With a passion for nurturing young minds and shaping future leaders, their guidance ensures every student thrives academically, morally, and socially. Join us on this journey of greatness! 🎓✨ #MeetOurDirector #InspiringLeadership #IntellectualGiants",
+    location: "Nigeria",
+    tags: "",
     $createdAt: "2024-09-15T14:30:00Z",
-    imageUrl: "/images/gaming.png",
+    imageUrl: "/images/director.jpeg",
+    verified: true
   },
   {
     $id: "3",

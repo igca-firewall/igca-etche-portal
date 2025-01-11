@@ -11,6 +11,8 @@ import { redirect } from "next/navigation";
 // import StudentForm from "@/components/utilities/StudentsForm";
 import { dummyPosts } from "@/lib/utils";
 import PostCard from "@/components/utilities/PostCard";
+import PostAd from "@/components/utilities/PostAd";
+import { PinIcon } from "lucide-react";
 
 const Home = () => {
   // const [isSplashVisible, setIsSplashVisible] = useState(false); // State for splash screen visibility
@@ -64,7 +66,11 @@ const Home = () => {
       <div className="home-container">
         <div className="home-posts">
           {
-            <ul className="flex flex-col gap-9 items-center justify-center w-full">
+           <ul className="flex flex-col gap-9 items-center justify-center w-full">
+            <p className="font-semibold items-center justify-center flex gap-3 text-2xl ">
+         <PinIcon className="rotate-45 w-6 h-6"/>  Pinned Posts:  
+           </p>   
+              <PostAd/>
               {dummyPosts && dummyPosts.length > 0 ? (
                 dummyPosts.map((post: dummyPosts) => (
                   <PostCard post={post} key={post.$id} />

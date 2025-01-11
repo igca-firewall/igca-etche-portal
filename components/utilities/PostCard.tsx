@@ -47,8 +47,18 @@ const PostCard = ({ post, className = "" }: PostCardProps) => {
         </Link>
         <div className="flex flex-col">
           <Link href={`/profile/${post.creator.$id}`}>
-            <p className="text-sm font-semibold text-neutral-800 dark:text-neutral-200">
-              {post.creator.firstName} {post.creator.lastName}
+            <p className="text-sm font-semibold flex gap-2 text-neutral-800 dark:text-neutral-200">
+              {post.creator.firstName} {post.creator.lastName}{" "}
+              <div className="w-8 h-8 items-center text-center">
+                {post.verified && (
+                  <Image
+                    src="/images/verified-p.png"
+                    alt=""
+                    height={16}
+                    width={16}
+                  />
+                )}
+              </div>{" "}
             </p>
           </Link>
           <p className="text-xs text-neutral-500 dark:text-neutral-400">
@@ -68,18 +78,18 @@ const PostCard = ({ post, className = "" }: PostCardProps) => {
 
       {/* Image Section - Full Size, Curved Edges */}
       {post.imageUrl && (
-         <div className="w-90 h-100 px-2 overflow-hidden rounded-lg">
-         <Image
-           alt="Post image"
-           className="rounded-lg object-cover w-full max-w-full max-h-[600px]"
-           src={post.imageUrl}
-           width={1}
-           height={1}
-           quality={100}
-           layout="responsive"
-           loading="lazy"
-         />
-       </div>
+        <div className="w-90 h-100 px-2 overflow-hidden rounded-lg">
+          <Image
+            alt="Post image"
+            className="rounded-lg object-cover w-full max-w-full max-h-[600px]"
+            src={post.imageUrl}
+            width={1}
+            height={1}
+            quality={100}
+            layout="responsive"
+            loading="lazy"
+          />
+        </div>
       )}
 
       {/* Caption */}
