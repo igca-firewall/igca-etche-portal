@@ -24,7 +24,7 @@ const PostAd = () => {
             sabinus_1{" "}
             <Image src="/images/verified-p.png" alt="" height={16} width={16} />
           </div>
-          <p className="text-xs flex items-center gap-1 text-neutral-500 dark:text-neutral-400">
+          <p className="text-xs flex items-center gap-1 animate-bounce text-neutral-500 dark:text-neutral-400">
             <FaTiktok className="w-4 h-4 text-neutral-800 dark:text-neutral-200" />
             TikTok
           </p>
