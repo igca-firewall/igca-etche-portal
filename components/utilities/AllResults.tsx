@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { classOrder, encrypt, storeClassAndRest } from "@/lib/utils";
 import { FaSearch } from "react-icons/fa";
 import { getMe } from "@/lib/actions/user.actions";
+import PostDetails from "@/app/(portal)/result-details/page";
 
 interface Student {
   $id: string;
@@ -36,6 +37,13 @@ const AllResults = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isFailure, setIsFailure] = useState(false);
   const [xed, setXed] = useState(false);
+  const [view, setView] = useState<{
+    studentName: string;
+    Namer: string;
+    term: string;
+    classRoom: string;
+    studentId: string;
+  } | null>(null);
   const [isFish, setIsFish] = useState<{
     studentName: string;
     Namer: string;
@@ -131,9 +139,16 @@ const AllResults = () => {
     // Retrieve admin rights from localStorage
     const storedAdminRights = localStorage.getItem(uniqueKey);
 
-    if (storedAdminRights || user.role === "admin" ) {
+    if (storedAdminRights || user.role === "admin") {
       console.log("Admin rights retrieved");
-      router.push(`/result-details/${studentId}`);
+      const fishData = {
+        studentName,
+        Namer,
+        term,
+        classRoom: classRoom,
+        studentId,
+      };
+      setView(fishData);
     } else if (user.role !== "admin" && !storedAdminRights && term) {
       console.log("Not an admin or has no admin rights assigned");
       const fishData = {
@@ -166,12 +181,26 @@ const AllResults = () => {
             classRoom={isFish.classRoom}
             term={isFish.term}
             studentId={isFish.studentId}
+            session={` ${session}`}
           />
         </div>
       </div>
     );
   }
-
+  if (view) {
+    return (
+      <div>
+        <div className="bg-white border border-gray-200 dark:border-neutral-700 shadow-lg rounded-2xl font-nunito dark:bg-neutral-800 p-6 flex flex-col items-center">
+          <PostDetails
+            classRoom={classRoom}
+            term={term}
+            studentId={view.studentId}
+            session={` ${session}`}
+          />
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="w-full h-full flex flex-col items-center justify-start bg-gray-50 dark:bg-neutral-900 p-8 rounded-[25px] border border-neutral-200 dark:border-neutral-800">
       <h1 className="text-18 font-nunito font-semibold">Check Results</h1>

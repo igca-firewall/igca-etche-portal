@@ -8,41 +8,24 @@ import { myArray } from "@/lib/actions/results.actions";
 import Image from "next/image";
 import { decryptKey, formatSubject } from "@/lib/utils";
 
-const PostDetails = () => {
+const PostDetails = ({
+  session,
+  term,
+  classRoom,
+  studentId,
+}: {
+  session: string;
+  term: string;
+  classRoom: string;
+  studentId: string;
+}) => {
   const { user } = useUserContext();
   const [localUserData, setLocalUserData] = useState<any>(null);
+  const [localUser, setLocalUser] = useState<any>(null);
   const [scores, setScores] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [extractedPart, setExtractedPart] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const fullUrl = window.location.href;
-      const keyword = "result-details/";
-      const startIndex = fullUrl.indexOf(keyword);
-      if (startIndex !== -1) {
-        const result = fullUrl.substring(
-          startIndex + keyword.length,
-          startIndex + keyword.length + 18
-        );
-        setExtractedPart(result || null);
-      } else {
-        setExtractedPart(null);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    const storedData = localStorage.getItem(
-      "Particles_Class_Stuff_Just_Leave it..."
-    );
-    if (storedData) {
-      const decryptedData = decryptKey(storedData);
-      const parsedData = JSON.parse(decryptedData);
-      setLocalUserData(parsedData);
-    }
-  }, []);
-  
   const messages = [
     "Hang tight! We're fetching the data... 🚀",
     "Just a moment... Great things are loading! 🔄",
@@ -69,10 +52,10 @@ const PostDetails = () => {
       try {
         setIsLoading(true);
         const response = await myArray({
-          studentId: extractedPart!,
-          session: ` ${localUserData.session}`,
-          term: `${localUserData.term}`,
-          classRoom: `${localUserData.classRoom}`,
+          studentId: studentId,
+          session: session,
+          term: term,
+          classRoom: classRoom,
         });
         setScores(response || []);
       } catch (error) {
@@ -81,10 +64,10 @@ const PostDetails = () => {
         setIsLoading(false);
       }
     };
-    if (extractedPart) {
+    if (studentId && term && session && classRoom) {
       fetch();
     }
-  }, [extractedPart]);
+  }, [studentId, term, session, classRoom]);
 
   const totalScore = scores.reduce((sum, score) => {
     const scoreTotal = Number(score.score.total) || 0;
@@ -254,7 +237,7 @@ const PostDetails = () => {
 
           <div className="flex justify-end items-center">
             <p className="text-sm text-neutral-600 dark:text-neutral-400">
-              <span className="font-semibold">Student ID:</span> {extractedPart}
+              <span className="font-semibold">Student ID:</span> {studentId}
             </p>
           </div>
         </div>

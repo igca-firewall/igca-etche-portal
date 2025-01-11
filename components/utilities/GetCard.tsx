@@ -9,17 +9,20 @@ import "tailwindcss/tailwind.css"; // Ensure Tailwind CSS is set up in your proj
 import { useScratchCards } from "@/lib/actions/scratchCard.actions";
 import { useRouter } from "next/navigation";
 import { useUserContext } from "@/context/AuthContext";
+import PostDetails from "@/app/(portal)/result-details/page";
 
 const ScratchCardOTP = ({
   classRoom,
   term,
   name,
   studentId,
+  session
 }: {
   classRoom?: string;
   name?: string;
   studentId: string;
   term?: string;
+  session:string
 }) => {
   const [code, setCode] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -31,7 +34,12 @@ const ScratchCardOTP = ({
   } | null>(null);
 
   const router = useRouter();
-
+  const [view, setView] = useState<{
+    name: string;
+    term: string;
+    classRoom: string;
+    studentId: string;
+  } | null>(null);
   const hem = code.length === 8;
   const draftKey = name;
   const draftKeyGranted = `Particles granted you permission to: ${name}'s result for ${term}_${classRoom}`;
@@ -54,9 +62,15 @@ const ScratchCardOTP = ({
             });
             setCode(""); // Reset code after successful validation
             setIsAllowed(true);
-            router.push(`/result-details/${studentId}`);
+            const fishData = {
+              name: name!,
+              term: term!,
+              classRoom: classRoom!,
+              studentId,
+            };
+            setView(fishData);
             localStorage.setItem(`${draftKeyGranted}`, draftKeyGranted);
-            localStorage.setItem(`Universal permission for ${studentId}'s result`,"This is the permission to access the result of this student and if you delete it, you will loose permissions to this result")
+        
           } else {
             setFeedback({
               message:
@@ -81,7 +95,6 @@ const ScratchCardOTP = ({
     }
   }, [hem, code]);
 
-
   const handleShit = async () => {
     try {
       const result = await useScratchCards({ code });
@@ -90,8 +103,16 @@ const ScratchCardOTP = ({
           message: "Scratch card validated and processed successfully!",
           type: "success",
         });
-    // Reset code after successful validation
-       
+        // Reset code after successful validation
+        setIsAllowed(true);
+        const fishData = {
+          name: name!,
+          term: term!,
+          classRoom: classRoom!,
+          studentId,
+        };
+        setView(fishData);
+
         setXed(true);
         localStorage.setItem(`${draftKeyGranted}`, draftKeyGranted);
       } else {
@@ -111,6 +132,20 @@ const ScratchCardOTP = ({
       setIsLoading(false);
     }
   };
+  if (view) {
+    return (
+      <div>
+        <div className="bg-white border border-gray-200 dark:border-neutral-700 shadow-lg rounded-2xl font-nunito dark:bg-neutral-800 p-6 flex flex-col items-center">
+          <PostDetails
+            classRoom={classRoom!}
+            term={term!}
+            studentId={view.studentId}
+            session={session}
+          />
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="flex flex-col items-center justify-center font-nunito min-h-screen px-32">
       <div className="bg-white dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700 rounded-[25px] shadow-lg p-6 w-full max-w-md">
