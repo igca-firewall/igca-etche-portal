@@ -113,6 +113,17 @@ const PostCard = ({ post, className = "" }: PostCardProps) => {
           {post.location || "No location provided"}
         </p>
       </div>
+      <div className="flex items-center justify-between px-4 py-3 border-t border-neutral-300 dark:border-neutral-700">
+        <p className="text-xs text-neutral-500 dark:text-neutral-400">
+          Nigeria @
+        </p>
+        <Link className="flex items-center gap-1 animate-bounce" href={""}>
+          <Image src="" alt="" className="w-4 h-4 text-neutral-800 dark:text-neutral-200" />
+          <p className="text-xs font-semibold text-neutral-800 dark:text-neutral-200">
+            TPa
+          </p>
+        </Link>
+      </div>
     </div>
   );
 };

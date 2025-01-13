@@ -215,7 +215,11 @@ export const authFormSchema = (type: string, role: string) => {
       firstName: z.string().min(1, "First Name is required").optional(), // Optional for non-relevant roles
       lastName: z.string().min(1, "Last Name is required").optional(),
       phone: z.string().min(1, "Phone is required").optional(),
-      dob: z.string().min(1, "Date of Birth is required").optional(),
+      dob: z
+      .string()
+      .min(1, "Date of Birth is required")
+      .optional() // Make it optional if no date is selected
+      .refine((dob) => dob === "" || dob, { message: "Date of Birth is required if provided" }),
       guardianContact: z
         .string()
         .min(1, "Guardian Contact is required")
@@ -504,7 +508,7 @@ export const dummyPosts = [
     caption: ` Joy Ezechikamnayo, a proud alumna of Intellectual Giants Christian Academy, makes history as the Governor of Abia State! 🎓✨ From our classrooms to the corridors of leadership, her journey is a testament to the excellence we nurture. Join us at IGCA, where future leaders are made. 🌟📚 #IntellectualGiants #LeadershipStartsHere #ProudAlumni"`,
 
     location: "Yosemite National Park, USA",
-    tags: "#nature #peaceful #outdoors",
+    tags: " #IntellectualGiants #LeadershipStartsHere #ProudAlumni",
     $createdAt: "2024-08-01T10:00:00Z",
     imageUrl: "/images/tenage.jpeg",
     verified: true

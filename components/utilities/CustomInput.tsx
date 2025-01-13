@@ -1,7 +1,5 @@
-
+import React from "react";
 import Image from "next/image";
-
-
 import { Checkbox } from "../ui/checkbox";
 import {
   FormControl,
@@ -11,10 +9,14 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import { Select, SelectContent, SelectTrigger, SelectValue } from "../ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 import { Textarea } from "../ui/textarea";
 import { Control } from "react-hook-form";
-
 
 export enum FormFieldType {
   INPUT = "input",
@@ -25,7 +27,6 @@ export enum FormFieldType {
   SELECT = "select",
   SKELETON = "skeleton",
 }
-//  const myVariable: string = "example"; // Example type
 
 interface CustomProps {
   control: Control<any>;
@@ -47,22 +48,21 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
   switch (props.fieldType) {
     case FormFieldType.INPUT:
       return (
-        <div className="flex rounded-full border">
+        <div className="flex items-center border rounded-full overflow-hidden">
           {props.iconSrc && (
             <Image
               src={props.iconSrc}
               height={24}
               width={24}
               alt={props.iconAlt || "icon"}
-              className="ml-2"
+              className="ml-3"
             />
           )}
           <FormControl>
             <Input
-            
-              type={props.name === 'password' ? 'password' : 'text'}
+              type={props.name === "password" ? "password" : props.name === "guardianContact" ? "number": "text"}
               placeholder={props.placeholder}
-              className="flex rounded-full border py-6"
+              className="flex-1 px-4 py-2 border-none focus:outline-none"
               {...field}
             />
           </FormControl>
@@ -79,30 +79,6 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
           />
         </FormControl>
       );
-
-      // const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
-      //   switch (props.fieldType) {
-      //     // ... other cases
-      
-      // case FormFieldType.PHONE_INPUT:
-      // return (
-      //   <div className=" flex rounded-md border border-neutral-300 dark:border-neutral-800 ">
-      //     <FormControl>
-      //       <Input
-      //       placeholder="+1 (123) 456-7890"
-      //         // country="US"
-      //         value={field.value as E164Number | undefined}
-      //         onChange={(value) => field.onChange(value)}
-      //         // inputClass="phone-input-input h-4 px-24 py-6 p-5" // Apply custom class for input
-      //         // containerClass="phone-input-container" // Apply custom class for container
-      //       />
-      //     </FormControl>
-      //   </div>
-      // );
-      // // ... other cases
-      // //   }
-      // // };
-      
     case FormFieldType.CHECKBOX:
       return (
         <FormControl>
@@ -112,34 +88,30 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
               checked={field.value}
               onCheckedChange={field.onChange}
             />
-            <label htmlFor={props.name} className="checkbox-label">
+            <label htmlFor={props.name} className="text-sm">
               {props.label}
             </label>
           </div>
         </FormControl>
       );
-    //  case FormFieldType.DATE_PICKER:
-    //   return (
-    //     <div className="flex rounded-md border border-dark-500 bg-dark-400">
-    //       <Image
-    //         src="/assets/icons/calendar.svg"
-    //         height={24}
-    //         width={24}
-    //         alt="calendar"
-    //         className="ml-2"
-    //       />
-    //       <FormControl>
-    //         <ReactDatePicker
-    //           showTimeSelect={props.showTimeSelect ?? false}
-    //           selected={field.value}
-    //           onChange={(date: Date | null) => field.onChange(date)}
-    //           timeInputLabel="Time:"
-    //           dateFormat={props.dateFormat ?? "MM/dd/yyyy"}
-    //           wrapperClassName="date-picker"
-    //         />
-    //       </FormControl>
-    //     </div>
-    //   );
+    case FormFieldType.DATE_PICKER:
+      return (
+        <div className="flex items-center border rounded-full overflow-hidden">
+          <FormControl>
+            <Input
+              type="date"
+              placeholder={props.placeholder}
+              {...field}
+              value={field.value?.replace(/\//g, "-")} // Replace slashes with dashes
+              onChange={(e) =>
+                field.onChange(e.target.value.replace(/\//g, "-"))
+              } // Ensure input updates correctly
+              className="flex-1 px-4 py-2 border-none focus:outline-none pr-8"
+            />
+          </FormControl>
+        </div>
+      );
+  
     case FormFieldType.SELECT:
       return (
         <FormControl>
@@ -170,12 +142,12 @@ const CustomFormField = (props: CustomProps) => {
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className="flex-1">
+        <FormItem className="flex flex-col gap-2">
           {props.fieldType !== FormFieldType.CHECKBOX && label && (
-            <FormLabel className="shad-input-label">{label}</FormLabel>
+            <FormLabel className="text-sm font-medium">{label}</FormLabel>
           )}
-          <RenderInput field={field} props={props}  />
-          <FormMessage className="shad-error" />
+          <RenderInput field={field} props={props} />
+          <FormMessage className="text-red-500 text-xs mt-1" />
         </FormItem>
       )}
     />

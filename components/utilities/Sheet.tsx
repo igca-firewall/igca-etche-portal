@@ -23,13 +23,7 @@ const LeftSidebar = () => {
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
   const [admin, setAdmin] = useState(false);
- useEffect(() => {
-    const fetchMe = async () => {
-      const me = await getMe();
-      if (me === "PARTICLES_ADMINISTRATOR_IGCA"){ setAdmin(true)};
-    };
-    fetchMe();
-  }, []);
+
   // Handle swipe start
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
@@ -134,7 +128,7 @@ const LeftSidebar = () => {
                 </Link>
               );
             })}
-                 {user.role==="admin" || admin && 
+                 {user.role==="admin" && 
         
         rightBarLinks.map((item) => {
           const isActive =

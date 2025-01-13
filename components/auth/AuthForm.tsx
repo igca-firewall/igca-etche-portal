@@ -37,7 +37,12 @@ const AuthForm = ({
   const closeSuccessPopup = () => {
     setIsSuccess(false);
   };
-
+  // const formatDate = (date: string) => {
+  //   if (!date) return '';
+  
+  //   const [year, month, day] = date.split('-');
+  //   return `${day}-${month}-${year}`;
+  // };
   // Close the failure popup
   const closeFailurePopup = () => {
     setIsFailed(false);
@@ -71,12 +76,12 @@ const AuthForm = ({
     try {
       if (type === "sign-up") {
         const avatarUrl = generateavatar(
-          data.firstName!.replace(/\s+/g, "") ||
-            data.lastName!.replace(/\s+/g, "") ||
+          data.firstName? data.firstName.replace(/\s+/g, ""):
+            data.lastName? data.lastName.replace(/\s+/g, "") :
             "User"
         );
         const userData = {
-          email: data.email.replace(/\s+/g, ""),
+          email: data.email,
           password: data.password,
           role: data.role!,
           image: avatarUrl,
@@ -92,11 +97,11 @@ const AuthForm = ({
             adminCode: data.adminCode!.replace(/\s+/g, ""),
           }),
           ...(data.role === "viewer" && {
-            dob: data.dob!.replace(/\s+/g, ""),
+            dob: data.dob,
             guardianContact: data.guardianContact!.replace(/\s+/g, ""),
           }),
         };
-
+console.log(userData)
         const newUser = await createUser(userData);
         if (!newUser || newUser === null || newUser === undefined) {
           setIsFailed(true);
@@ -154,14 +159,14 @@ const AuthForm = ({
                 fieldType={FormFieldType.INPUT}
                 control={form.control}
                 name="firstName"
-                label="First Name"
+                label="Surname"
                 placeholder="Enter your first name."
               />
               <CustomFormField
                 fieldType={FormFieldType.INPUT}
                 control={form.control}
                 name="lastName"
-                label="Last Name"
+                label="First Name"
                 placeholder="Enter your last name."
               />
             </div>
@@ -199,20 +204,20 @@ const AuthForm = ({
                 fieldType={FormFieldType.INPUT}
                 control={form.control}
                 name="firstName"
-                label="First Name"
+                label="Surname"
                 placeholder="Enter your first name."
               />
               <CustomFormField
                 fieldType={FormFieldType.INPUT}
                 control={form.control}
                 name="lastName"
-                label="Last Name"
+                label="First Name"
                 placeholder="Enter your last name."
               />
             </div>
             <div className="flex gap-3 items-center">
               <CustomFormField
-                fieldType={FormFieldType.INPUT}
+                fieldType={FormFieldType.DATE_PICKER}
                 control={form.control}
                 name="dob"
                 label="Date of Birth"
@@ -223,7 +228,7 @@ const AuthForm = ({
                 control={form.control}
                 name="guardianContact"
                 label="Guardian Contact"
-                placeholder="+234 901 234 56"
+                placeholder="0901 234 5678 90"
               />
             </div>
           </>
