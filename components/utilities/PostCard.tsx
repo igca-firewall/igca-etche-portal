@@ -118,7 +118,7 @@ const PostCard = ({ post, className = "" }: PostCardProps) => {
           Nigeria @
         </p>
         <Link className="flex items-center gap-1 animate-bounce" href={""}>
-          <Image src="/images/particlesm.png" alt="" className="w-4 h-4 text-neutral-800 dark:text-neutral-200" />
+          <Image src="/images/particlesm.png" width={10} height={10} alt="" className="w-4 h-4 text-neutral-800 dark:text-neutral-200" />
           
         </Link>
       </div>
