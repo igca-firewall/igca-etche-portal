@@ -47,7 +47,7 @@ const PostCard = ({ post, className = "" }: PostCardProps) => {
         </Link>
         <div className="flex flex-col">
           <Link href={`/profile/${post.creator.$id}`}>
-            <p className="text-sm font-semibold flex gap-2 text-neutral-800 dark:text-neutral-200">
+            <div className="text-sm font-semibold flex gap-2 text-neutral-800 dark:text-neutral-200">
               {post.creator.firstName} {post.creator.lastName}{" "}
               <div className="w-5 h-5 items-center text-center">
                 {post.verified && (
@@ -59,7 +59,7 @@ const PostCard = ({ post, className = "" }: PostCardProps) => {
                   />
                 )}
               </div>{" "}
-            </p>
+            </div >
           </Link>
           <p className="text-xs text-neutral-500 dark:text-neutral-400">
             {multiFormatDateString(post.$createdAt)}

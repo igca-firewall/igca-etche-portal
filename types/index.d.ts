@@ -56,6 +56,7 @@ interface User {
   firstName?: string;
   lastName?: string;
   role: string;
+  guardianContact: string;
   // name: string;
   // address1: string;
   // city: string;

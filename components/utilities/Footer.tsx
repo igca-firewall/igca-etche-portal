@@ -29,16 +29,19 @@ const Footer = ({ user, type = "desktop" }: FooterProps) => {
 
         {/* User Info Section */}
         <div className="flex flex-col justify-center">
-  <div className="block  max-lg:block xl:block md:hidden">
-    <h1 className="text-sm font-semibold text-gray-700 dark:text-neutral-300 truncate">
-      {user?.name}
-    </h1>
-    <p className="text-xs font-normal text-gray-600 dark:text-neutral-300 truncate">
-      {user?.phone || user.adminContact}
-    </p>
-  </div>
-</div>
-
+          <div className="block  max-lg:block xl:block md:hidden">
+            <h1 className="text-sm font-semibold text-gray-700 dark:text-neutral-300 truncate">
+              {user?.name}
+            </h1>
+            <p className="text-xs font-normal text-gray-600 dark:text-neutral-300 truncate">
+              {user?.guardianContact ||
+              user.adminContact ||
+              user?.email.length > 16
+                ? `${user.email.slice(0, 16)}...`
+                : user.email}
+            </p>
+          </div>
+        </div>
 
         {/* Logout Button */}
         <div className="ml-auto">

@@ -125,6 +125,7 @@ console.log(userData)
         } else if (response) {
           form.reset();
           router.push("/");
+          setIsSuccess(true)
         }
         //  }
         // else if (role === "admin" && type === "sign-up") {

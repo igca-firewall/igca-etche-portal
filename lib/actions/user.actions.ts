@@ -173,6 +173,8 @@ export const signUp = async ({
         adminContact,
         adminCode,
         adminId,
+        guardianContact,
+        dob,
         ...userData,
       }
     );
@@ -234,9 +236,10 @@ export async function getLoggedInUser() {
     if (!userData) {
       userData = await getAdminInfo({ userId: result.$id });
     }
-
+console.log(userData)
     // Parse and return the result, or null if no data is available
     return userData ? parseStringify(userData) : null;
+    
   } catch (error) {
     console.error("Error in getLoggedInUser:", error);
     return null;

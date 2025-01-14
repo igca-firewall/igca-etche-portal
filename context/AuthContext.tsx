@@ -13,6 +13,7 @@ export const INITIAL_USER: User = {
   adminId: "",
   name: "",
   role: "",
+  guardianContact: "",
   image: "",
 };
 
@@ -61,6 +62,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           userId: currentAccount.userId,
           role: currentAccount.role,
           image: currentAccount.image,
+          guardianContact: currentAccount.guardianContact,
         });
         setIsAuthenticated(true);
         return true;
@@ -83,10 +85,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         await checkAuthUser(); // Assuming checkAuthUser is asynchronous
       }
     };
-  
+
     checkAuthentication();
   }, []);
-  
 
   const value = {
     user,
