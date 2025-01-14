@@ -7,8 +7,8 @@ import { usePathname } from "next/navigation";
 import React, { useState, useRef, useEffect } from "react";
 import Footer from "../utilities/Footer";
 import { useUserContext } from "@/context/AuthContext";
-import { Sheet, SheetTrigger, SheetContent } from '../ui/sheet';
-import { HiMenu } from 'react-icons/hi'; // Hamburger icon for the trigger button
+import { Sheet, SheetTrigger, SheetContent } from "../ui/sheet";
+import { HiMenu } from "react-icons/hi"; // Hamburger icon for the trigger button
 import DarkModeToggle from "./DarkModeToggle";
 import { getMe } from "@/lib/actions/user.actions";
 
@@ -67,7 +67,7 @@ const LeftSidebar = () => {
           //  position="right"
           // size="lg"
           className="bg-gray-100 dark:bg-neutral-800 p-6 overflow-y-auto"
-          onTouchStart={handleTouchStart} 
+          onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
@@ -101,7 +101,8 @@ const LeftSidebar = () => {
             </Link>
             {sidebarLinks.map((item) => {
               const isActive =
-                pathname === item.route || pathname?.startsWith(`${item.route}/`);
+                pathname === item.route ||
+                pathname?.startsWith(`${item.route}/`);
               return (
                 <Link
                   href={item.route}
@@ -118,56 +119,61 @@ const LeftSidebar = () => {
                       height={20}
                       priority
                       className={`${
-                        isActive ? "brightness-[3] invert-white" : "hover:invert-white"
+                        isActive
+                          ? "brightness-[3] invert-white"
+                          : "hover:invert-white"
                       }`}
                     />
                   </div>
-                  <p className="text-neutral-600 text-sm dark:text-neutral-100 md:hidden max-lg:block xl:block">
+                  <p
+                    className="text-neutral-600 text-sm dark:text-neutral-100 
+                   "
+                  >
                     {item.label}
                   </p>
                 </Link>
               );
             })}
-                 {user.role==="admin" && 
-        
-        rightBarLinks.map((item) => {
-          const isActive =
-            pathname === item.route || pathname?.startsWith(`${item.route}/`);
-          return (
-            <Link
-              href={item.route}
-              key={item.label}
-              className={`rightbar_link items-center ${
-                isActive ? "bg-purple-500 " : "hover:bg-purple-400"
-              }`}
-            >
-              <div className="relative size-4">
-                <Image
-                  src={item.imgURL}
-                  alt={item.label}
-                  width={20}
-                  height={20}
-                  priority
-                  className={`${
-                    isActive
-                      ? "brightness-[3] invert-white"
-                      : "hover:invert-white"
-                  }`}
-                />
-              </div>
-              <p className="text-neutral-600 text-sm dark:text-neutral-100 md:hidden max-lg:block xl:block">
-                {item.label}
-              </p>
-            </Link>
-          );
-        })}
-          </div>
-          <div className="p-3 items-center">
-          <DarkModeToggle/>
-            <hr />
-          </div>
-          <div className="w-full mt-auto">
-            <Footer user={user} />
+            {user.role === "admin" &&
+              rightBarLinks.map((item) => {
+                const isActive =
+                  pathname === item.route ||
+                  pathname?.startsWith(`${item.route}/`);
+                return (
+                  <Link
+                    href={item.route}
+                    key={item.label}
+                    className={`rightbar_link items-center ${
+                      isActive ? "bg-purple-500 " : "hover:bg-purple-400"
+                    }`}
+                  >
+                    <div className="relative size-4">
+                      <Image
+                        src={item.imgURL}
+                        alt={item.label}
+                        width={20}
+                        height={20}
+                        priority
+                        className={`${
+                          isActive
+                            ? "brightness-[3] invert-white"
+                            : "hover:invert-white"
+                        }`}
+                      />
+                    </div>
+                    <p className="text-neutral-600 text-sm dark:text-neutral-100 md:hidden max-lg:block xl:block">
+                      {item.label}
+                    </p>
+                  </Link>
+                );
+              })}{" "}
+            <div className="p-3 mt-12 items-center">
+              <DarkModeToggle />
+              <hr />
+            </div>
+            <div className="w-full mt-auto">
+              <Footer user={user} />
+            </div>
           </div>
         </SheetContent>
       </Sheet>
