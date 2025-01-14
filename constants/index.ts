@@ -25,7 +25,7 @@ export const rightBarLinks = [
     label: "View Results",
   },
   {
-    imgURL: "/icons/report.png",
+    imgURL: "/icons/edit.svg",
     route: "/teachers-comment",
     label: "Teacher's Comment",
   },
