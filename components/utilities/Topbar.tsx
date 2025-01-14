@@ -92,9 +92,7 @@ const Topbar: React.FC<xee> = ({ links}) => {
       {/* Notification Banner */}
 
       <div
-        className={`fixed xl:hidden md:hidden top-0 left-0 right-0 h-auto bg-neutral-200 dark:bg-neutral-800 shadow-md z-50 transition-transform duration-300 ${
-          isVisible ? "transform translate-y-0" : "transform -translate-y-full"
-        }`}
+        className={`fixed xl:hidden md:hidden top-0 left-0 right-0 h-auto bg-neutral-200 dark:bg-neutral-800 shadow-md z-50 transition-transform duration-300 `}
       >
         <div className="flex flex-col items-center justify-between px-4 py-2">
           {/* Top Row: Hamburger menu and profile */}
