@@ -49,7 +49,7 @@ const PostCard = ({ post, className = "" }: PostCardProps) => {
           <Link href={`/profile/${post.creator.$id}`}>
             <p className="text-sm font-semibold flex gap-2 text-neutral-800 dark:text-neutral-200">
               {post.creator.firstName} {post.creator.lastName}{" "}
-              <div className="w-8 h-8 items-center text-center">
+              <div className="w-5 h-5 items-center text-center">
                 {post.verified && (
                   <Image
                     src="/images/verified-p.png"
@@ -108,18 +108,23 @@ const PostCard = ({ post, className = "" }: PostCardProps) => {
       </div>
 
       {/* Footer */}
-      <div className="p-4 border-t border-neutral-300 dark:border-neutral-700">
-        <p className="text-xs text-neutral-500 dark:text-neutral-400">
-          {post.location || "No location provided"}
-        </p>
-      </div>
+      
       <div className="flex items-center justify-between px-4 py-3 border-t border-neutral-300 dark:border-neutral-700">
         <p className="text-xs text-neutral-500 dark:text-neutral-400">
           Nigeria @
         </p>
         <Link className="flex items-center gap-1 animate-bounce" href={""}>
-          <Image src="/images/particlesm.png" width={10} height={10} alt="" className="w-4 h-4 text-neutral-800 dark:text-neutral-200" />
-          
+          <div className="w-[120px] h-full justify-center">
+                       <Image
+                         src="/images/particlesm.png"
+                         alt="Particles"
+                         width={14}
+                         height={3}
+                         className="w-[80px] h-[50px] dark:invert"
+                         layout="responsive"
+                         quality={90}
+                       />
+                     </div>
         </Link>
       </div>
     </div>

@@ -337,7 +337,7 @@ console.log(userData)
       {isFailed && (
         <Popup
           type="failure"
-          message="Your credentials were invalid, try rearranging them or check your connection settings"
+          message="Your credentials were invalid, try rearranging them or check your internet connection."
           onClose={closeFailurePopup}
           contact={true}
           degree="Authentication"

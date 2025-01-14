@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   images:{
     domains: [
-      'cloud.appwrite.io',
+       'cloud.appwrite.io',
       'platform-lookaside.fbsbx.com',
       'lh3.googleusercontent.com',
       // {

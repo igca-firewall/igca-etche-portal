@@ -219,8 +219,7 @@ export const authFormSchema = (type: string, role: string) => {
       .string()
       .min(1, "Date of Birth is required")
       .optional() // Make it optional if no date is selected
-      .refine((dob) => dob === "" || dob, { message: "Date of Birth is required if provided" }),
-      guardianContact: z
+      ,   guardianContact: z
         .string()
         .min(1, "Guardian Contact is required")
         .optional(),
@@ -483,18 +482,6 @@ export function decryptKey(passkey: string) {
 
 //   return qrCodeImageSrc;
 // };
-export const profileFormSchema = z.object({
-  firstName: z.string().min(2).max(15).optional(),
-  lastName: z.string().min(2).max(15).optional(),
-  phone: z.string().optional(),
-  bio: z.string().min(1).max(60).optional(),
-  instagram: z.string().url().optional(),
-  facebook: z.string().url().optional(),
-  whatsapp: z.string().url().optional(),
-  telegram: z.string().url().optional(),
-  youtube: z.string().url().optional(),
-  // Add more fields if needed
-});
 
 export const dummyPosts = [
   {
@@ -529,79 +516,7 @@ export const dummyPosts = [
     imageUrl: "/images/director.jpeg",
     verified: true
   },
-  {
-    $id: "3",
-    creator: {
-      $id: "creator3",
-      firstName: "Alice",
-      lastName: "Wong",
-      imageUrl: "/images/d.jpg",
-    },
-    caption:
-      "Just got my ticket to the most awaited concert of the year. Can't wait!",
-    location: "Sydney, Australia",
-    tags: "#concert #music #excitement",
-    $createdAt: "2024-09-18T19:00:00Z",
-    imageUrl: "/images/ticket red.png",
-  },
-  {
-    $id: "4",
-    creator: {
-      $id: "creator4",
-      firstName: "Michael",
-      lastName: "Brown",
-      imageUrl: "/images/d.jpg",
-    },
-    caption: "Casino night! Testing my luck on the poker table, wish me luck!",
-    location: "Las Vegas, USA",
-    tags: "#casino #poker #nightlife",
-    $createdAt: "2024-08-20T22:00:00Z",
-    imageUrl: "/images/chip.jpg",
-  },
-  {
-    $id: "5",
-    creator: {
-      $id: "creator5",
-      firstName: "Emma",
-      lastName: "Davis",
-      imageUrl: "/images/d.jpg",
-    },
-    caption:
-      "Hiking up the tallest mountain I've ever climbed, but the view was worth every step!",
-    location: "Mount Fuji, Japan",
-    tags: "#hiking #adventure #mountains",
-    $createdAt: "2024-09-05T08:45:00Z",
-    imageUrl: "/images/OutThere.png",
-  },
-  {
-    $id: "6",
-    creator: {
-      $id: "creator6",
-      firstName: "Liam",
-      lastName: "Miller",
-      imageUrl: "/images/d.jpg",
-    },
-    caption: "Gaming tournament vibes! Came in with my A-game, ready to win!",
-    location: "Berlin, Germany",
-    tags: "#gaming #tournament #competition",
-    $createdAt: "2024-09-10T13:00:00Z",
-    imageUrl: "/images/gaming.png",
-  },
-  {
-    $id: "7",
-    creator: {
-      $id: "creator7",
-      firstName: "Olivia",
-      lastName: "Wilson",
-      imageUrl: "/images/d.jpg",
-    },
-    caption:
-      "Ticket to a night of magic and performances! Let's go see some Broadway!",
-    location: "New York, USA",
-    tags: "#broadway #tickets #magic",
-    $createdAt: "2024-09-12T19:30:00Z",
-    imageUrl: "/images/ticket red.png",
-  },
+ 
 ];
 // themes.ts
 // Define the structure of the theme object

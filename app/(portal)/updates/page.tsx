@@ -29,7 +29,7 @@ const page = () => {
 
   return (
     <div className="justify-center items-center w-full h-full">
-      {user.role === "admin" || admin ? (
+      {user.role === "admin"? (
         <UpdateScoresComponent />
       ) : (
         <Unauthorized />
