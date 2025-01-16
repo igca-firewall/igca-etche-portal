@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from "react";
 import Tesseract from "tesseract.js";
+import { Input } from "../ui/input";
 import { addresults } from "@/lib/actions/results.actions";
 import Select from "./CustomSelect";
 const ImageToScoreProcessor: React.FC = () => {
@@ -176,7 +177,7 @@ const ImageToScoreProcessor: React.FC = () => {
         </div>
       {/* Image Upload */}
       <div>
-        <input
+        <Input
           type="file"
           accept="image/*"
           onChange={handleImageUpload}
