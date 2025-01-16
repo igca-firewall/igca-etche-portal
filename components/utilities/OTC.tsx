@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from "react";
 import Tesseract from "tesseract.js";
 import { addresults } from "@/lib/actions/results.actions";
