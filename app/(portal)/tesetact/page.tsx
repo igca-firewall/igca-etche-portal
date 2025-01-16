@@ -1,7 +1,6 @@
 import ImageToScoreProcessor from "@/components/utilities/OTC";
 
 const Xed = () => {
-
-    <ImageToScoreProcessor/>
+  return (<ImageToScoreProcessor />)
 };
 export default Xed;
