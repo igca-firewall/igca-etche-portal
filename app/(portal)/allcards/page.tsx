@@ -18,7 +18,7 @@ const ScratchCardImages = () => {
   }, []);
   const { user } = useUserContext();
   return (
-    <div className="flex flex-wrap gap-6 bg-neutral-100">
+    <div className=" ">
       {user?.role === "admin" ? (
         <div className="flex flex-wrap gap-6">
           {scratchCards.map((card, index) => (

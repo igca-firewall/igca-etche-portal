@@ -37,6 +37,7 @@ const AllResults = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isFailure, setIsFailure] = useState(false);
   const [xed, setXed] = useState(false);
+  const [scores, setScores] = useState<Scores[]>([]);
   const [view, setView] = useState<{
     studentName: string;
     Namer: string;
@@ -86,6 +87,53 @@ const AllResults = () => {
       setIsLoading(false);
     }
   };
+    // useEffect(() => {
+    //   const fetchStudentsScore = async () => {
+    //     try {
+    //       setIsLoading(true);
+    //       setScores([]);
+        
+  
+    //       const particles = await fetchComments({
+    //         classRoom,
+    //         term,
+    //         session,
+           
+    //       });
+    //       console.log("particles", particles);
+    //       if (particles?.length) {
+    //         const transformedScores = particles.flatMap((result) => {
+    //           return result.scores.map((scoreString: string) => {
+    //             const score = JSON.parse(scoreString); // Parse the JSON string into an object
+    //             return {
+    //               studentId: score.studentId,
+    //               studentName: score.studentName,
+    //               firstTest: score.firstTest,
+    //               secondTest: score.secondTest,
+    //               bnb: score.bnb,
+    //               project: score.project,
+    //               assignment: score.assignment,
+    //               exam: score.exam,
+    //               total: score.total,
+    //               grade: score.grade,
+    //             };
+    //           });
+    //         });
+  
+    //         setScores(transformedScores);
+    //         console.log("Transformed Scores:", transformedScores);
+    //       }
+    //     } catch (error) {
+    //       console.error("Error fetching student scores:", error);
+    //     } finally {
+    //       setIsLoading(false);
+    //     }
+    //   };
+  
+    //   if (classRoom && subject && session && term) {
+    //     fetchStudentsScore();
+    //   }
+    // }, [classRoom,  session, term]);
   useEffect(() => {
     const fetchStudents = async () => {
       try {

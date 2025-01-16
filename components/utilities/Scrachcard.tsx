@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-
+import Image from "next/image";
 interface ScratchCardProps {
   frontImageUrl: string;  // Front image URL
   backImageUrl: string;   // Back image URL
@@ -23,34 +23,27 @@ const ScratchCards: React.FC<ScratchCardProps> = ({ frontImageUrl, backImageUrl,
   };
 
   return (
-    <motion.div
-      className="relative w-full sm:w-80 h-80 cursor-pointer rounded-lg shadow-lg overflow-hidden transition-transform duration-500 hover:scale-105"
-      onClick={handleCardClick}
-      initial={{ rotateY: 0 }}
-      animate={{ rotateY: flipped ? 180 : 0 }}  // Flip the card
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      aria-label="Scratch card"
-    >
-      {/* Front Side */}
-      <motion.div
-        className="absolute w-full h-full backface-hidden"
-        style={{
-          backgroundImage: `url(${frontImageUrl})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          filter: "brightness(70%)", // Optional: adds a subtle dark overlay for better contrast
-        }}
-      ></motion.div>
+    <div
+      className="relative bg-white dark:bg-neutral-800 dark:text-white text-neutral-800  w-full sm:w-80 h-80 cursor-pointer rounded-lg shadow-lg transition-transform duration-500 hover:scale-105"
 
+    >
+ <div className="w-[180px] h-full max-h-20 md:hidden max-lg:block xl:block justify-center">
+              <Image
+                src="/images/particles.png"
+                alt=""
+                width={20}
+                height={3}
+                className="w-[100px] h-[70px]"
+                layout="responsive"
+                quality={90}
+              />
+            </div>
+      {/* Front Side */}
+   
       {/* Back Side */}
-      <motion.div
-        className="absolute w-full h-full bg-black bg-opacity-70 text-white flex items-center justify-center backface-hidden"
-        style={{
-          transform: "rotateY(180deg)",  // Keep it rotated to the back until the flip
-          backgroundImage: `url(${backImageUrl})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
+      <div
+        className="absolute w-full h-full bg-black bg-opacity-70 flex items-center justify-center "
+       
       >
         <div className="text-center space-y-4">
           <div
@@ -71,8 +64,19 @@ const ScratchCards: React.FC<ScratchCardProps> = ({ frontImageUrl, backImageUrl,
             Click to copy the code
           </div>
         </div>
-      </motion.div>
-    </motion.div>
+      </div>
+       <div className="w-[120px] h-full justify-center">
+                             <Image
+                               src="/images/particlesm.png"
+                               alt="Particles"
+                               width={14}
+                               height={3}
+                               className="w-[80px] h-[50px] dark:invert"
+                               layout="responsive"
+                               quality={90}
+                             />
+                           </div>
+    </div>
   );
 };
 
