@@ -105,6 +105,7 @@ const ImageToScoreProcessor: React.FC = () => {
         subject,
         scores: processedScores, // Transformed scores array
       };
+      console.log(uploadData, "UploadedData")
       const uploadResponse = await addresults(uploadData);
 
       if (uploadResponse) {

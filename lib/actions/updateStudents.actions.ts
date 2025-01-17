@@ -74,7 +74,6 @@ export const updateScoresWithClassRoom = async ({
   const allScores = await Promise.all(
     students.map(async (student) => {
       const studentId = student.studentId;
-      const avatarUrl= generateAvatar(`${student.name[0]}${student.studentId[12]}`);
       const scores = await listAllScores({ studentId });
       return scores
         .filter((score) => score.classRoom !== studentClassRoomMap[studentId]) // Filter scores that need updates
@@ -190,8 +189,8 @@ export const listAllScores = async ({ studentId }: { studentId: string }) => {
       [
         Query.limit(limit), // Limit the number of students per request
         Query.offset(offset), // Skip the records we have already fetched
-        Query.equal("studentId", [studentId]), // Filter scores by studentId
-      ]
+        Query.equal("studentId", [studentId]),
+    ]
     );
 
     const scores = newScoresInfo.documents; // Get the documents (scores)
@@ -297,7 +296,9 @@ export const updateStudentsImages = async ({
       const imageUrl = imageMap[student.$id]; // Find the image based on the student's ID
 
       if (!imageUrl) {
-        throw new Error(`No image URL found for student with ID: ${student.$id}`);
+        throw new Error(
+          `No image URL found for student with ID: ${student.$id}`
+        );
       }
 
       // Update the student's document with the new image URL
@@ -308,7 +309,9 @@ export const updateStudentsImages = async ({
         { image: imageUrl } // Update the image attribute
       );
 
-      console.log(`Successfully updated student with ID: ${student.$id} with image: ${imageUrl}`);
+      console.log(
+        `Successfully updated student with ID: ${student.$id} with image: ${imageUrl}`
+      );
       updatedCount++;
     } catch (error) {
       console.error(`Failed to update student with ID: ${student.$id}`, error);
@@ -324,8 +327,6 @@ export const updateStudentsImages = async ({
   console.log(`Successfully updated ${updatedCount} student documents.`);
   return { updatedCount, failed }; // Return count of successful updates and list of failed updates
 };
-
-
 
 // export function generateAvatar(name: string): string {
 //   const firstLetter = name.trim().charAt(0).toUpperCase() || "?"; // Default to "?" if no valid name
