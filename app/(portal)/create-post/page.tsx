@@ -1,3 +1,4 @@
+"use client"
 import { useEffect, useState } from 'react';
 
 function CountdownClock() {
@@ -50,6 +51,7 @@ function CountdownClock() {
             Time left:
           </p>
           <div className="text-3xl font-bold mt-2">
+           {/* @ts-ignore */}
             {timeLeft.months} months, {timeLeft.days} days, {timeLeft.hours} hours, {timeLeft.minutes} minutes, {timeLeft.seconds} seconds
           </div>
         </div>
