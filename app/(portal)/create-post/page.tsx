@@ -1,4 +1,3 @@
-"use client"
 import { useEffect, useState } from 'react';
 
 function CountdownClock() {
@@ -14,16 +13,23 @@ function CountdownClock() {
 
   function calculateTimeLeft() {
     const now = new Date();
-    const nextYear = now.getFullYear() + 4;
-    const nextYearDate = new Date(nextYear, 0, 1);
-    const difference = nextYearDate.getTime() - now.getTime();
+    const nextTwoMonths = now.getMonth() + 2;
+    let nextYear = now.getFullYear();
+    
+    // Adjust nextYear if the next two months overflow into the next calendar year
+    if (nextTwoMonths > 11) {
+      nextYear++;
+    }
+
+    const nextTwoMonthsDate = new Date(nextYear, nextTwoMonths % 12, 1);
+    const difference = nextTwoMonthsDate.getTime() - now.getTime();
 
     let timeLeft = {};
 
     if (difference > 0) {
       timeLeft = {
-        years: Math.floor(difference / (1000 * 60 * 60 * 24 * 365)),
-        days: Math.floor((difference % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24)),
+        months: Math.floor(difference / (1000 * 60 * 60 * 24 * 30)),
+        days: Math.floor((difference % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24)),
         hours: Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
         minutes: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
         seconds: Math.floor((difference % (1000 * 60)) / 1000)
@@ -44,7 +50,7 @@ function CountdownClock() {
             Time left:
           </p>
           <div className="text-3xl font-bold mt-2">
-            {timeLeft.years} years, {timeLeft.days} days, {timeLeft.hours} hours, {timeLeft.minutes} minutes, {timeLeft.seconds} seconds
+            {timeLeft.months} months, {timeLeft.days} days, {timeLeft.hours} hours, {timeLeft.minutes} minutes, {timeLeft.seconds} seconds
           </div>
         </div>
       </div>
