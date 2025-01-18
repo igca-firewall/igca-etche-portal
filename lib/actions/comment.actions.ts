@@ -8,6 +8,9 @@ const {
   //     APPWRITE_STORAGE_ID: STORAGE_ID,
   APPWRITE_COMPILED_ID: COMPILED_RESULTS_ID,
   APPWRITE_DATABASE_ID: DATABASE_ID,
+  APPWRITE_2ND_TERM_COLLECTION_ID: SECOND,
+  APPWRITE_3RD_TERM_COLLECTION_ID: THIRD,
+  APPWRITE_1ST_TERM_COLLECTION_ID: FIRST,
   //     NEXT_PUBLIC_APPWRITE_ENDPOINT: ENDPOINT,
   //     NEXT_PUBLIC_APPWRITE_PROJECT: PROJECT_ID,
   //     APPWRITE_STUDENTS_COLLECTION_ID: APPWRITE_STUDENTS_COLLECTION_ID,
@@ -19,6 +22,12 @@ const {
   //     APPWRITE_SCRATCHCARD_COLLECTION_ID: SCRATCHCARD_COLLECION_ID,
   // APPWRITE_SUBJECT_COLLECTION_ID: SUBJECTS_ID,
 } = process.env;
+interface Score {
+  studentId: string;
+  studentName: string;
+  comment: string;
+}
+
 export const addComment = async ({
   term,
   session,
@@ -73,19 +82,23 @@ export const addComment = async ({
       const existingComment = existingComments.documents[0];
 
       // Update comments for each existing student
-      updatedComments = existingComment.comment.map((existingCommentStr: string) => {
-        const existing = JSON.parse(existingCommentStr);
-        const newComment = comment.find(c => c.studentId === existing.studentId);
-        
-        if (newComment) {
-          // If matching student found, update comment text
-          return JSON.stringify({
-            ...existing,
-            comment: newComment.comment,
-          });
+      updatedComments = existingComment.comment.map(
+        (existingCommentStr: string) => {
+          const existing = JSON.parse(existingCommentStr);
+          const newComment = comment.find(
+            (c) => c.studentId === existing.studentId
+          );
+
+          if (newComment) {
+            // If matching student found, update comment text
+            return JSON.stringify({
+              ...existing,
+              comment: newComment.comment,
+            });
+          }
+          return existingCommentStr; // Keep the old comment if no match
         }
-        return existingCommentStr; // Keep the old comment if no match
-      });
+      );
 
       // Add any new comments that weren't found in the existing comments
       const existingStudentIds = existingComment.comment.map((c: string) => {
@@ -94,8 +107,10 @@ export const addComment = async ({
       });
 
       // Filter for new comments that don't exist in the current list
-      const newComments = comment.filter(c => !existingStudentIds.includes(c.studentId));
-      const newFormattedComments = newComments.map(c => JSON.stringify(c));
+      const newComments = comment.filter(
+        (c) => !existingStudentIds.includes(c.studentId)
+      );
+      const newFormattedComments = newComments.map((c) => JSON.stringify(c));
 
       // Combine existing updated comments with new comments
       updatedComments = [...updatedComments, ...newFormattedComments];
@@ -151,38 +166,85 @@ export const fetchComments = async ({
   term,
   session,
   classRoom,
+  studentId,
 }: {
   term: string;
   session: string;
   classRoom: string;
+  studentId: string;
 }) => {
-  const hem = COMMENTS;
-  const index = `${session}_${term}_${classRoom}`;
-
   try {
-    const { database } = await createAdminClient();
+    const { database } = await createAdminClient(); // Assuming createAdminClient is correctly implemented
 
-    // Fetch existing comments based on the index
-    const existingComments = await database.listDocuments(DATABASE_ID!, hem!, [
-      Query.equal("index", index),
-    ]);
+    const index = `${session}_${term}_${classRoom}`;
+    console.log("Fetching comments for index:", index);
 
-    if (existingComments.documents.length > 0) {
-      // If comments exist, return the first matching document's comments
-      console.log("Comments fetched successfully", existingComments.documents);
-      return existingComments.documents.map((doc) => {
-        // Parsing the comment field back from JSON
-        return {
-          ...doc,
-          comment: doc.comment.map((item: string) => JSON.parse(item)),
-        };
-      });
-    } else {
-      console.log("No comments found for this session, term, and classRoom");
-      return [];
+    const existingComments = await database.listDocuments(
+      DATABASE_ID!,
+      COMMENTS!,
+      [Query.equal("index", index)]
+    );
+
+    console.log("Existing comments:", existingComments.documents);
+
+    if (existingComments.documents.length === 0) {
+      throw new Error("No results found for the given query.");
     }
+
+    const studentScores = existingComments.documents
+      .map((item) => {
+        // Skip if no scores available
+        if (!item.scores || item.scores.length === 0) {
+          return null;
+        }
+
+        // Parse the stringified scores
+        const parsedScores: Score[] = item.scores
+          .map((scoreStr: any) => {
+            try {
+              const parsed = JSON.parse(scoreStr) as Score; // Cast to Score type
+              // Log parsed score
+              return parsed;
+            } catch (e) {
+              console.error("Error parsing score:", e);
+              return null;
+            }
+          })
+          .filter((score: Score): score is Score => score !== null); // Type guard for null filtering
+
+        // Find the student by ID within the parsed scores
+        const studentScore =
+          parsedScores.find((score) => score.studentId === studentId) ?? null;
+
+        if (studentScore) {
+          // Add the subject to the filtered result
+          return {
+            studentName: item.studentName, // Assuming the name is stored in studentName field
+            studentId: item.studentId,
+            classRoom: item.classRoom, // Assuming studentId is available in the document
+            term: item.term,
+            session: item.session,
+            comment: studentScore.comment,
+          };
+        }
+        return null;
+      })
+      .filter(
+        (
+          result
+        ): result is {
+          classRoom: string;
+          term: string;
+          session: string;
+          studentId: string;
+          studentName: string;
+          comment: string;
+        } => result !== null
+      ); // Type guard for null filtering
+
+    return studentScores;
   } catch (error) {
-    console.error("Error fetching comments", error);
+    console.error("Error fetching comments:", error);
     throw error;
   }
 };

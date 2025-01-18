@@ -442,8 +442,6 @@ export const myArray = async ({
       throw new Error("No results found for the given query.");
     }
 
-    console.log("All Results:", AllResults.documents);
-
     const studentScores = AllResults.documents
       .map((item) => {
         // Skip if no scores available
@@ -456,8 +454,7 @@ export const myArray = async ({
           .map((scoreStr: any) => {
             try {
               const parsed = JSON.parse(scoreStr) as Score; // Cast to Score type
-              console.log("Parsed Score:", parsed);
-              // Log parsed score
+             // Log parsed score
               return parsed;
             } catch (e) {
               console.error("Error parsing score:", e);
@@ -466,8 +463,7 @@ export const myArray = async ({
           })
           .filter((score: Score): score is Score => score !== null); // Type guard for null filtering
 
-        console.log("Parsed Scores for Document:", parsedScores); // Log parsed scores
-
+       
         // Find the student by ID within the parsed scores
         const studentScore =
           parsedScores.find((score) => score.studentId === studentId) ?? null;
@@ -500,8 +496,7 @@ export const myArray = async ({
         } => result !== null
       ); // Type guard for null filtering
 
-    console.log("Filtered Student Scores with Subject:", studentScores);
-
+    
     return studentScores;
   } catch (error) {
     console.error("Error:", error);

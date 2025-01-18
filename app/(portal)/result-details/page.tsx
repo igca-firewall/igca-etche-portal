@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import { myArray } from "@/lib/actions/results.actions";
 import Image from "next/image";
 import { decryptKey, formatSubject } from "@/lib/utils";
+import { fetchComments } from "@/lib/actions/comment.actions";
 
 const PostDetails = ({
   session,
@@ -25,7 +26,7 @@ const PostDetails = ({
   const [scores, setScores] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [extractedPart, setExtractedPart] = useState<string | null>(null);
-
+  const [comments, setComments] = useState<any[]>([]);
   const messages = [
     "Hang tight! We're fetching the data... 🚀",
     "Just a moment... Great things are loading! 🔄",
@@ -68,6 +69,19 @@ const PostDetails = ({
       fetch();
     }
   }, [studentId, term, session, classRoom]);
+  useEffect(() => {
+    const fetchCommentsData = async () => {
+      try {
+        const fetchedComments = await fetchComments({ term, session: session!.replace(/\s+/g, ""), classRoom, studentId });
+        setComments(fetchedComments);
+      
+      } catch (error) {
+        console.log(error)
+      }
+    };
+
+    fetchCommentsData();
+  }, [term, session, classRoom, studentId]);
 
   const totalScore = scores.reduce((sum, score) => {
     const scoreTotal = Number(score.score.total) || 0;
@@ -329,6 +343,7 @@ const PostDetails = ({
                   <span className="italic">
                     {getPrincipalsComment(averageScore)}
                   </span>
+                  {comments[0].comment}
                 </p>
               </div>
             </div>
