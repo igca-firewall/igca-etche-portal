@@ -67,8 +67,8 @@ const Home = () => {
         <div className="home-posts">
           {
            <ul className="flex flex-col gap-9 items-center justify-center w-full">
-            <p className="font-semibold items-center justify-center flex gap-3 text-2xl ">
-         <PinIcon className="rotate-45 w-6 h-6"/>  Pinned Posts:  
+            <p className="font-semibold items-center justify-center flex gap-3 text-2xl text-neutral-600 ">
+         <PinIcon className="rotate-45 w-6 h-6 text-purple-600"/>  Pinned Posts:  
            </p>   
               <PostAd/>
               {dummyPosts && dummyPosts.length > 0 ? (

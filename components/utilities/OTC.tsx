@@ -106,12 +106,12 @@ const ImageToScoreProcessor: React.FC = () => {
         scores: processedScores, // Transformed scores array
       };
       console.log(uploadData, "UploadedData")
-      const uploadResponse = await addresults(uploadData);
+      console.log("UploadedData", uploadData);
 
-      if (uploadResponse) {
-        setIsSuccess(true);
-        console.log("All results uploaded successfully.");
-      }
+      // if (uploadResponse) {
+      //   setIsSuccess(true);
+      //   console.log("All results uploaded successfully.");
+      // }
     } catch (err) {
       console.error("Error during OCR or processing:", err);
       setError("Failed to process the image. Please try again.");

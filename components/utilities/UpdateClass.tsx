@@ -7,7 +7,7 @@ import {
 import { Button } from "../ui/button";
 import { classOrder } from "@/lib/utils";
 import Select from "./CustomSelect";
-import { updateScoresWithClassRoom } from "@/lib/actions/updateStudents.actions";
+import { prepareAndAddResults, updateScoresWithClassRoom } from "@/lib/actions/updateStudents.actions";
 
 const UpdateScoresComponent: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -39,7 +39,7 @@ const UpdateScoresComponent: React.FC = () => {
      
       // const updates = fetchedScores.map(async (score) => {
         // if (!updatedStudents.has(score.id)) {
-          const result = await updateScoresWithClassRoom({classRoom})
+          const result = await prepareAndAddResults({classRoom: classRoom, session: session, term:term,subject})
           if (result) {
             setProgress((prev) => ({
               ...prev,

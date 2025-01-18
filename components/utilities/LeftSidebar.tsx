@@ -13,12 +13,11 @@ import DarkModeToggle from "./DarkModeToggle";
 const LeftSidebar = () => {
   const pathname = usePathname();
   const { user } = useUserContext();
-  const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
     <section className="fixed custom-scrollbar leftsidebar h-screen">
       <div className="flex flex-col h-full gap-6 px-4">
-        <Link href="/" className="mb-8 cursor-pointer items-center gap-2">
+        <Link href="/" className="mb-3 cursor-pointer items-center gap-2">
           <div className="flex gap-2 items-center">
             <div className="w-8 h-8">
               <Image
@@ -32,11 +31,7 @@ const LeftSidebar = () => {
               />
             </div>
             {/* Conditionally hide logo text when collapsed */}
-            <div
-              className={`w-[100px] h-full md:hidden max-lg:block xl:block ${
-                isCollapsed ? "hidden" : ""
-              }`}
-            >
+            <div className={`w-[100px] h-full md:hidden max-lg:block xl:block`}>
               <Image
                 src="/images/particlesa.jpg"
                 alt=""
@@ -78,9 +73,7 @@ const LeftSidebar = () => {
               </div>
               {/* Only show text when not collapsed */}
               <p
-                className={`text-neutral-600 text-sm dark:text-neutral-100 md:hidden max-lg:block xl:block ${
-                  isCollapsed ? "hidden" : ""
-                }`}
+                className={`text-neutral-600 text-sm dark:text-neutral-100 md:hidden max-lg:block xl:block`}
               >
                 {item.label}
               </p>
@@ -115,9 +108,7 @@ const LeftSidebar = () => {
                 </div>
                 {/* Only show text when not collapsed */}
                 <p
-                  className={`text-neutral-600 text-sm dark:text-neutral-100 md:hidden max-lg:block xl:block ${
-                    isCollapsed ? "hidden" : ""
-                  }`}
+                  className={`text-neutral-600 text-sm dark:text-neutral-100 md:hidden max-lg:block xl:block`}
                 >
                   {item.label}
                 </p>
@@ -125,23 +116,14 @@ const LeftSidebar = () => {
             );
           })}
 
-        <button
-          className="absolute top-4 right-[-10px] w-8 h-8 bg-gray-200 dark:bg-gray-800 rounded-full flex items-center justify-center"
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          aria-label="Toggle Sidebar"
-        >
-          {/* Dynamic icon for collapse/expand */}
-          {isCollapsed ? "\u25B6" : "\u25C0"}
-        </button>
-      </div>
-
-      <div className="p-3 items-center">
-        <hr />
-      </div>
-
-      <DarkModeToggle />
-      <div className="w-full mt-auto">
-        <Footer user={user} />
+        <div className="w-full mt-auto">
+          {" "}
+          <div className="p-3 mt-12 items-center">
+            <DarkModeToggle />
+            <hr />
+          </div>
+          <Footer user={user} />
+        </div>
       </div>
     </section>
   );

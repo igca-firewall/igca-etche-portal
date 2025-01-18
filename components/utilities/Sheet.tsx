@@ -66,7 +66,7 @@ const LeftSidebar = () => {
           ref={sheetRef}
           //  position="right"
           // size="lg"
-          className="bg-gray-100 dark:bg-neutral-800 p-6 overflow-y-auto"
+          className="bg-gray-100 border  border-gray-300 dark:border-neutral-700 rounded-[25px] dark:bg-neutral-800 p-6 overflow-y-auto"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -161,17 +161,18 @@ const LeftSidebar = () => {
                         }`}
                       />
                     </div>
-                    <p className="text-neutral-600 text-sm dark:text-neutral-100 md:hidden max-lg:block xl:block">
+                    <p className="text-neutral-600 text-sm dark:text-neutral-100">
                       {item.label}
                     </p>
                   </Link>
                 );
               })}{" "}
-            <div className="p-3 mt-12 items-center">
-              <DarkModeToggle />
-              <hr />
-            </div>
             <div className="w-full mt-auto">
+              {" "}
+              <div className="p-3 mt-12 items-center">
+                <DarkModeToggle />
+                <hr />
+              </div>
               <Footer user={user} />
             </div>
           </div>
