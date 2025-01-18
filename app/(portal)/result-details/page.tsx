@@ -335,7 +335,7 @@ const PostDetails = ({
             <div className="flex space-x-4 mb-4 items-center justify-center">
               <button
                 disabled={
-                  !user || scores.length < 1 || !extractedPart || isLoading
+                  !user || scores.length < 1 ||  isLoading
                 }
                 onClick={printPage}
                 className="bg-gray-300 dark:bg-neutral-700 border-gray-400 dark:border-gray-900 text-neutral-500 dark:text-purple-50 rounded-full px-6 py-4 mt-10 mb-10 flex gap-2 items-center justify-center"
@@ -349,7 +349,7 @@ const PostDetails = ({
                 Print
               </button>
               <button
-                disabled={!user || !scores || !extractedPart || isLoading}
+                disabled={!user || !scores ||  isLoading}
                 onClick={exportToCSV}
                 className="bg-gray-300 dark:bg-neutral-700 border-gray-400 dark:border-gray-900 text-neutral-500 dark:text-purple-50 rounded-full px-6 py-4 mt-10 mb-10 flex gap-2 items-center justify-center"
               >
@@ -362,7 +362,7 @@ const PostDetails = ({
                 Export
               </button>
               <button
-                disabled={!user || !scores || !extractedPart || isLoading}
+                disabled={!user || !scores ||  isLoading}
                 onClick={downloadAsImage}
                 className="bg-gray-300 dark:bg-neutral-700 border-gray-400 dark:border-gray-900 text-neutral-500 dark:text-purple-50 rounded-full px-6 py-4 mt-10 mb-10 flex gap-2 items-center justify-center"
               >

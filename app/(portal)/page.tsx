@@ -72,6 +72,7 @@ const Home = () => {
            </p>   
               <PostAd/>
               {dummyPosts && dummyPosts.length > 0 ? (
+                //@ts-ignore
                 dummyPosts.map((post: dummyPosts) => (
                   <PostCard post={post} key={post.$id} />
                 ))

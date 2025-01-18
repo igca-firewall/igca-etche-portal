@@ -2,12 +2,16 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 interface ScratchCardProps {
-  frontImageUrl: string;  // Front image URL
-  backImageUrl: string;   // Back image URL
+  frontImageUrl: string; // Front image URL
+  backImageUrl: string; // Back image URL
   code: string;
 }
 
-const ScratchCards: React.FC<ScratchCardProps> = ({ frontImageUrl, backImageUrl, code }) => {
+const ScratchCards: React.FC<ScratchCardProps> = ({
+  frontImageUrl,
+  backImageUrl,
+  code,
+}) => {
   const [copied, setCopied] = useState(false);
   const [flipped, setFlipped] = useState(false);
 
@@ -23,39 +27,29 @@ const ScratchCards: React.FC<ScratchCardProps> = ({ frontImageUrl, backImageUrl,
   };
 
   return (
-    <div
-      className="relative bg-white dark:bg-neutral-800 dark:text-white text-neutral-800  w-full sm:w-80 h-80 cursor-pointer rounded-lg shadow-lg transition-transform duration-500 hover:scale-105"
+    <div className="relative w-[400px] h-[200px] rounded-[25px] bg-white dark:bg-neutral-800 dark:text-white text-neutral-800  flex-col  cursor-pointer  shadow-2xl transition-transform duration-500 hover:scale-105">
+      {/* Left Section */}
 
-    >
- <div className="w-[180px] h-full max-h-20 md:hidden max-lg:block xl:block justify-center">
-              <Image
-                src="/images/particles.png"
-                alt=""
-                width={20}
-                height={3}
-                className="w-[100px] h-[70px]"
-                layout="responsive"
-                quality={90}
-              />
-            </div>
-      {/* Front Side */}
-   
-      {/* Back Side */}
-      <div
-        className="absolute w-full h-full bg-black bg-opacity-70 flex items-center justify-center "
-       
-      >
+      {/* Middle Section (Clickable Overlay) */}
+      <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center">
+  
+        {/* <div className="w-[80px] h-full flex items-center justify-center">
+      <Image
+        src="/images/particles.png"
+        alt=""
+        width={180}
+        height={80}
+        className="object-cover"
+        quality={90}
+      />
+    </div> */}{" "}
         <div className="text-center space-y-4">
           <div
-            className="text-2xl sm:text-3xl font-bold cursor-pointer"
+            className="text-2xl sm:text-3xl font-bold font-sans cursor-pointer"
             onClick={handleCopyCode}
             aria-label="Copy code"
           >
-            {copied ? (
-              <span className="text-green-500">Copied!</span>
-            ) : (
-              code
-            )}
+            {copied ? <span className="text-green-500">Copied!</span> : code}
           </div>
           <div
             className="text-sm text-gray-300"
@@ -64,18 +58,19 @@ const ScratchCards: React.FC<ScratchCardProps> = ({ frontImageUrl, backImageUrl,
             Click to copy the code
           </div>
         </div>
+        <div className="">
+          <Image
+            src="/images/particlesm.png"
+            alt="Particles"
+            width={120}
+            height={50}
+            className="object-cover dark:invert"
+            quality={90}
+          />
+        </div>
       </div>
-       <div className="w-[120px] h-full justify-center">
-                             <Image
-                               src="/images/particlesm.png"
-                               alt="Particles"
-                               width={14}
-                               height={3}
-                               className="w-[80px] h-[50px] dark:invert"
-                               layout="responsive"
-                               quality={90}
-                             />
-                           </div>
+
+      {/* Right Section */}
     </div>
   );
 };

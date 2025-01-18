@@ -7,7 +7,7 @@ import Link from "next/link";
 
 const PostAd = () => {
   return (
-    <div className="post-card bg-white font-inter dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-lg overflow-hidden shadow-lg">
+    <div className="post-card bg-white font-inter dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-[20px] overflow-hidden shadow-lg">
       {/* Header */}
       <div className="flex items-center p-4">
         <div className="w-14 h-14 rounded-full overflow-hidden mr-3">

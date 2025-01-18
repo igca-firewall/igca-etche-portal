@@ -233,6 +233,8 @@ const SubjectResultUploader: React.FC = () => {
     const fetchStudents = async () => {
       try {
         setIsLoading(true);
+        setScores([])
+        setResults([])
         setStudents([]); // Clear students immediately before fetching
 
         const xed: Models.Document[] = await getStudentsByClass({ classRoom });
@@ -264,7 +266,7 @@ const SubjectResultUploader: React.FC = () => {
         setIsLoading(true);
         setScores([]); // Clear scores immediately before fetching
         setIsStudent([]); // Clear isStudent immediately before fetching
-
+        setResults([])
         const particles = await fetchResultData({
           classRoom,
           term,
