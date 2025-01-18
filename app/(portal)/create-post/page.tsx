@@ -1,46 +1,55 @@
 "use client"
-import PostForm from "@/components/utilities/PostForm";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { Models } from "node-appwrite";
+import { useEffect, useState } from 'react';
 
-type postProp = {
-  post: Models.Document; // If updating, provide the existing post object
-};
-const CreatePost = ({ post }: postProp) => {
-  const action = post ? "Update" : "Create";
-const router = useRouter();
-const handleBack = () => {
-  router.back();
-};
+function CountdownClock() {
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  });
+
+  function calculateTimeLeft() {
+    const now = new Date();
+    const nextYear = now.getFullYear() + 4;
+    const nextYearDate = new Date(nextYear, 0, 1);
+    const difference = nextYearDate.getTime() - now.getTime();
+
+    let timeLeft = {};
+
+    if (difference > 0) {
+      timeLeft = {
+        years: Math.floor(difference / (1000 * 60 * 60 * 24 * 365)),
+        days: Math.floor((difference % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+        minutes: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
+        seconds: Math.floor((difference % (1000 * 60)) / 1000)
+      };
+    }
+
+    return timeLeft;
+  }
 
   return (
     <div className="flex flex-1 h-screen">
       {/* Ensure full height */}
       <div className="common-container flex flex-col justify-center items-center h-full w-full">
         {/* Center content vertically and ensure full height and width */}
-        <div className="max-w-5xl w-full flex flex-col md:flex-row items-center gap-3 justify-center text-black">
-          {/* Flex column on small screens, row on medium and larger */}
-          <Image
-            src={
-              action === "Create"
-                ? "/icons/add-post.svg"
-                : "/icons/edit-post.svg"
-            }
-            width={36}
-            height={36}
-            alt={action === "Create" ? "add" : "edit"}
-          />
-          <h2 className="h3-bold md:h2-bold text-left w-full">
-            {action === "Create" ? "Create Post" : "Update Post"}
-          </h2>
-        </div>
-        <div className="w-full h-full mr-3 ml-3">
-          <PostForm post={post} action={"Create"} />
+        <div className="text-center">
+          <h1 className="text-4xl font-bold">Under Construction</h1>
+          <p className="text-lg mt-4">
+            Time left:
+          </p>
+          <div className="text-3xl font-bold mt-2">
+            {timeLeft.years} years, {timeLeft.days} days, {timeLeft.hours} hours, {timeLeft.minutes} minutes, {timeLeft.seconds} seconds
+          </div>
         </div>
       </div>
     </div>
   );
-};
+}
 
-export default CreatePost;
+export default CountdownClock;
