@@ -266,27 +266,9 @@ const StudentForm = () => {
     setIsFailure(false);
   };
 
-  if (!user)
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white">
-        <div className="flex flex-col items-center gap-6">
-          {/* Animated Spinner */}
-          <div className="w-20 h-20 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
 
-          {/* Anticipation Message */}
-          <h1 className="text-2xl font-semibold animate-pulse">
-            We're preparing something amazing for you...
-          </h1>
 
-          {/* Subtle Progress Indicator */}
-          <p className="text-sm opacity-80">
-            Hang tight! This won't take long.
-          </p>
-        </div>
-      </div>
-    );
-
-  return user.role === "admin" || admin ? (
+  return user.role === "admin" || admin && (
     //  return (
     <div className="p-6  shadow-lg rounded-lg max-w-[90%] mx-auto">
       <h1 className="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">
@@ -445,24 +427,7 @@ const StudentForm = () => {
         </div>
       </form>
     </div>
-  ) : (
-    <div className="flex items-center justify-center h-[50%]">
-      <div className="p-8 bg-white shadow-2xl rounded-xl max-w-lg mx-auto">
-        <h1 className="text-3xl font-extrabold text-center text-gray-800 mb-4">
-          Access Denied
-        </h1>
-        <p className="text-center text-gray-600 text-lg mb-6">
-          You are not authorized to access this page. Please contact the
-          administrator for assistance.
-        </p>
-        <div className="flex justify-center">
-          <button className="px-6 py-3 text-white bg-red-600 hover:bg-red-700 rounded-lg shadow-md transition-transform transform hover:scale-105">
-            Go Back
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+  ) 
 };
 
 export default StudentForm;

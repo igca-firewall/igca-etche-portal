@@ -120,188 +120,306 @@ const PostDetails = ({
     return "Fail";
   };
   const printPage = () => {
-    const printContents =
-      document?.getElementById("results-section")?.innerHTML; // Replace 'results-section' with your specific div's ID
-    const printWindow = window.open("", "", "width=800,height=600");
+    const printWindow = window.open("", "_blank", "width=800,height=600");
 
-    if (printWindow) {
-      printWindow.document.write(`
-      <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Results Section</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f3f4f6;
-    }
+    const content = document?.getElementById("results-section")?.innerHTML;
 
-    #results-section {
-      padding: 12px;
-      background-color: #f3f4f6;
-      color: #000;
-      border-radius: 25px;
-      border: 1px solid #e5e7eb;
-      max-width: 900px;
-      margin: 20px auto;
-    }
+    printWindow?.document.write(`
+     <html>
+  <head>
+    <style>
+      /* Global Styles */
+      body {
+        font-family: 'Roboto', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f9f9f9;
+        color: #333;
+      }
 
-    #results-section.dark {
-      background-color: #121212;
-      border-color: #374151;
-      color: #fff;
-    }
+      #print-content {
+        padding: 0rem;
+        background-color: #ffffff;
+       width: 100%;
+        max-width: 9600px;
+        margin: 20px auto;
+        line-height: 1.7;
+      }
 
-    .center {
-      text-align: center;
-    }
+      h1 {
+        font-size: 32px;
+        font-weight: 600;
+        text-align: center;
+        color: #2b2b2b;
+        margin-bottom: 1rem;
+      }
 
-    .logo {
-      width: 96px;
-      height: 96px;
-      border-radius: 50%;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
+      h2 {
+        font-size: 18px;
+        font-weight: 500;
+        color: #4a4a4a;
+        margin-bottom: 1rem;
+      }
 
-    .heading {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin: 16px 0;
-    }
+      .text-sm {
+        font-size: 14px;
+      }
 
-    .sub-heading {
-      font-size: 14px;
-      margin: 4px 0;
-    }
+      .font-medium {
+        font-weight: 500;
+      }
 
-    .table-container {
-      overflow-x: auto;
-      background-color: #fff;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      margin-top: 20px;
-    }
+      .text-gray-700 {
+        color: #4a5568;
+      }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+      .rounded-lg {
+        border-radius: 8px;
+      }
 
-    thead th {
-      background-color: #6b7280;
-      color: #fff;
-      padding: 8px;
-      font-size: 14px;
-      font-weight: 600;
-    }
+      /* Table Styles */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 2rem;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        
+        overflow: hidden;
+      }
 
-    tbody tr:nth-child(even) {
-      background-color: #f9fafb;
-    }
+      th, td {
+        padding: 1rem;
+        text-align: left;
+        font-size: 16px;
+      }
 
-    tbody tr:nth-child(odd) {
-      background-color: #fff;
-    }
+      th {
+        background-color: #f4f4f4;
+        color: #333;
+        font-weight: 500;
+      }
 
-    td {
-      padding: 8px;
-      border: 1px solid #e5e7eb;
-    }
+      tr:nth-child(even) {
+        background-color: #fafafa;
+      }
 
-    .actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 20px;
-      justify-content: center;
-    }
+      tr:nth-child(odd) {
+        background-color: #ffffff;
+      }
 
-    .button {
-      padding: 10px 16px;
-      border-radius: 50px;
-      border: 1px solid #e5e7eb;
-      background-color: #e5e7eb;
-      color: #6b7280;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+      .text-bold {
+        font-weight: bold;
+      }
 
-    .button img {
-      width: 20px;
-      height: 20px;
-    }
+      .bg-blue-500 {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
 
-    .loading-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 50;
-    }
+      .bg-blue-500:hover {
+        background-color: #0056b3;
+      }
 
-    .loading-box {
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      text-align: center;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
+      /* Print Media Styles */
+      @media print {
+        body {
+          background-color: #fff;
+          margin: 0;
+        }
 
-    .loading-box span {
-      display: block;
-      font-size: 24px;
-      margin-bottom: 8px;
-    }
+        #print-content {
+          box-shadow: none;
+          padding: 0rem;
+          width: 100%;
+          max-width: unset;
+          margin: 0;
+        }
 
-    .loading-box p {
-      font-size: 16px;
-      color: #6b7280;
-    }
-  </style>
-</head>
-<body>
-  <div id="results-section">
-    <div class="center">
-      <img src="/images/logo.jpg" alt="Logo" class="logo">
-      <h1 class="heading">INTELLECTUAL GIANTS CHRISTIAN ACADEMY</h1>
+        h1 {
+          font-size: 32px;
+          text-align: center;
+        }
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 1rem;
+        }
+
+        th, td {
+          padding: 0.75rem;
+          border: 1px solid #ddd;
+        }
+
+        th {
+          font-size: 16px;
+          background-color: #f4f4f4;
+        }
+
+        td {
+          font-size: 14px;
+        }
+
+        .no-print {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="print-content">
+      <div
+        id="results-section"
+        class="p-2 bg-gray-100 rounded-lg "
+      >
+        <div class="flex flex-col items-center justify-center">
+          <div class="flex flex-col items-center space-y-4">
+            <div class="w-6 h-6 ">
+              <img
+                src="/images/logo.jpg"
+                alt="Logo"
+                width="40"
+                height="40"
+                class="rounded-full shadow-lg items-center justify-center"
+              />
+            </div>
+            <h1 class="text-center text-black font-semibold text-2xl sm:text-3xl">
+              INTELLECTUAL GIANTS CHRISTIAN ACADEMY
+            </h1>
+          </div>
+
+          <div class="flex  space-y-4 ">
+            <div class="flex flex-col justify-between items-start">
+              <h2 class="font-semibold text-[14px] text-gray-900">
+                Name: ${scores[0]?.studentName}
+              </h2>
+              <h2 class="font-semibold text-[14px] text-gray-800">
+                Class: ${scores[0]?.classRoom}
+              </h2>
+            </div>
+            <div class="flex flex-col justify-between items-end">
+              <h2 class="font-semibold text-[14px] text-gray-800">
+                Term: ${scores[0]?.term}
+              </h2>
+              <h2 class="font-semibold text-[14px] text-gray-800">
+                Academic Session: ${scores[0]?.session}
+              </h2>
+            </div>
+
+            <div class="flex justify-end items-center">
+              <p class="text-sm text-gray-600">
+                <span class="font-semibold">Student ID:</span> ${studentId}
+              </p>
+            </div>
+ <div class="overflow-x-auto bg-white shadow-md rounded-lg mt-2 mb-10">
+              ${
+                scores.length > 0
+                  ? `
+              <table class="min-w-full table-auto">
+                <thead class="bg-gray-200 text-gray-900">
+                  <tr>
+                    ${[
+                      "Subject",
+                      "1st Summarize Test",
+                      "2nd Summarize Test",
+                      "MidTerm Project",
+                      "Assignment",
+                      "Book/Beyond",
+                      "Exam",
+                      "Total",
+                      "Grade",
+                      "Remarks",
+                    ]
+                      .map(
+                        (header) => `
+                      <th class="px-4 py-2 text-sm font-semibold">${header}</th>`
+                      )
+                      .join("")}
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-300">
+                  ${scores
+                    .map(
+                      (score, index) => `
+                      <tr class="${
+                        index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                      }">
+                        <td class="px-6 py-4 text-sm font-medium text-gray-800">
+                          ${score.subject}
+                        </td>
+                        ${[
+                          score.score.firstTest,
+                          score.score.secondTest,
+                          score.score.project,
+                          score.score.bnb,
+                          score.score.assignment,
+                          score.score.exam,
+                          score.score.total,
+                          score.score.grade,
+                        ]
+                          .map(
+                            (value) => `
+                            <td class="px-6 py-4 text-sm text-gray-600">${value}</td>`
+                          )
+                          .join("")}
+                        <td>${getRemarks(score.score.total)}</td>
+                      </tr>
+                    `
+                    )
+                    .join("")}
+                </tbody>
+              </table>`
+                  : ""
+              }
+            </div>
+            
+            ${
+              scores.length > 0
+                ? `
+            <div class="p-6 mt-16 bg-white rounded-lg shadow-sm border border-gray-300 space-y-4">
+              <div class="text-base text-gray-800 flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-4">
+                <p class="text-lg font-medium text-center text-gray-900">
+                  Average Score: <span class="font-bold">${averageScore}</span>
+                </p>
+                <p>
+                  <span class="font-medium">Total Score:</span>
+                  <span class="font-semibold">${totalScore}</span>
+                </p>
+                <p>
+                  <span class="font-medium">Teacher's Comment:</span>
+                  <span class="italic">${comments?.comment}</span>
+                </p>
+                <p>
+                  <span class="font-medium">Principal's Comment:</span>
+                  <span class="italic">${getPrincipalsComment(averageScore)}</span>
+                </p>
+              </div>
+            </div>`
+                : ""
+            }
+          </div>
+        </div>
+      </div>
     </div>
-
-    <div>
-      <p class="sub-heading"><strong>Name:</strong> John Doe</p>
-      <p class="sub-heading"><strong>Class:</strong> 6B</p>
-      <p class="sub-heading"><strong>Term:</strong> First</p>
-      <p class="sub-heading"><strong>Session:</strong> 2023/2024</p>
-      <p class="sub-heading"><strong>Student ID:</strong> 123456789</p>
-    </div>
-
-    <div class="table-container">
-     ${printContents}
-    </div>
-
-  
-
-   
-  </div>
-</body>
+  </body>
 </html>
 
-      `);
-      printWindow.document.close(); // Close the document
-      printWindow.focus(); // Focus on the new window
-      printWindow.print(); // Trigger the print dialog
-      printWindow.close(); // Close the print window after printing
-    }
+    `);
+
+    printWindow?.document.close();
+
+    printWindow!.onload = () => {
+      printWindow?.print();
+      printWindow?.close();
+    };
   };
+
   const saveAsPDF = () => {
     const doc = new jsPDF();
 
@@ -326,11 +444,7 @@ const PostDetails = ({
       doc.text(`2nd Test: ${result.score.secondTest}`, 20, yOffset + 20);
       doc.text(`Midterm Project: ${result.score.project}`, 20, yOffset + 30);
       doc.text(`Assignment: ${result.score.bnb}`, 20, yOffset + 40);
-      doc.text(
-        `Book and Beyond: ${result.score.assignment}`,
-        20,
-        yOffset + 50
-      );
+      doc.text(`Book and Beyond: ${result.score.assignment}`, 20, yOffset + 50);
       doc.text(`Exam: ${result.score.exam}`, 20, yOffset + 60);
       doc.text(`Total: ${result.score.total || "N/A"}`, 20, yOffset + 70);
       doc.text(`Grade: ${result.score.grade}`, 20, yOffset + 80);
@@ -552,7 +666,10 @@ const PostDetails = ({
                   <span className="italic">
                     {getPrincipalsComment(averageScore)}
                   </span>
-                  {comments?.comment}
+                </p>
+                <p>
+                  <span className="font-medium">Teacher's Comment:</span>{" "}
+                  <span className="italic">{comments?.comment}</span>
                 </p>
               </div>
             </div>
