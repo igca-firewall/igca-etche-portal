@@ -30,7 +30,7 @@ const PostCard = ({ post, className = "" }: PostCardProps) => {
 
   return (
     <div
-      className={`post-card bg-white font-inter dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-[20px] overflow-hidden ${className}`}
+      className={`post-card bg-neutral-100 font-inter dark:bg-neutral-900 border border-neutral-200  dark:border-neutral-700 rounded-[20px] overflow-hidden ${className}`}
     >
       {/* Header */}
       <div className="flex items-center p-4">

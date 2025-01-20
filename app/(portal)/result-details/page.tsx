@@ -324,16 +324,16 @@ const PostDetails = ({
       doc.text(`Subject: ${result.subject}`, 20, yOffset);
       doc.text(`1st Test: ${result.score.firstTest}`, 20, yOffset + 10);
       doc.text(`2nd Test: ${result.score.secondTest}`, 20, yOffset + 20);
-      doc.text(`Midterm: ${result.score.project}`, 20, yOffset + 30);
-      doc.text(`Project: ${result.score.assignment}`, 20, yOffset + 40);
+      doc.text(`Midterm Project: ${result.score.project}`, 20, yOffset + 30);
+      doc.text(`Assignment: ${result.score.bnb}`, 20, yOffset + 40);
       doc.text(
-        `Book and Beyond: ${result.score.bnb}`,
+        `Book and Beyond: ${result.score.assignment}`,
         20,
         yOffset + 50
       );
       doc.text(`Exam: ${result.score.exam}`, 20, yOffset + 60);
-      doc.text(`Total: ${result.total || "N/A"}`, 20, yOffset + 70);
-      doc.text(`Grade: ${result.grade}`, 20, yOffset + 80);
+      doc.text(`Total: ${result.score.total || "N/A"}`, 20, yOffset + 70);
+      doc.text(`Grade: ${result.score.grade}`, 20, yOffset + 80);
       yOffset += 90;
     });
 
@@ -349,7 +349,7 @@ const PostDetails = ({
       yOffset + 10
     );
 
-    doc.save("student_result_sheet.pdf");
+    doc.save(`IGCA_Result_${new Date().getDate}.png`);
   };
   const exportToCSV = () => {
     const csvContent =

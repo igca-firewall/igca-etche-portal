@@ -117,10 +117,10 @@ const StudentList: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-full bg-gray-50 dark:bg-neutral-900">
-        <div className="flex flex-col items-center">
+      <div className="flex justify-center items-center h-full rounded-[25px] bg-gray-50 dark:bg-neutral-900">
+        <div className="flex flex-col items-center  py-40">
           <div className="w-12 h-12 border-4 border-gray-300 border-dotted rounded-full animate-spin"></div>
-          <p className="mt-4 text-gray-600 dark:text-gray-300 font-medium">
+          <p className="mt-4  text-gray-600 dark:text-gray-300 font-medium">
             Loading...
           </p>
         </div>
@@ -132,8 +132,9 @@ const StudentList: React.FC = () => {
     return (
       <div
         className="
-          flex flex-col items-center gap-2 text-neutral-500 dark:text-red-200"
+          flex flex-col items-center rounded-[26px] gap-2 mt-4 py-40 text-neutral-500  dark:text-red-200  bg-gray-50 dark:bg-neutral-900"
       >
+          <h2 className="text-xl font-semibold text-red-600">Sorry!</h2>
         No student found, Please check your internet connection and try again later.{" "}
         <button
           className="px-6 py-2 bg-purple-500 text-white rounded-full "

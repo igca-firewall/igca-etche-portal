@@ -8,7 +8,6 @@ import {
 import "tailwindcss/tailwind.css"; // Ensure Tailwind CSS is set up in your project.
 import { useScratchCards } from "@/lib/actions/scratchCard.actions";
 import { useRouter } from "next/navigation";
-import { useUserContext } from "@/context/AuthContext";
 import PostDetails from "@/app/(portal)/result-details/page";
 
 const ScratchCardOTP = ({
@@ -147,7 +146,7 @@ const ScratchCardOTP = ({
     );
   }
   return (
-    <div className="flex flex-col items-center justify-center font-nunito min-h-screen px-32">
+    <div className="flex flex-col items-center justify-center font-nunito ">
       <div className="bg-white dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700 rounded-[25px] shadow-lg p-6 w-full max-w-md">
         <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 text-center mb-4">
           Scratch Card Verification

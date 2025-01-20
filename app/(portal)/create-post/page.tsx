@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from 'react';
 
-function CountdownClock() {
+const  CountdownClock =( ) => {
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
   useEffect(() => {
@@ -11,7 +11,7 @@ function CountdownClock() {
 
     return () => clearTimeout(timer);
   });
-
+  const now = new Date();
   function calculateTimeLeft() {
     const now = new Date();
     const nextTwoMonths = now.getMonth() + 2;
@@ -41,7 +41,7 @@ function CountdownClock() {
   }
 
   return (
-    <div className="flex flex-1 text-neutral-800 dark:text-neutral-300 h-screen">
+    <div className="flex flex-1 text-neutral-800 dark:text-neutral-300 justify-center items-center">
       {/* Ensure full height */}
       <div className="common-container flex flex-col justify-center items-center h-full w-full">
         {/* Center content vertically and ensure full height and width */}
@@ -54,6 +54,7 @@ function CountdownClock() {
            {/* @ts-ignore */}
             {timeLeft.months} months, {timeLeft.days} days, {timeLeft.hours} hours, {timeLeft.minutes} minutes, {timeLeft.seconds} seconds
           </div>
+
         </div>
       </div>
     </div>
