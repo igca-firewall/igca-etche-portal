@@ -4,7 +4,7 @@ import {
 } from "@/lib/actions/rexults.actions";
 import { useEffect, useState } from "react";
 import Select from "./CustomSelect";
-import { classOrder } from "@/lib/utils";
+import { classOrder, getYearRanges } from "@/lib/utils";
 import { Input } from "../ui/input";
 import { useUserContext } from "@/context/AuthContext";
 import { getStudentsByClass } from "@/lib/actions/studentsData.actions";
@@ -336,16 +336,12 @@ const CompiledResults: React.FC = () => {
             Select Session
           </label>
           <Select
-            options={[
-              {
-                value: ` ${currentYear}/${nextYear}`,
-                label: `${currentYear}/${nextYear}`,
-              },
-              {
-                value: ` 2024/2025`,
-                label: `2024/2025`,
-              },
-            ]}
+             options={[
+                          ...getYearRanges(2024).map((range) => ({
+                            value: `${range}`,
+                            label: `${range}`,
+                          }))
+                        ]}
             value={session}
             onChange={(value) => setSession(value)}
             placeholder="Choose a Session"

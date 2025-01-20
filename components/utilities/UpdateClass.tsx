@@ -5,7 +5,7 @@ import {
   updateIdIChanged
 } from "@/lib/actions/results.actions";
 import { Button } from "../ui/button";
-import { classOrder } from "@/lib/utils";
+import { classOrder, getYearRanges } from "@/lib/utils";
 import Select from "./CustomSelect";
 import { prepareAndAddResults, updateScoresWithClassRoom } from "@/lib/actions/updateStudents.actions";
 
@@ -179,14 +179,11 @@ const UpdateScoresComponent: React.FC = () => {
               </label>
               <Select
                 options={[
-                  {
-                    value: ` ${currentYear}/${nextYear}`,
-                    label: `${currentYear}/${nextYear}`,
-                  }, {
-                    value: ` 2024/2025`,
-                    label: `2024/2025`,
-                  },
-                ]}
+                             ...getYearRanges(2024).map((range) => ({
+                               value: `${range}`,
+                               label: `${range}`,
+                             }))
+                           ]}
                 value={session}
                 onChange={(value) => setSession(value)}
                 placeholder="Choose a Session"

@@ -11,7 +11,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import ScratchCardOTP from "./GetCard";
 import { useRouter } from "next/navigation";
-import { classOrder, encrypt, storeClassAndRest } from "@/lib/utils";
+import { classOrder, encrypt, getYearRanges, storeClassAndRest } from "@/lib/utils";
 import { FaSearch } from "react-icons/fa";
 import { getMe } from "@/lib/actions/user.actions";
 import PostDetails from "@/app/(portal)/result-details/page";
@@ -87,53 +87,52 @@ const AllResults = () => {
       setIsLoading(false);
     }
   };
-    // useEffect(() => {
-    //   const fetchStudentsScore = async () => {
-    //     try {
-    //       setIsLoading(true);
-    //       setScores([]);
-        
-  
-    //       const particles = await fetchComments({
-    //         classRoom,
-    //         term,
-    //         session,
-           
-    //       });
-    //       console.log("particles", particles);
-    //       if (particles?.length) {
-    //         const transformedScores = particles.flatMap((result) => {
-    //           return result.scores.map((scoreString: string) => {
-    //             const score = JSON.parse(scoreString); // Parse the JSON string into an object
-    //             return {
-    //               studentId: score.studentId,
-    //               studentName: score.studentName,
-    //               firstTest: score.firstTest,
-    //               secondTest: score.secondTest,
-    //               bnb: score.bnb,
-    //               project: score.project,
-    //               assignment: score.assignment,
-    //               exam: score.exam,
-    //               total: score.total,
-    //               grade: score.grade,
-    //             };
-    //           });
-    //         });
-  
-    //         setScores(transformedScores);
-    //         console.log("Transformed Scores:", transformedScores);
-    //       }
-    //     } catch (error) {
-    //       console.error("Error fetching student scores:", error);
-    //     } finally {
-    //       setIsLoading(false);
-    //     }
-    //   };
-  
-    //   if (classRoom && subject && session && term) {
-    //     fetchStudentsScore();
-    //   }
-    // }, [classRoom,  session, term]);
+  // useEffect(() => {
+  //   const fetchStudentsScore = async () => {
+  //     try {
+  //       setIsLoading(true);
+  //       setScores([]);
+
+  //       const particles = await fetchComments({
+  //         classRoom,
+  //         term,
+  //         session,
+
+  //       });
+  //       console.log("particles", particles);
+  //       if (particles?.length) {
+  //         const transformedScores = particles.flatMap((result) => {
+  //           return result.scores.map((scoreString: string) => {
+  //             const score = JSON.parse(scoreString); // Parse the JSON string into an object
+  //             return {
+  //               studentId: score.studentId,
+  //               studentName: score.studentName,
+  //               firstTest: score.firstTest,
+  //               secondTest: score.secondTest,
+  //               bnb: score.bnb,
+  //               project: score.project,
+  //               assignment: score.assignment,
+  //               exam: score.exam,
+  //               total: score.total,
+  //               grade: score.grade,
+  //             };
+  //           });
+  //         });
+
+  //         setScores(transformedScores);
+  //         console.log("Transformed Scores:", transformedScores);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching student scores:", error);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+
+  //   if (classRoom && subject && session && term) {
+  //     fetchStudentsScore();
+  //   }
+  // }, [classRoom,  session, term]);
   useEffect(() => {
     const fetchStudents = async () => {
       try {
@@ -210,16 +209,7 @@ const AllResults = () => {
       setXed(false);
     }
   };
-  const currentYear = new Date().getFullYear();
-  const nextYear = currentYear + 1;
-  useEffect(() => {
-    if (classRoom && session && term) {
-      const addIt = storeClassAndRest(classRoom, term, session);
-    }
-  }, [classRoom, session, term]);
-  if (!user) {
-    return <div>The page is loading...</div>;
-  }
+
   if (isFish) {
     return (
       <div>
@@ -281,14 +271,10 @@ const AllResults = () => {
           </label>
           <Select
             options={[
-              {
-                value: `${currentYear}/${nextYear}`,
-                label: `${currentYear}/${nextYear}`,
-              },
-              {
-                value: `2024/2025`,
-                label: `2024/2025`,
-              },
+              ...getYearRanges(2024).map((range) => ({
+                value: `${range}`,
+                label: `${range}`,
+              }))
             ]}
             value={session}
             onChange={(value) => setSession(value)}

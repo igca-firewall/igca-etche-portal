@@ -12,7 +12,7 @@ import {
   listAllStudents,
 } from "@/lib/actions/studentsData.actions";
 import { getMe } from "@/lib/actions/user.actions";
-import { classOrder } from "@/lib/utils";
+import { classOrder, getYearRanges } from "@/lib/utils";
 // Import the addComment function
 import { Models } from "appwrite";
 import Image from "next/image";
@@ -253,16 +253,12 @@ const Teachers = () => {
               Select Session
             </label>
             <Select
-              options={[
-                {
-                  value: `${currentYear}/${nextYear}`,
-                  label: `${currentYear}/${nextYear}`,
-                },
-                {
-                  value: `2024/2025`,
-                  label: `2024/2025`,
-                },
-              ]}
+               options={[
+                            ...getYearRanges(2024).map((range) => ({
+                              value: `${range}`,
+                              label: `${range}`,
+                            }))
+                          ]}
               value={session}
               onChange={(value) => setSession(value)}
               placeholder="Choose a Session"

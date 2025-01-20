@@ -18,20 +18,24 @@ const {
 export const createScratchCard = async () => {
   const { database } = await createAdminClient();
   try {
-    const scratchCard = await database.createDocument(
-      DATABASE_ID!,
-      SCRATCHCARD_COLLECTION_ID!,
-      ID.unique(),
-      {
-        code: generateScratchCardCode(),
-        id: generateUniqueId(),
-        status: "unUsed",
-      }
-    );
+    const Cardnumber = 500; // Number of cards to create
+
+    const scratchCard = Array.from({ length: Cardnumber }, () => {
+      return database.createDocument(
+        DATABASE_ID!,
+        SCRATCHCARD_COLLECTION_ID!,
+        ID.unique(),
+        {
+          code: generateScratchCardCode(),
+          id: generateUniqueId(),
+          status: "unUsed",
+        }
+      );
+    });
     if (!scratchCard) {
       console.log("No new ScratchCard created");
     }
-    return parseStringify(scratchCard.documents[0]);
+    return parseStringify(scratchCard);
   } catch (error) {
     console.error("An error occurred while creating a scratch card:", error);
   }

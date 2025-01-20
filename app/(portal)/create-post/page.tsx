@@ -41,7 +41,7 @@ function CountdownClock() {
   }
 
   return (
-    <div className="flex flex-1 h-screen">
+    <div className="flex flex-1 text-neutral-800 dark:text-neutral-300 h-screen">
       {/* Ensure full height */}
       <div className="common-container flex flex-col justify-center items-center h-full w-full">
         {/* Center content vertically and ensure full height and width */}

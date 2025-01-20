@@ -1,4 +1,3 @@
-
 import { twMerge } from "tailwind-merge";
 import { type ClassValue, clsx } from "clsx";
 import qs from "query-string";
@@ -215,11 +214,8 @@ export const authFormSchema = (type: string, role: string) => {
       firstName: z.string().min(1, "First Name is required").optional(), // Optional for non-relevant roles
       lastName: z.string().min(1, "Last Name is required").optional(),
       phone: z.string().min(1, "Phone is required").optional(),
-      dob: z
-      .string()
-      .min(1, "Date of Birth is required")
-      .optional() // Make it optional if no date is selected
-      ,   guardianContact: z
+      dob: z.string().min(1, "Date of Birth is required").optional(), // Make it optional if no date is selected
+      guardianContact: z
         .string()
         .min(1, "Guardian Contact is required")
         .optional(),
@@ -404,8 +400,7 @@ export function generateAvatar(name: string): string {
 export const storeClassAndRest = (
   classRoom: string,
   term: string,
-  session: string,
- 
+  session: string
 ) => {
   const userData = { classRoom, session, term };
   // Encrypt the user data
@@ -498,7 +493,7 @@ export const dummyPosts = [
     tags: " #IntellectualGiants #LeadershipStartsHere #ProudAlumni",
     $createdAt: "2024-08-01T10:00:00Z",
     imageUrl: "/images/tenage.jpeg",
-    verified: true
+    verified: true,
   },
   {
     $id: "2",
@@ -514,9 +509,8 @@ export const dummyPosts = [
     tags: "",
     $createdAt: "2024-09-15T14:30:00Z",
     imageUrl: "/images/director.jpeg",
-    verified: true
+    verified: true,
   },
- 
 ];
 // themes.ts
 // Define the structure of the theme object
@@ -591,7 +585,8 @@ export const classOrder = [
 ];
 export function generateavatar(name: string, size = 50): string {
   // Get the first two letters and convert them to uppercase
-  const firstTwoLetters = name.charAt(0).toUpperCase() + name.charAt(1).toUpperCase() || "?";
+  const firstTwoLetters =
+    name.charAt(0).toUpperCase() + name.charAt(1).toUpperCase() || "?";
 
   // New bright and vibrant color palette
   const colors = [
@@ -651,7 +646,6 @@ export function generateavatar(name: string, size = 50): string {
   ctx.textBaseline = "middle";
   ctx.fillText(firstTwoLetters, size / 2, size / 2); // Use firstTwoLetters here
 
-  
   return canvas.toDataURL("image/png");
 }
 export const encrypt = (text: string) => {
@@ -664,5 +658,18 @@ export const decrypt = (encryptedText: string) => {
   return bytes.toString(CryptoJS.enc.Utf8);
 };
 export function formatSubject(subject: string): string {
-  return subject.replace(/([a-z])([A-Z])/g, '$1 $2');
+  return subject.replace(/([a-z])([A-Z])/g, "$1 $2");
 }
+export const getYearRanges = (startYear: number): string[] => {
+  const currentYear = new Date().getFullYear();
+  const ranges: string[] = [];
+
+  // Loop through the years and create the range until the current year
+  for (let year = startYear; year <= currentYear; year++) {
+    const range = `${year}/${year + 1}`;
+    console.log("Adding range:", range); // Debugging log to check the value being pushed
+    ranges.push(range);
+  }
+
+  return ranges;
+};
