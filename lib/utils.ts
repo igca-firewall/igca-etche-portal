@@ -508,7 +508,7 @@ export const dummyPosts = [
     location: "Nigeria",
     tags: "",
     $createdAt: "2024-09-15T14:30:00Z",
-    imageUrl: "/images/director.jpeg",
+    imageUrl: "/images/director.jpg",
     verified: true,
   },
 ];
@@ -667,9 +667,52 @@ export const getYearRanges = (startYear: number): string[] => {
   // Loop through the years and create the range until the current year
   for (let year = startYear; year <= currentYear; year++) {
     const range = `${year}/${year + 1}`;
-    console.log("Adding range:", range); // Debugging log to check the value being pushed
+    // Debugging log to check the value being pushed
     ranges.push(range);
   }
 
   return ranges;
 };
+export const options = [
+  { value: "AgriculturalScience", label: "Agricultural Science" },
+  { value: "BasicBiology", label: "Basic Biology" },
+  { value: "BasicChemistry", label: "Basic Chemistry" },
+  { value: "BasicPhysics", label: "Basic Physics" },
+  { value: "Biology", label: "Biology" },
+  { value: "BusinessStudies", label: "Business Studies" },
+  { value: "Chemistry", label: "Chemistry" },
+  {
+    value: "ChristianReligiousStudies",
+    label: "Christian Religious Studies",
+  },
+  { value: "CivicEducation", label: "Civic Education" },
+  { value: "Commerce", label: "Commerce" },
+  {
+    value: "CulturalCreativeArt",
+    label: "Cultural and Creative Art",
+  },
+  { value: "Economics", label: "Economics" },
+  { value: "EnglishLanguage", label: "English Language" },
+  { value: "French", label: "French" },
+  { value: "Geography", label: "Geography" },
+  { value: "Government", label: "Government" },
+  { value: "History", label: "History" },
+  { value: "ICT", label: "ICT" },
+  { value: "IgboLanguage", label: "Igbo Language" },
+  { value: "LiteratureInEnglish", label: "Literature-in-English" },
+  { value: "Mathematics", label: "Mathematics" },
+  { value: "MoralInstruction", label: "Moral Instruction" },
+  { value: "MorningDrill", label: "Morning Drill" },
+  {
+    value: "NationalValueEducation",
+    label: "National Value Education",
+  },
+  { value: "Physics", label: "Physics" },
+  { value: "PrevocationalStudies", label: "Prevocational Studies" },
+];
+
+export const termOptions = [
+  { value: "1st Term", label: "1st Term" },
+  { value: "2nd Term", label: "2nd Term" },
+  { value: "3rd Term", label: "3rd Term" },
+]

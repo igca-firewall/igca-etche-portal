@@ -4,7 +4,7 @@ import { Input } from "../ui/input";
 import { Models } from "node-appwrite";
 import { getStudentsByClass } from "@/lib/actions/studentsData.actions";
 import Select from "./CustomSelect";
-import { classOrder, getYearRanges } from "@/lib/utils";
+import { classOrder, getYearRanges, options, termOptions } from "@/lib/utils";
 import { useUserContext } from "@/context/AuthContext";
 
 import Image from "next/image";
@@ -54,6 +54,8 @@ const SubjectResultUploader: React.FC = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [values, setValues] = useState({});
   // New state for processing status
+  const [isFailed, setIsFailed] = useState(false);
+
   const [isSuccess, setIsSuccess] = useState(false); // State for success popup
   const [isFailure, setIsFailure] = useState(false); // State for failure popup
   const [errorMessage, setErrorMessage] = useState(""); // State for storing error message
@@ -182,12 +184,12 @@ const SubjectResultUploader: React.FC = () => {
       setIsProcessing(false); // Reset processing state
     }
   };
- const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const closeSuccessPopup = () => {
     setIsSuccess(false);
   };
- 
+
   // Close the failure popup
   const closeFailurePopup = () => {
     setIsFailure(false);
@@ -227,16 +229,40 @@ const SubjectResultUploader: React.FC = () => {
       setResults(updatedResults);
     }
   };
-  const currentYear = new Date().getFullYear();
-  const nextYear = currentYear + 1;
+  const fetchStudents = async () => {
+    try {
+      setIsLoading(true);
+      setScores([]);
+      setResults([]);
+      setStudents([]); // Clear students immediately before fetching
+      setIsFailed(false);
+      const xed: Models.Document[] = await getStudentsByClass({ classRoom });
+      if (xed) {
+        const transformedStudents = xed.map((student) => ({
+          $id: student.$id,
+          name: student.name,
+          studentId: student.studentId,
+        }));
+
+        setStudents(transformedStudents);
+        console.log(transformedStudents, students);
+      }
+    } catch (error) {
+      console.error("Error fetching students:", error);
+      setIsFailed(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     const fetchStudents = async () => {
       try {
         setIsLoading(true);
-        setScores([])
-        setResults([])
+        setScores([]);
+        setResults([]);
         setStudents([]); // Clear students immediately before fetching
-
+        setIsFailed(false);
         const xed: Models.Document[] = await getStudentsByClass({ classRoom });
         if (xed) {
           const transformedStudents = xed.map((student) => ({
@@ -250,6 +276,7 @@ const SubjectResultUploader: React.FC = () => {
         }
       } catch (error) {
         console.error("Error fetching students:", error);
+        setIsFailed(true);
       } finally {
         setIsLoading(false);
       }
@@ -266,7 +293,7 @@ const SubjectResultUploader: React.FC = () => {
         setIsLoading(true);
         setScores([]); // Clear scores immediately before fetching
         setIsStudent([]); // Clear isStudent immediately before fetching
-        setResults([])
+        setResults([]);
         const particles = await fetchResultData({
           classRoom,
           term,
@@ -296,6 +323,9 @@ const SubjectResultUploader: React.FC = () => {
 
           setScores(transformedScores);
           console.log("Transformed Scores:", transformedScores);
+          if (transformedScores.length === 0) {
+            setIsFailed(true);
+          }
         } else {
           console.error(
             "Expected particles to be an array but got",
@@ -360,43 +390,7 @@ const SubjectResultUploader: React.FC = () => {
             Select Subject
           </label>
           <Select
-            options={[
-              { value: "AgriculturalScience", label: "Agricultural Science" },
-              { value: "BasicBiology", label: "Basic Biology" },
-              { value: "BasicChemistry", label: "Basic Chemistry" },
-              { value: "BasicPhysics", label: "Basic Physics" },
-              { value: "Biology", label: "Biology" },
-              { value: "BusinessStudies", label: "Business Studies" },
-              { value: "Chemistry", label: "Chemistry" },
-              {
-                value: "ChristianReligiousStudies",
-                label: "Christian Religious Studies",
-              },
-              { value: "CivicEducation", label: "Civic Education" },
-              { value: "Commerce", label: "Commerce" },
-              {
-                value: "CulturalCreativeArt",
-                label: "Cultural and Creative Art",
-              },
-              { value: "Economics", label: "Economics" },
-              { value: "EnglishLanguage", label: "English Language" },
-              { value: "French", label: "French" },
-              { value: "Geography", label: "Geography" },
-              { value: "Government", label: "Government" },
-              { value: "History", label: "History" },
-              { value: "ICT", label: "ICT" },
-              { value: "IgboLanguage", label: "Igbo Language" },
-              { value: "LiteratureInEnglish", label: "Literature-in-English" },
-              { value: "Mathematics", label: "Mathematics" },
-              { value: "MoralInstruction", label: "Moral Instruction" },
-              { value: "MorningDrill", label: "Morning Drill" },
-              {
-                value: "NationalValueEducation",
-                label: "National Value Education",
-              },
-              { value: "Physics", label: "Physics" },
-              { value: "PrevocationalStudies", label: "Prevocational Studies" },
-            ]}
+            options={options}
             value={subject}
             onChange={(value) => setSubject(value)}
             placeholder="Choose a Subject"
@@ -412,11 +406,7 @@ const SubjectResultUploader: React.FC = () => {
             Select Term
           </label>
           <Select
-            options={[
-              { value: "1st Term", label: "1st Term" },
-              { value: "2nd Term", label: "2nd Term" },
-              { value: "3rd Term", label: "3rd Term" },
-            ]}
+            options={termOptions}
             value={term}
             onChange={(value) => setTerm(value)}
             placeholder="Choose a Term"
@@ -431,12 +421,12 @@ const SubjectResultUploader: React.FC = () => {
             Select Session
           </label>
           <Select
-             options={[
-                          ...getYearRanges(2024).map((range) => ({
-                            value: `${range}`,
-                            label: `${range}`,
-                          }))
-                        ]}
+            options={[
+              ...getYearRanges(2024).map((range) => ({
+                value: ` ${range}`,
+                label: `${range}`,
+              })),
+            ]}
             value={session}
             onChange={(value) => setSession(value)}
             placeholder="Choose a Session"
@@ -448,9 +438,11 @@ const SubjectResultUploader: React.FC = () => {
       {/* Student Result Table */}
       {/* Student Result Table */}
       <div className="w-full overflow-x-auto flex-grow p-4">
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2">
-          Add Student Results
-        </label>
+        {students.length !== 0 && (
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2">
+            Add Student Results
+          </label>
+        )}
 
         {isLoading ? (
           <div className="flex justify-center items-center h-full ">
@@ -692,21 +684,24 @@ const SubjectResultUploader: React.FC = () => {
       )}
 
       {/* Submit Button */}
-      <div className="w-full text-center mt-6">
-        <button
-          onClick={handleSubmit}
-          className="bg-purple-500 text-white py-6 px-10 rounded-full hover:bg-purple-600 focus:ring-4 focus:ring-purple-300 disabled:bg-gray-300"
-          disabled={
-            isProcessing ||
-            !classRoom ||
-            !subject ||
-            !term ||
-            results.length === 0
-          }
-        >
-          {isProcessing ? "Submitting..." : "Submit Results"}
-        </button>
-      </div>
+      {students.length > 0 && (
+        <div className="w-full text-center mt-6">
+          <button
+            onClick={handleSubmit}
+            className="bg-purple-500 text-white py-6 px-10 rounded-full hover:bg-purple-600 focus:ring-4 focus:ring-purple-300 disabled:bg-gray-300"
+            disabled={
+              isProcessing ||
+              !classRoom ||
+              !subject ||
+              !term ||
+              results.length === 0
+            }
+          >
+            {isProcessing ? "Submitting..." : "Submit Results"}
+          </button>
+        </div>
+      )}
+
       {showPopup && (
         <div className="absolute top-0 left-0 p-4 bg-red-500 text-white rounded-md shadow-lg">
           <span>You have exceeded the maximum value of {max}!</span>
@@ -715,6 +710,21 @@ const SubjectResultUploader: React.FC = () => {
             className="ml-4 text-gray-200 hover:text-white"
           >
             Close
+          </button>
+        </div>
+      )}
+      {isFailed && (
+        <div
+          className="
+          flex flex-col items-center gap-2 text-neutral-500 dark:text-red-200"
+        >
+          No student found, Please check your internet connection or provided
+          credentials.{" "}
+          <button
+            className="px-6 py-2 bg-purple-500 text-white rounded-full "
+            onClick={() => fetchStudents()}
+          >
+            Retry
           </button>
         </div>
       )}

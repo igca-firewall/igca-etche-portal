@@ -67,6 +67,7 @@ export const inputStudentInfo = async ({
   expirationTime,
   guardianInfo,
   studentId,
+  image,
 }: StudentInfoProps) => {
   try {
     const { database } = await createAdminClient();
@@ -96,6 +97,7 @@ export const inputStudentInfo = async ({
         guardianInfo,
         expirationTime,
         studentId,
+        image,
       }
     );
     return parseStringify(newStudentInfo);

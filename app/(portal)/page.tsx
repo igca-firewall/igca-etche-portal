@@ -67,16 +67,19 @@ const Home = () => {
         <div className="home-posts">
           {
            <ul className="flex flex-col gap-9 items-center justify-center w-full">
-            <p className="font-semibold items-center justify-center flex gap-3 text-2xl text-neutral-600 ">
+            <div className="font-semibold items-center justify-center flex gap-3 text-2xl text-neutral-800 dark:text-neutral-300  ">
          <PinIcon className="rotate-45 w-6 h-6 text-purple-600"/>  Pinned Posts:  
-           </p>   
+           </div>   
               <PostAd/>
               {dummyPosts && dummyPosts.length > 0 ? (
                 //@ts-ignore
                 dummyPosts.map((post: dummyPosts) => (
                   <PostCard post={post} key={post.$id} />
                 ))
-              ) : (
+               
+              )    
+          
+              : (
                 <div className="flex-col h-[500px] justify-center items-center gap-3 rounded-lg">
                   <div className="flex flex-col gap-3 items-center ">
                     <p className="font-serif font-bold text-neutral-700 dark:text-neutral-200 text-[80px] md:text-[90px] xl:text-[100px]">
@@ -97,8 +100,10 @@ const Home = () => {
                   </div>
                 </div>
               )}
+                 
             </ul>
-          }
+          } <p className="font-regular items-center justify-center flex gap-3  text-neutral-800 dark:text-neutral-300  ">
+                  Other Posts </p>
         </div>
       </div>
       {/* <StudentForm/> */}

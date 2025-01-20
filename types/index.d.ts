@@ -146,12 +146,13 @@ interface Helper {
   file?: FormData;
 }
 interface StudentInfoProps {
-  name: string[];
+  name: string;
   expirationTime: string;
-  classRoom: string[];
-  guardianInfo: string[];
-  dateOfBirth: string[];
+  classRoom: string;
+  guardianInfo: string;
+  dateOfBirth: string;
   studentId: string;
+  image?: string
 }
 interface subjectProps {
   classRoom: string[];

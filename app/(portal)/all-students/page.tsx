@@ -34,11 +34,9 @@ const StudentList: React.FC = () => {
   const [isFailure, setIsFailure] = useState(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState<string | null>(null);
-
   // Edit form state
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editStudentData, setEditStudentData] = useState<Student | null>(null);
@@ -53,12 +51,37 @@ const StudentList: React.FC = () => {
   const closeFailurePopup = () => {
     setIsFailure(false);
   };
+  const fetchStudents = async () => {
+    try {
+      setIsLoading(true);
+      const limit = 10; // Fetch 10 students per page
+
+      const xed: Models.Document[] = await listAllStudents();
+
+      if (xed) {
+        const transformedStudents = xed.map((student) => ({
+          $id: student.$id,
+          name: student.name,
+          dateOfBirth: student.dateOfBirth,
+          studentId: student.studentId,
+          image: student.image,
+          classRoom: student.classRoom,
+          createdAt: student.$createdAt,
+        }));
+        setTotalPages(Math.ceil(xed.length / limit));
+        setStudents(transformedStudents);
+      }
+    } catch (error) {
+      console.error("Error fetching students:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   useEffect(() => {
     const fetchStudents = async () => {
       try {
         setIsLoading(true);
         const limit = 10; // Fetch 10 students per page
-        const offset = (currentPage - 1) * limit;
 
         const xed: Models.Document[] = await listAllStudents();
 
@@ -81,7 +104,6 @@ const StudentList: React.FC = () => {
         setIsLoading(false);
       }
     };
-
     fetchStudents();
   }, [currentPage]);
 
@@ -108,12 +130,17 @@ const StudentList: React.FC = () => {
 
   if (!students.length) {
     return (
-      <div className="flex justify-center items-center h-full bg-gray-50 dark:bg-neutral-900">
-        <div className="text-center">
-          <p className="text-lg text-gray-500 dark:text-gray-400">
-            No students found
-          </p>
-        </div>
+      <div
+        className="
+          flex flex-col items-center gap-2 text-neutral-500 dark:text-red-200"
+      >
+        No student found, Please check your internet connection and try again later.{" "}
+        <button
+          className="px-6 py-2 bg-purple-500 text-white rounded-full "
+          onClick={() => fetchStudents()}
+        >
+          Retry
+        </button>
       </div>
     );
   }
@@ -142,18 +169,6 @@ const StudentList: React.FC = () => {
   const cancelDelete = () => {
     setStudentToDelete(null);
     setIsModalOpen(false);
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
   };
 
   const handleEditSubmit = async (e: React.FormEvent) => {
@@ -282,7 +297,8 @@ const StudentList: React.FC = () => {
                           <div className="w-12 h-12 sm:w-10 sm:h-10 rounded-full overflow-hidden bg-neutral-200 dark:bg-neutral-700 shadow-md">
                             <Image
                               src={
-                                student.image !== undefined || student.image !== null 
+                                student.image !== undefined ||
+                                student.image !== null
                                   ? student.image
                                   : "/images/th.png"
                               }

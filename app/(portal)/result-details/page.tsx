@@ -8,6 +8,7 @@ import { myArray } from "@/lib/actions/results.actions";
 import Image from "next/image";
 import { decryptKey, formatSubject } from "@/lib/utils";
 import { fetchComments } from "@/lib/actions/comment.actions";
+import jsPDF from "jspdf";
 interface Comment {
   studentName: string;
   studentId: string;
@@ -301,7 +302,55 @@ const PostDetails = ({
       printWindow.close(); // Close the print window after printing
     }
   };
+  const saveAsPDF = () => {
+    const doc = new jsPDF();
 
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(16);
+    doc.text("Student Result Sheet", 20, 20);
+
+    doc.setFontSize(12);
+    doc.text(`Name: ${scores[0].studentName}`, 20, 30);
+
+    doc.text(`Student ID: ${studentId}`, 20, 60);
+    doc.text(`Classroom: ${scores[0].classRoom}`, 20, 70);
+    doc.text(`Term: ${scores[0].term}`, 20, 80);
+    doc.text(`Session: ${scores[0]?.session}`, 20, 80);
+
+    doc.text("Results", 20, 90);
+    let yOffset = 100;
+
+    scores.forEach((result) => {
+      doc.text(`Subject: ${result.subject}`, 20, yOffset);
+      doc.text(`1st Test: ${result.score.firstTest}`, 20, yOffset + 10);
+      doc.text(`2nd Test: ${result.score.secondTest}`, 20, yOffset + 20);
+      doc.text(`Midterm: ${result.score.project}`, 20, yOffset + 30);
+      doc.text(`Project: ${result.score.assignment}`, 20, yOffset + 40);
+      doc.text(
+        `Book and Beyond: ${result.score.bnb}`,
+        20,
+        yOffset + 50
+      );
+      doc.text(`Exam: ${result.score.exam}`, 20, yOffset + 60);
+      doc.text(`Total: ${result.total || "N/A"}`, 20, yOffset + 70);
+      doc.text(`Grade: ${result.grade}`, 20, yOffset + 80);
+      yOffset += 90;
+    });
+
+    // Adding Teacher and Principal Comments
+    doc.text("Teacher's Comment:", 20, yOffset);
+    doc.text(comments?.comment || "No comment provided.", 20, yOffset + 10);
+    yOffset += 30;
+
+    doc.text("Principal's Comment:", 20, yOffset);
+    doc.text(
+      getPrincipalsComment(averageScore) || "No comment provided.",
+      20,
+      yOffset + 10
+    );
+
+    doc.save("student_result_sheet.pdf");
+  };
   const exportToCSV = () => {
     const csvContent =
       "data:text/csv;charset=utf-8," +
@@ -347,18 +396,15 @@ const PostDetails = ({
         console.error("Element with id 'results-section' not found.");
         return;
       }
-  
+
       // Capture the element as a PNG
       const image = await toPng(element, {
         cacheBust: true, // Prevent caching issues
         backgroundColor: "white", // Add a background color if needed
       });
-  
+
       // Use FileSaver to save the image
-      saveAs(
-        image,
-        `IGCA_Result_${new Date().getDate}.png`
-      );
+      saveAs(image, `IGCA_Result_${new Date().getDate}.png`);
     } catch (error) {
       console.error("Failed to download as image:", error);
     }

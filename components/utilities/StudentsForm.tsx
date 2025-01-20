@@ -1,6 +1,6 @@
 "use client";
 import { inputStudentInfo } from "@/lib/actions/studentsData.actions";
-import { generateStudentId } from "@/lib/utils";
+import { generateavatar, generateStudentId } from "@/lib/utils";
 import React, { useState, useRef, useEffect } from "react";
 import Select from "./CustomSelect";
 import { useUserContext } from "@/context/AuthContext";
@@ -184,12 +184,13 @@ const StudentForm = () => {
       for (const student of populatedStudents) {
         try {
           const submitted = await inputStudentInfo({
-            name: student.fullName,
+            name: student.fullName.replace(/\s+/, ''),
             classRoom: student.classRoom,
-            dateOfBirth: student.dateOfBirth,
-            guardianInfo: student.parentInfo,
+            dateOfBirth: student.dateOfBirth.replace(/\s+/, ''),
+            guardianInfo: student.parentInfo.replace(/\s+/, ''),
             expirationTime: formattedExpirationTime,
             studentId: `IGCA/ETCHE/${generateStudentId()}${generateStudentId()}`,
+            image: generateavatar(`${student.fullName[0]}${student.fullName[1]}`),
           });
 
           if (submitted) {

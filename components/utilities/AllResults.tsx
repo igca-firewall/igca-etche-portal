@@ -11,7 +11,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import ScratchCardOTP from "./GetCard";
 import { useRouter } from "next/navigation";
-import { classOrder, encrypt, getYearRanges, storeClassAndRest } from "@/lib/utils";
+import { classOrder, encrypt, getYearRanges, storeClassAndRest, termOptions } from "@/lib/utils";
 import { FaSearch } from "react-icons/fa";
 import { getMe } from "@/lib/actions/user.actions";
 import PostDetails from "@/app/(portal)/result-details/page";
@@ -251,11 +251,7 @@ const AllResults = () => {
             Select Term
           </label>
           <Select
-            options={[
-              { value: "1st Term", label: "1st Term" },
-              { value: "2nd Term", label: "2nd Term" },
-              { value: "3rd Term", label: "3rd Term" },
-            ]}
+            options={termOptions}
             value={term}
             onChange={(value) => setTerm(value)}
             placeholder="Choose a Term"
