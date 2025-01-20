@@ -8,7 +8,11 @@ import { myArray } from "@/lib/actions/results.actions";
 import Image from "next/image";
 import { decryptKey, formatSubject } from "@/lib/utils";
 import { fetchComments } from "@/lib/actions/comment.actions";
-
+interface Comment {
+  studentName: string;
+  studentId: string;
+  comment: string;
+}
 const PostDetails = ({
   session,
   term,
@@ -26,7 +30,7 @@ const PostDetails = ({
   const [scores, setScores] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [extractedPart, setExtractedPart] = useState<string | null>(null);
-  const [comments, setComments] = useState<any[]>([]);
+  const [comments, setComments] = useState<Comment | null>(null);
   const messages = [
     "Hang tight! We're fetching the data... 🚀",
     "Just a moment... Great things are loading! 🔄",
@@ -72,11 +76,15 @@ const PostDetails = ({
   useEffect(() => {
     const fetchCommentsData = async () => {
       try {
-        const fetchedComments = await fetchComments({ term, session: session!.replace(/\s+/g, ""), classRoom, studentId });
+        const fetchedComments = await fetchComments({
+          term,
+          session: session!.replace(/\s+/g, ""),
+          classRoom,
+          studentId,
+        });
         setComments(fetchedComments);
-      
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     };
 
@@ -117,32 +125,175 @@ const PostDetails = ({
 
     if (printWindow) {
       printWindow.document.write(`
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <title>Print Results</title>
-            <style>
-              /* Add your print-specific styles here */
-              body {
-                font-family: sans-serif;
-                margin: 0;
-                padding: 20px;
-              }
-              table {
-                width: 100%;
-                border-collapse: collapse;
-              }
-              th, td {
-                border: 1px solid black;
-                padding: 8px;
-                text-align: left;
-              }
-            </style>
-          </head>
-          <body>
-            ${printContents}
-          </body>
-        </html>
+      <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Results Section</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f3f4f6;
+    }
+
+    #results-section {
+      padding: 12px;
+      background-color: #f3f4f6;
+      color: #000;
+      border-radius: 25px;
+      border: 1px solid #e5e7eb;
+      max-width: 900px;
+      margin: 20px auto;
+    }
+
+    #results-section.dark {
+      background-color: #121212;
+      border-color: #374151;
+      color: #fff;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    .logo {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .heading {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 16px 0;
+    }
+
+    .sub-heading {
+      font-size: 14px;
+      margin: 4px 0;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      background-color: #6b7280;
+      color: #fff;
+      padding: 8px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #f9fafb;
+    }
+
+    tbody tr:nth-child(odd) {
+      background-color: #fff;
+    }
+
+    td {
+      padding: 8px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      justify-content: center;
+    }
+
+    .button {
+      padding: 10px 16px;
+      border-radius: 50px;
+      border: 1px solid #e5e7eb;
+      background-color: #e5e7eb;
+      color: #6b7280;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .button img {
+      width: 20px;
+      height: 20px;
+    }
+
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+
+    .loading-box {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .loading-box span {
+      display: block;
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .loading-box p {
+      font-size: 16px;
+      color: #6b7280;
+    }
+  </style>
+</head>
+<body>
+  <div id="results-section">
+    <div class="center">
+      <img src="/images/logo.jpg" alt="Logo" class="logo">
+      <h1 class="heading">INTELLECTUAL GIANTS CHRISTIAN ACADEMY</h1>
+    </div>
+
+    <div>
+      <p class="sub-heading"><strong>Name:</strong> John Doe</p>
+      <p class="sub-heading"><strong>Class:</strong> 6B</p>
+      <p class="sub-heading"><strong>Term:</strong> First</p>
+      <p class="sub-heading"><strong>Session:</strong> 2023/2024</p>
+      <p class="sub-heading"><strong>Student ID:</strong> 123456789</p>
+    </div>
+
+    <div class="table-container">
+     ${printContents}
+    </div>
+
+  
+
+   
+  </div>
+</body>
+</html>
+
       `);
       printWindow.document.close(); // Close the document
       printWindow.focus(); // Focus on the new window
@@ -190,16 +341,28 @@ const PostDetails = ({
   };
 
   const downloadAsImage = async () => {
-    const element = document.getElementById("results-section");
-    if (element) {
-      const image = await toPng(element);
+    try {
+      const element = document.getElementById("results-section");
+      if (!element) {
+        console.error("Element with id 'results-section' not found.");
+        return;
+      }
+  
+      // Capture the element as a PNG
+      const image = await toPng(element, {
+        cacheBust: true, // Prevent caching issues
+        backgroundColor: "white", // Add a background color if needed
+      });
+  
+      // Use FileSaver to save the image
       saveAs(
         image,
-        `IGCA Result for ${localUserData.term} ${localUserData.classRoom}, ${localUserData.session} StudentId: ${extractedPart}`
+        `IGCA_Result_${new Date().getDate}.png`
       );
+    } catch (error) {
+      console.error("Failed to download as image:", error);
     }
   };
-
   return (
     <div
       id="results-section"
@@ -343,15 +506,13 @@ const PostDetails = ({
                   <span className="italic">
                     {getPrincipalsComment(averageScore)}
                   </span>
-                  {comments[0].comment}
+                  {comments?.comment}
                 </p>
               </div>
             </div>
             <div className="flex space-x-4 mb-4 items-center justify-center">
               <button
-                disabled={
-                  !user || scores.length < 1 ||  isLoading
-                }
+                disabled={!user || scores.length < 1 || isLoading}
                 onClick={printPage}
                 className="bg-gray-300 dark:bg-neutral-700 border-gray-400 dark:border-gray-900 text-neutral-500 dark:text-purple-50 rounded-full px-6 py-4 mt-10 mb-10 flex gap-2 items-center justify-center"
               >
@@ -364,7 +525,7 @@ const PostDetails = ({
                 Print
               </button>
               <button
-                disabled={!user || !scores ||  isLoading}
+                disabled={!user || !scores || isLoading}
                 onClick={exportToCSV}
                 className="bg-gray-300 dark:bg-neutral-700 border-gray-400 dark:border-gray-900 text-neutral-500 dark:text-purple-50 rounded-full px-6 py-4 mt-10 mb-10 flex gap-2 items-center justify-center"
               >
@@ -377,7 +538,7 @@ const PostDetails = ({
                 Export
               </button>
               <button
-                disabled={!user || !scores ||  isLoading}
+                disabled={!user || !scores || isLoading}
                 onClick={downloadAsImage}
                 className="bg-gray-300 dark:bg-neutral-700 border-gray-400 dark:border-gray-900 text-neutral-500 dark:text-purple-50 rounded-full px-6 py-4 mt-10 mb-10 flex gap-2 items-center justify-center"
               >

@@ -191,60 +191,23 @@ export const fetchComments = async ({
       throw new Error("No results found for the given query.");
     }
 
-    const studentScores = existingComments.documents
-      .map((item) => {
-        // Skip if no scores available
-        if (!item.scores || item.scores.length === 0) {
-          return null;
-        }
+    // Parse and filter comments for the specified studentId
+    const comments = existingComments.documents.flatMap((doc) =>
+      doc.comment.map((commentString: string) => JSON.parse(commentString))
+    );
 
-        // Parse the stringified scores
-        const parsedScores: Score[] = item.scores
-          .map((scoreStr: any) => {
-            try {
-              const parsed = JSON.parse(scoreStr) as Score; // Cast to Score type
-              // Log parsed score
-              return parsed;
-            } catch (e) {
-              console.error("Error parsing score:", e);
-              return null;
-            }
-          })
-          .filter((score: Score): score is Score => score !== null); // Type guard for null filtering
+    const studentComment = comments.find(
+      (comment) => comment.studentId === studentId
+    );
 
-        // Find the student by ID within the parsed scores
-        const studentScore =
-          parsedScores.find((score) => score.studentId === studentId) ?? null;
+    if (!studentComment) {
+      throw new Error(`No comments found for student ID: ${studentId}`);
+    }
 
-        if (studentScore) {
-          // Add the subject to the filtered result
-          return {
-            studentName: item.studentName, // Assuming the name is stored in studentName field
-            studentId: item.studentId,
-            classRoom: item.classRoom, // Assuming studentId is available in the document
-            term: item.term,
-            session: item.session,
-            comment: studentScore.comment,
-          };
-        }
-        return null;
-      })
-      .filter(
-        (
-          result
-        ): result is {
-          classRoom: string;
-          term: string;
-          session: string;
-          studentId: string;
-          studentName: string;
-          comment: string;
-        } => result !== null
-      ); // Type guard for null filtering
-
-    return studentScores;
+    return studentComment;
   } catch (error) {
     console.error("Error fetching comments:", error);
     throw error;
   }
 };
+
