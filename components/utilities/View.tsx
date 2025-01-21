@@ -439,25 +439,6 @@ const CompiledResults: React.FC = () => {
                         {editStudentData?.$id === student.$id ? (
                           <Input
                             type="text"
-                            value={editStudentData?.project}
-                            onChange={(e) =>
-                              setEditStudentData({
-                                ...editStudentData,
-                                project: e.target.value,
-                              })
-                            }
-                            className="w-full px-2 py-1 border rounded-md dark:bg-neutral-700 dark:text-white"
-                          />
-                        ) : studentScore ? (
-                          studentScore.project
-                        ) : (
-                          "-"
-                        )}
-                      </td>
-                      <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
-                        {editStudentData?.$id === student.$id ? (
-                          <Input
-                            type="text"
                             value={editStudentData?.assignment}
                             onChange={(e) =>
                               setEditStudentData({
@@ -469,6 +450,25 @@ const CompiledResults: React.FC = () => {
                           />
                         ) : studentScore ? (
                           studentScore.assignment
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      <td className="px-6 py-3 text-sm text-gray-800 dark:text-gray-200">
+                        {editStudentData?.$id === student.$id ? (
+                          <Input
+                            type="text"
+                            value={editStudentData?.project}
+                            onChange={(e) =>
+                              setEditStudentData({
+                                ...editStudentData,
+                                project: e.target.value,
+                              })
+                            }
+                            className="w-full px-2 py-1 border rounded-md dark:bg-neutral-700 dark:text-white"
+                          />
+                        ) : studentScore ? (
+                          studentScore.project
                         ) : (
                           "-"
                         )}
