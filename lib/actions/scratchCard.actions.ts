@@ -15,12 +15,12 @@ const {
   APPWRITE_SCRATCHCARD_COLLECTION_ID: SCRATCHCARD_COLLECTION_ID,
 } = process.env;
 
-export const createScratchCard = async () => {
+export const createScratchCard = async ({amount}: {amount: number}) => {
   const { database } = await createAdminClient();
   try {
-    const Cardnumber = 500; // Number of cards to create
+    // Number of cards to create
 
-    const scratchCard = Array.from({ length: Cardnumber }, () => {
+    const scratchCard = Array.from({ length: amount }, () => {
       return database.createDocument(
         DATABASE_ID!,
         SCRATCHCARD_COLLECTION_ID!,
@@ -40,7 +40,7 @@ export const createScratchCard = async () => {
     console.error("An error occurred while creating a scratch card:", error);
   }
 };
-export const updateScratchCardStatusCode = async ({ id }: { id: string }) => {
+export const updateScratchCardStatusCode = async ({ id, usedFor }: { id: string; usedFor: string }) => {
   try {
     const { database } = await createAdminClient();
     const updateScratchCard = await database.updateDocument(
@@ -49,6 +49,7 @@ export const updateScratchCardStatusCode = async ({ id }: { id: string }) => {
       id,
       {
         status: "used",
+        usedFor: usedFor
       }
     );
 
@@ -77,7 +78,7 @@ export const deleteScratchCard = async ({ id }: { id: string }) => {
     console.log("Error Deleting the Scratch Card😭:", error);
   }
 };
-export const useScratchCards = async ({ code }: { code: string }) => {
+export const useScratchCards = async ({ code, usedFor }: { code: string, usedFor: string }) => {
   const { database } = await createAdminClient();
   try {
     const gotten = await database.listDocuments(
@@ -90,11 +91,16 @@ export const useScratchCards = async ({ code }: { code: string }) => {
       return null;
     }
     if (gotten) {
-    const deletedScratchcard=  await deleteScratchCard({ id: gotten.documents[0].$id });
-    
-      console.log("Fetched and Updated the status of the card All-Done");
-      return parseStringify(gotten.documents);
+      if(gotten.documents[0].status === "used" && usedFor !== gotten.documents[0].usedFor){
+        return null
+      }else{
+    const deletedScratchcard=  await updateScratchCardStatusCode({id: gotten.documents[0].$id, usedFor: usedFor});
+    if(deletedScratchcard){
+       console.log("Fetched and Updated the status of the card All-Done");
+      return parseStringify(deleteScratchCard);
+      
     }
+      } }
   } catch (error) {
     console.log("There was an error in the scratchcard logic:", error);
   }

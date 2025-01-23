@@ -53,7 +53,7 @@ const ScratchCardOTP = ({
         });
 
         try {
-          const result = await useScratchCards({ code });
+          const result = await useScratchCards({ code, usedFor: draftKeyGranted });
           if (result) {
             setFeedback({
               message: "Scratch card validated and processed successfully!",
@@ -96,7 +96,7 @@ const ScratchCardOTP = ({
 
   const handleShit = async () => {
     try {
-      const result = await useScratchCards({ code });
+      const result = await useScratchCards({ code, usedFor: draftKeyGranted });
       if (result) {
         setFeedback({
           message: "Scratch card validated and processed successfully!",

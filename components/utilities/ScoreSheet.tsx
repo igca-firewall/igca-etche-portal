@@ -294,6 +294,7 @@ const SubjectResultUploader: React.FC = () => {
         setScores([]); // Clear scores immediately before fetching
         setIsStudent([]); // Clear isStudent immediately before fetching
         setResults([]);
+        setIsFailed(false)
         const particles = await fetchResultData({
           classRoom,
           term,
