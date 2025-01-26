@@ -33,6 +33,10 @@ export const rightBarLinks = [
     imgURL: "/icons/report.png",
     route: "/allcards",
     label: "All Scratch Cards",
+  },  {
+    imgURL: "/icons/report.png",
+    route: "/create-cards",
+    label: "Create Scratch Cards",
   },
 ];
 export const sidebarLinks = [

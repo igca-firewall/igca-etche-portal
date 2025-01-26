@@ -15,7 +15,7 @@ const {
   APPWRITE_SCRATCHCARD_COLLECTION_ID: SCRATCHCARD_COLLECTION_ID,
 } = process.env;
 
-export const createScratchCard = async ({amount}: {amount: number}) => {
+export const createScratchCard = async ({ amount }: { amount: number }) => {
   const { database } = await createAdminClient();
   try {
     // Number of cards to create
@@ -40,28 +40,36 @@ export const createScratchCard = async ({amount}: {amount: number}) => {
     console.error("An error occurred while creating a scratch card:", error);
   }
 };
-export const updateScratchCardStatusCode = async ({ id, usedFor }: { id: string; usedFor: string }) => {
+export const updateScratchCardStatusCode = async ({
+  id,
+  usedFor,
+}: {
+  id: string;
+  usedFor: string;
+}) => {
   try {
     const { database } = await createAdminClient();
-    const updateScratchCard = await database.updateDocument(
+    const updatedScratchCard = await database.updateDocument(
       DATABASE_ID!,
       SCRATCHCARD_COLLECTION_ID!,
       id,
       {
         status: "used",
-        usedFor: usedFor
+        usedFor: usedFor, // No need for template literal
       }
     );
 
-    if (!updateScratchCard) {
+    if (!updatedScratchCard) {
       throw new Error("Failed to update Scratch Card Status.");
     }
 
-    return parseStringify(updateScratchCard.documents[0]);
+    return parseStringify(updatedScratchCard); // Directly use the returned object
   } catch (error) {
-    console.log("Error Updating the Scratch Card Status:", error);
+    console.error("Error Updating the Scratch Card Status:", error);
+    throw error; // Re-throw the error for better debugging
   }
 };
+
 export const deleteScratchCard = async ({ id }: { id: string }) => {
   try {
     const { database } = await createAdminClient();
@@ -78,7 +86,13 @@ export const deleteScratchCard = async ({ id }: { id: string }) => {
     console.log("Error Deleting the Scratch Card😭:", error);
   }
 };
-export const useScratchCards = async ({ code, usedFor }: { code: string, usedFor: string }) => {
+export const useScratchCards = async ({
+  code,
+  usedFor,
+}: {
+  code: string;
+  usedFor: string;
+}) => {
   const { database } = await createAdminClient();
   try {
     const gotten = await database.listDocuments(
@@ -86,21 +100,27 @@ export const useScratchCards = async ({ code, usedFor }: { code: string, usedFor
       SCRATCHCARD_COLLECTION_ID!,
       [Query.equal("code", code)]
     );
+    console.log("code gottten🧡🧡🧡", gotten);
     if (!gotten) {
       console.log("That is an invalid scratch card pin", gotten);
       return null;
     }
-    if (gotten) {
-      if(gotten.documents[0].status === "used" && usedFor !== gotten.documents[0].usedFor){
-        return null
-      }else{
-    const deletedScratchcard=  await updateScratchCardStatusCode({id: gotten.documents[0].$id, usedFor: usedFor});
-    if(deletedScratchcard){
-       console.log("Fetched and Updated the status of the card All-Done");
-      return parseStringify(deleteScratchCard);
-      
+    if (
+      gotten.documents[0].status === "used" &&
+      gotten.documents[0].usedFor !== (usedFor || null)
+    ) {
+      return null;
     }
-      } }
+    if (gotten) {
+      const deletedScratchcard = await updateScratchCardStatusCode({
+        id: gotten.documents[0].$id,
+        usedFor: usedFor,
+      });
+      if (deletedScratchcard) {
+        console.log("Fetched and Updated the status of the card All-Done");
+        return parseStringify(deletedScratchcard); // This line seems incorrect
+      }
+    }
   } catch (error) {
     console.log("There was an error in the scratchcard logic:", error);
   }
