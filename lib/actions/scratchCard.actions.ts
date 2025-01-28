@@ -129,7 +129,8 @@ export const fetchScratchCard = async () => {
   const { database } = await createAdminClient();
   const allScratchCards = await database.listDocuments(
     DATABASE_ID!,
-    SCRATCHCARD_COLLECTION_ID!
+    SCRATCHCARD_COLLECTION_ID!,
+    [Query.notEqual("status", "used")]
   );
   return parseStringify(allScratchCards.documents);
 };

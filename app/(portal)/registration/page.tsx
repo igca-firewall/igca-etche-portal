@@ -8,18 +8,17 @@ import React, { useEffect, useState } from "react";
 
 const Registration = () => {
   const { user } = useUserContext();
-    const [admin, setAdmin] = useState(false);
-    useEffect(() => {
-      const fetchMe = async () => {
-        const me = await getMe();
-        if (me === "PARTICLES_ADMINISTRATOR_IGCA") setAdmin(true);
-      };
-      fetchMe();
-    }, []);
+  // useEffect(() => {
+  //   const fetchMe = async () => {
+  //     const me = await getMe();
+  //     if (me === "PARTICLES_ADMINISTRATOR_IGCA"){ setAdmin(true)};
+  //   };
+  //   fetchMe();
+  // }, []);
   return (
     <div className="flex justify-center items-center min-h-screen ">
       <div className="w-full h-full">
-        {user.role === "admin" || admin ? <StudentForm /> : <Unauthorized />}
+        {user.role === "admin" ? <StudentForm /> : <Unauthorized />}
       </div>
     </div>
   );
