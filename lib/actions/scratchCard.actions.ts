@@ -130,7 +130,7 @@ export const fetchScratchCard = async () => {
   const allScratchCards = await database.listDocuments(
     DATABASE_ID!,
     SCRATCHCARD_COLLECTION_ID!,
-    [Query.notEqual("status", "used")]
+    [Query.notEqual("status", "used"), Query.limit(200)]
   );
   return parseStringify(allScratchCards.documents);
 };

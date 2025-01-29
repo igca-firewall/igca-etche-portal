@@ -145,8 +145,11 @@ const Teachers = () => {
     setTimeout(() => setState(false), 3000);
   };
   const handleClassCommentSubmit = async () => {
-    if (Object.values(comments).every((comment) => !comment.trim())) return;
-
+    // if (Object.values(comments).every((comment) => !comment.trim())) return;
+    // if(comments.){
+    //   alert("Please enter a comment")
+    // }
+    setIsSuccess(false);
     setIsProcessing(true);
     setCommentStatus(null);
 
@@ -253,12 +256,12 @@ const Teachers = () => {
               Select Session
             </label>
             <Select
-               options={[
-                            ...getYearRanges(2024).map((range) => ({
-                              value: `${range}`,
-                              label: `${range}`,
-                            }))
-                          ]}
+              options={[
+                ...getYearRanges(2024).map((range) => ({
+                  value: `${range}`,
+                  label: `${range}`,
+                })),
+              ]}
               value={session}
               onChange={(value) => setSession(value)}
               placeholder="Choose a Session"
@@ -296,7 +299,6 @@ const Teachers = () => {
           </p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-    
             {students
               .sort((a, b) => a.name.localeCompare(b.name))
               .filter((student) =>
@@ -344,7 +346,7 @@ const Teachers = () => {
                     ? "bg-gray-500 cursor-not-allowed"
                     : "bg-purple-500 hover:bg-purple-600"
                 }`}
-                disabled={isProcessing || students.length <1}
+                disabled={isProcessing || students.length < 1}
               >
                 {isProcessing ? (
                   <div className="flex justify-center items-center">
@@ -373,7 +375,6 @@ const Teachers = () => {
                   <span>Submit Comments for {classRoom}</span>
                 )}
               </button>
-              
             )}
           </div>
         )}

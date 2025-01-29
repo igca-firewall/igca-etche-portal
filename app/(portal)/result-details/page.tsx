@@ -121,14 +121,14 @@ const PostDetails = ({
   };
   const printPage = () => {
     const printWindow = window.open("", "_blank", "width=800,height=600");
-  
+
     const content = document?.getElementById("results-section")?.innerHTML;
-  
+
     if (!content) {
       console.error("Content not found");
       return;
     }
-  
+
     printWindow?.document.write(`
      <!DOCTYPE html>
 <html lang="en">
@@ -179,7 +179,7 @@ const PostDetails = ({
     }
 
     .header p {
-      font-size: 16px;
+      font-size: 15px;
       color: #7f8c8d;
     }
 
@@ -192,7 +192,7 @@ const PostDetails = ({
     }
 
     .info-section div {
-      font-size: 16px;
+      font-size: 14px;
     }
 
     .info-section strong {
@@ -210,11 +210,11 @@ const PostDetails = ({
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 40px;
-      font-size: 13px;
+      font-size: 5px;
     }
 
     table th, table td {
-      padding: 12px 15px;
+      padding: 8px 10px;
       text-align: left;
       border: 1px solid #e0e0e0;
     }
@@ -257,45 +257,176 @@ const PostDetails = ({
     /* Print Media Styles */
     @media print {
       body {
-        font-size: 10px;
-        color: #333;
-      }
+      font-family: 'Roboto', sans-serif;
+      background-color: #f9fafb;
+      margin: 0;
+      padding: 0;
+      color: #2c3e50;
+      line-height: 1.6;
+      
+    }
 
-      .container {
-        margin: 0;
-        padding: 15px;
-        box-shadow: none;
-      }
+    /* Main Container */
+    .container {
+      width: 100%;
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 30px;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
 
-      .header h1 {
-        font-size: 24px;
-      }
+    /* Header Section */
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
 
-      .header p {
-        font-size: 12px;
-      }
+    .header img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-bottom: 20px;
+    }
 
-      .info-section {
-        font-size: 12px;
-      }
+    .header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      color: #2980b9;
+      margin-bottom: 5px;
+    }
 
-      table th, table td {
-        padding: 8px;
-        font-size: 11px;
-      }
+    .header p {
+      font-size: 15px;
+      color: #7f8c8d;
+    }
 
-      table {
-        margin-bottom: 20px;
-      }
+    /* Student Information Section */
+    .info-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
 
-      .footer {
-        font-size: 11px;
-        margin-top: 30px;
-      }
+    .info-section div {
+      font-size: 14px;
+    }
 
-      button {
-        display: none;
-      }
+    .info-section strong {
+      color: #34495e;
+      font-weight: 600;
+    }
+
+    .info-section p {
+      margin: 4px 0;
+      color: #555;
+    }
+
+    /* Table Styling */
+    table {
+      width: 90%;
+    max-width: 800px
+      margin-bottom: 30px;
+      font-size: 10px;
+      padding: 0px
+
+    }
+
+    table th, table td {
+      padding: 2px 4px;
+      text-align: left;
+     
+    }
+
+ thead {
+  background-color: #333; /* Dark background for contrast */
+  color: white; /* White text for readability */
+  font-weight: bold;
+  text-transform: uppercase; /* Make headers stand out */
+}
+
+ /* Table Styling */
+    table {
+      width: 90%;
+    max-width: 800px
+      margin-bottom: 30px;
+      font-size: 10px;
+      padding: 0px
+
+    }
+
+    table th, table td {
+      padding: 2px 4px;
+      text-align: left;
+     
+    }
+
+ thead {
+  background-color: #333; /* Blue background */
+  color: white; /* White text */
+  font-weight: bold; /* Bold text */
+  text-transform: uppercase; /* Uppercase text */
+  font-size: 14px; /* Slightly larger text for clarity */
+}
+
+/* Table Header Cells */
+table th {
+  padding: 10px 12px; /* Add padding for space inside the cells */
+  text-align: center; /* Center-align the text */
+  border-bottom: 2px solid #ddd; /* Add a subtle border at the bottom */
+  font-size: 14px; /* Ensures header text size is consistent */
+  font-weight: bold; /* Make text bold */
+}
+
+/* Optional: Rounded top corners */
+table th:first-child {
+  border-top-left-radius: 8px;
+}
+
+table th:last-child {
+  border-top-right-radius: 8px;
+}
+table th {
+  background-color: #2980b9;
+  color: white;
+  font-weight: bold;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+    table tr:nth-child(even) {
+      background-color: #f4f6f7;
+    }
+
+    table td {
+      color: #333;
+    }
+
+    table td strong {
+      color: #2c3e50;
+    }
+
+    table td strong {
+      color: #2c3e50;
+    }
+
+    /* Footer Section */
+    .footer {
+      margin-top: 40px;
+      font-size: 16px;
+      line-height: 1.6;
+      color: #7f8c8d;
+    }
+
+    .footer p {
+      margin: 6px 0;
+    }
+
+    .footer strong {
+      color: #34495e;
+    }
+
     }
 
   </style>
@@ -312,14 +443,17 @@ const PostDetails = ({
     <!-- Student Information Section -->
     <div class="info-section">
       <div>
-        <p><strong>Name:</strong> ${scores[0]?.studentName}</p>
-        <p><strong>Class:</strong> ${scores[0]?.classRoom}</p>
-        <p><strong>Term:</strong> ${scores[0]?.term}</p>
-        <p><strong>Session:</strong> ${scores[0]?.session}</p>
+        <p><strong>Name: </strong>${scores[0]?.studentName}</p>
+        <p><strong>Class: </strong>${scores[0]?.classRoom}</p>
+         <p><strong>Term: </strong>${scores[0]?.term}</p>
+        <p><strong>Session: </strong>${scores[0]?.session}</p>
+       
+       
       </div>
-      <div>
-        <p><strong>Student ID:</strong> ${studentId}</p>
-      </div>
+      <div> <p><strong>Student ID: </strong>${studentId}</p>
+         <p><strong>Website: </strong>https://igca-etche-portal.vercel.app </p>
+         <p><strong>Email: </strong>intellectualgiants105@gmail.com</p></div>
+    
     </div>
 
     <!-- Score Table -->
@@ -327,8 +461,8 @@ const PostDetails = ({
       <thead>
         <tr>
           <th>Subject</th>
-          <th>1st Summarize Test</th>
-          <th>2nd Summarize Test</th>
+          <th>1st Summative Test</th>
+          <th>2nd Summative Test</th>
           <th>MidTerm Project</th>
           <th>Assignment</th>
           <th>Book/Beyond</th>
@@ -339,8 +473,9 @@ const PostDetails = ({
         </tr>
       </thead>
       <tbody>
-        ${scores.map(
-          (score, index) => `
+        ${scores
+          .map(
+            (score, index) => `
           <tr>
             <td>${formatSubject(score.subject)}</td>
             <td>${score.score.firstTest}</td>
@@ -353,7 +488,8 @@ const PostDetails = ({
             <td><strong>${score.score.grade}</strong></td>
             <td>${getRemarks(score.score.total)}</td>
           </tr>`
-        ).join("")}
+          )
+          .join("")}
       </tbody>
     </table>
 
@@ -361,7 +497,9 @@ const PostDetails = ({
     <div class="footer">
       <p><strong>Average Score:</strong> ${averageScore}</p>
       <p><strong>Total Score:</strong> ${totalScore}</p>
-      <p><strong>Principal's Comment:</strong> <em>${getPrincipalsComment(averageScore)}</em></p>
+      <p><strong>Principal's Comment:</strong> <em>${getPrincipalsComment(
+        averageScore
+      )}</em></p>
       <p><strong>Teacher's Comment:</strong> <em>${comments?.comment}</em></p>
     </div>
   </div>
@@ -370,15 +508,14 @@ const PostDetails = ({
 
 
     `);
-  
+
     printWindow?.document.close();
-  
+
     printWindow!.onload = () => {
       printWindow?.print();
       printWindow?.close();
     };
   };
-  
 
   const saveAsPDF = () => {
     const doc = new jsPDF();
@@ -439,7 +576,7 @@ const PostDetails = ({
           "Exam",
           "Total",
           "Grade",
-          "Remarks"
+          "Remarks",
         ],
         ...scores.map((score) => [
           score.subject,
@@ -451,7 +588,7 @@ const PostDetails = ({
           score.score.exam,
           score.score.total,
           score.score.grade,
-          getRemarks(score.score.total)
+          getRemarks(score.score.total),
         ]),
       ]
         .map((row) => row.join(","))
@@ -480,7 +617,10 @@ const PostDetails = ({
       });
 
       // Use FileSaver to save the image
-      saveAs(image, `IGCA_Result checked by ${user.name} ${generateUniqueId()}.png`);
+      saveAs(
+        image,
+        `IGCA_Result checked by ${user.name} ${generateUniqueId()}.png`
+      );
     } catch (error) {
       console.error("Failed to download as image:", error);
     }
@@ -511,7 +651,7 @@ const PostDetails = ({
           </div>
           {/* Information Section */}
         </div>
-        <div className="flex flex-col space-y-4">
+        <div className="flex flex-col space-y-4 text-start">
           {scores.length > 0 && (
             <>
               {" "}
