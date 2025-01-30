@@ -805,7 +805,7 @@ table th {
                   width={25}
                   height={25}
                 />{" "}
-                Print
+                Print copy
               </button>
               <button
                 disabled={!user || !scores || isLoading}
@@ -818,7 +818,7 @@ table th {
                   width={25}
                   height={25}
                 />{" "}
-                Export
+                Export to CSV
               </button>
               <button
                 disabled={!user || !scores || isLoading}
