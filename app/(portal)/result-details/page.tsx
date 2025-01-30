@@ -346,7 +346,7 @@ border-radius: 12px
     }
 
 table thead th,table thead tr {
-  background-color: #333; /* Dark background for contrast */
+  background-color: #4a5568; /* Dark background for contrast */
   color: white; /* White text for readability */
   font-weight: bold;
   text-transform: uppercase; /* Make headers stand out */
