@@ -150,7 +150,6 @@ const PostDetails = ({
       padding: 0;
       color: #2c3e50;
       line-height: 1.6;
-      
     }
 
     /* Main Container */
@@ -161,6 +160,7 @@ const PostDetails = ({
       padding: 30px;
       background-color: #ffffff;
       border-radius: 10px;
+     
     }
 
     /* Header Section */
@@ -212,85 +212,32 @@ const PostDetails = ({
 
     /* Table Styling */
     table {
-      width: 90%;
-    max-width: 800px
-      margin-bottom: 30px;
-      font-size: 10px;
-      padding: 0px
-
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 40px;
+      border-radius: 20px;
+      font-size: 5px;
     }
 
     table th, table td {
-      padding: 2px 4px;
+      padding: 8px 10px;
       text-align: left;
-     
+      border: 1px solid #e0e0e0;
     }
 
-table thead th,table thead tr {
-  background-color: #333; /* Dark background for contrast */
-  color: white; /* White text for readability */
-  font-weight: bold;
-  text-transform: uppercase; /* Make headers stand out */
-}
-
- /* Table Styling */
-    table {
-      width: 90%;
-    max-width: 800px
-      margin-bottom: 30px;
-      font-size: 10px;
-      padding: 0px
- border-radius: 50%;
+    table th {
+      background-color: #2980b9;
+      color: white;
+      font-weight: bold;
+      text-transform: uppercase;
     }
 
-    table th, table td {
-      padding: 2px 4px;
-      text-align: left;
-     
-    }
-
- thead {
-  background-color: #333; /* Blue background */
-  color: white; /* White text */
-  font-weight: bold; /* Bold text */
-  text-transform: uppercase; /* Uppercase text */
-  font-size: 14px; /* Slightly larger text for clarity */
-}
-
-/* Table Header Cells */
-table th {
-  padding: 10px 12px; /* Add padding for space inside the cells */
-  text-align: center; /* Center-align the text */
-  border-bottom: 2px solid #ddd; /* Add a subtle border at the bottom */
-  font-size: 14px; /* Ensures header text size is consistent */
-  font-weight: bold; /* Make text bold */
-}
-
-/* Optional: Rounded top corners */
-table th:first-child {
-  border-top-left-radius: 8px;
-}
-
-table th:last-child {
-  border-top-right-radius: 8px;
-}
-table th {
-  background-color:#4a5568
-  color: white;
-  font-weight: bold;
-  font-size: 8px;
-  text-transform: uppercase;
-}
     table tr:nth-child(even) {
       background-color: #f4f6f7;
     }
 
     table td {
       color: #333;
-    }
-
-    table td strong {
-      color: #2c3e50;
     }
 
     table td strong {
@@ -312,7 +259,6 @@ table th {
     .footer strong {
       color: #34495e;
     }
-
 
     /* Print Media Styles */
     @media print {

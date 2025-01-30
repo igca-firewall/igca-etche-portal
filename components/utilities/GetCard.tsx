@@ -15,13 +15,13 @@ const ScratchCardOTP = ({
   term,
   name,
   studentId,
-  session
+  session,
 }: {
   classRoom?: string;
   name?: string;
   studentId: string;
   term?: string;
-  session:string
+  session: string;
 }) => {
   const [code, setCode] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -53,7 +53,11 @@ const ScratchCardOTP = ({
         });
 
         try {
-          const result = await useScratchCards({ code: code, usedFor: `${draftKeyGranted}` });
+          const result = await useScratchCards({
+            code: code,
+            usedFor: `${draftKeyGranted}`,
+            usedBy: name || "This user was not loaded at the time of usage,",
+          });
           if (result) {
             setFeedback({
               message: "Scratch card validated and processed successfully!",
@@ -69,7 +73,6 @@ const ScratchCardOTP = ({
             };
             setView(fishData);
             localStorage.setItem(`${draftKeyGranted}`, draftKeyGranted);
-        
           } else {
             setFeedback({
               message:
@@ -97,7 +100,11 @@ const ScratchCardOTP = ({
   const handleShit = async () => {
     setIsLoading(true);
     try {
-      const result = await useScratchCards({ code, usedFor: draftKeyGranted , usedBy : name});
+      const result = await useScratchCards({
+        code,
+        usedFor: draftKeyGranted,
+        usedBy: name || "This user was not loaded at the time of usage,",
+      });
       if (result) {
         setFeedback({
           message: "Scratch card validated and processed successfully!",
