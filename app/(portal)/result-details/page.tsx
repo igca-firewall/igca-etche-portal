@@ -336,7 +336,7 @@ const PostDetails = ({
       margin-bottom: 30px;
       font-size: 10px;
       padding: 0px
-
+border-radius: 12px
     }
 
     table th, table td {

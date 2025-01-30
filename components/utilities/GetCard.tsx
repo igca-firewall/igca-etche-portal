@@ -9,6 +9,7 @@ import "tailwindcss/tailwind.css"; // Ensure Tailwind CSS is set up in your proj
 import { useScratchCards } from "@/lib/actions/scratchCard.actions";
 import { useRouter } from "next/navigation";
 import PostDetails from "@/app/(portal)/result-details/page";
+import { useUserContext } from "@/context/AuthContext";
 
 const ScratchCardOTP = ({
   classRoom,
@@ -27,6 +28,7 @@ const ScratchCardOTP = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isAllowed, setIsAllowed] = useState(false);
   const [xed, setXed] = useState(false);
+  const { user } = useUserContext();
   const [feedback, setFeedback] = useState<{
     message: string;
     type: "success" | "error" | "info";
@@ -56,7 +58,7 @@ const ScratchCardOTP = ({
           const result = await useScratchCards({
             code: code,
             usedFor: `${draftKeyGranted}`,
-            usedBy: name || "This user was not loaded at the time of usage,",
+            usedBy: user.name,
           });
           if (result) {
             setFeedback({
@@ -103,7 +105,7 @@ const ScratchCardOTP = ({
       const result = await useScratchCards({
         code,
         usedFor: draftKeyGranted,
-        usedBy: name || "This user was not loaded at the time of usage,",
+        usedBy: user.name,
       });
       if (result) {
         setFeedback({
