@@ -119,6 +119,11 @@ const PostDetails = ({
     if (total >= 40) return "Poor";
     return "Fail";
   };
+  const formattedComments = comments?.comment
+    ? comments.comment.charAt(0).toUpperCase() +
+      comments.comment.slice(1).toLowerCase()
+    : "";
+
   const printPage = () => {
     const printWindow = window.open("", "_blank", "width=800,height=600");
 
@@ -145,124 +150,6 @@ const PostDetails = ({
       padding: 0;
       color: #2c3e50;
       line-height: 1.6;
-    }
-
-    /* Main Container */
-    .container {
-      width: 100%;
-      max-width: 900px;
-      margin: 30px auto;
-      padding: 30px;
-      background-color: #ffffff;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Header Section */
-    .header {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-
-    .header img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      margin-bottom: 20px;
-    }
-
-    .header h1 {
-      font-size: 32px;
-      font-weight: 700;
-      color: #2980b9;
-      margin-bottom: 5px;
-    }
-
-    .header p {
-      font-size: 15px;
-      color: #7f8c8d;
-    }
-
-    /* Student Information Section */
-    .info-section {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin-bottom: 30px;
-    }
-
-    .info-section div {
-      font-size: 14px;
-    }
-
-    .info-section strong {
-      color: #34495e;
-      font-weight: 600;
-    }
-
-    .info-section p {
-      margin: 4px 0;
-      color: #555;
-    }
-
-    /* Table Styling */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 40px;
-      font-size: 5px;
-    }
-
-    table th, table td {
-      padding: 8px 10px;
-      text-align: left;
-      border: 1px solid #e0e0e0;
-    }
-
-    table th {
-      background-color: #2980b9;
-      color: white;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-
-    table tr:nth-child(even) {
-      background-color: #f4f6f7;
-    }
-
-    table td {
-      color: #333;
-    }
-
-    table td strong {
-      color: #2c3e50;
-    }
-
-    /* Footer Section */
-    .footer {
-      margin-top: 40px;
-      font-size: 16px;
-      line-height: 1.6;
-      color: #7f8c8d;
-    }
-
-    .footer p {
-      margin: 6px 0;
-    }
-
-    .footer strong {
-      color: #34495e;
-    }
-
-    /* Print Media Styles */
-    @media print {
-      body {
-      font-family: 'Roboto', sans-serif;
-      background-color: #f9fafb;
-      margin: 0;
-      padding: 0;
-      color: #2c3e50;
-      line-height: 1.6;
       
     }
 
@@ -274,7 +161,6 @@ const PostDetails = ({
       padding: 30px;
       background-color: #ffffff;
       border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
 
     /* Header Section */
@@ -340,7 +226,7 @@ const PostDetails = ({
      
     }
 
- thead {
+table thead th,table thead tr {
   background-color: #333; /* Dark background for contrast */
   color: white; /* White text for readability */
   font-weight: bold;
@@ -354,7 +240,7 @@ const PostDetails = ({
       margin-bottom: 30px;
       font-size: 10px;
       padding: 0px
-
+ border-radius: 50%;
     }
 
     table th, table td {
@@ -389,10 +275,183 @@ table th:last-child {
   border-top-right-radius: 8px;
 }
 table th {
-  background-color: #2980b9;
+  background-color:#4a5568
   color: white;
   font-weight: bold;
-  font-size: 12px;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+    table tr:nth-child(even) {
+      background-color: #f4f6f7;
+    }
+
+    table td {
+      color: #333;
+    }
+
+    table td strong {
+      color: #2c3e50;
+    }
+
+    table td strong {
+      color: #2c3e50;
+    }
+
+    /* Footer Section */
+    .footer {
+      margin-top: 40px;
+      font-size: 16px;
+      line-height: 1.6;
+      color: #7f8c8d;
+    }
+
+    .footer p {
+      margin: 6px 0;
+    }
+
+    .footer strong {
+      color: #34495e;
+    }
+
+
+    /* Print Media Styles */
+    @media print {
+      body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f9fafb;
+      margin: 0;
+      padding: 0;
+      color: #2c3e50;
+      line-height: 1.6;
+      
+    }
+
+    /* Main Container */
+    .container {
+      width: 100%;
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 30px;
+      background-color: #ffffff;
+      border-radius: 10px;
+    }
+
+    /* Header Section */
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      color: #2980b9;
+      margin-bottom: 5px;
+    }
+
+    .header p {
+      font-size: 15px;
+      color: #7f8c8d;
+    }
+
+    /* Student Information Section */
+    .info-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .info-section div {
+      font-size: 14px;
+    }
+
+    .info-section strong {
+      color: #34495e;
+      font-weight: 600;
+    }
+
+    .info-section p {
+      margin: 4px 0;
+      color: #555;
+    }
+
+    /* Table Styling */
+    table {
+      width: 90%;
+    max-width: 800px
+      margin-bottom: 30px;
+      font-size: 10px;
+      padding: 0px
+
+    }
+
+    table th, table td {
+      padding: 2px 4px;
+      text-align: left;
+     
+    }
+
+table thead th,table thead tr {
+  background-color: #333; /* Dark background for contrast */
+  color: white; /* White text for readability */
+  font-weight: bold;
+  text-transform: uppercase; /* Make headers stand out */
+}
+
+ /* Table Styling */
+    table {
+      width: 90%;
+    max-width: 800px
+      margin-bottom: 30px;
+      font-size: 10px;
+      padding: 0px
+ border-radius: 50%;
+    }
+
+    table th, table td {
+      padding: 2px 4px;
+      text-align: left;
+     
+    }
+
+ thead {
+  background-color: #333; /* Blue background */
+  color: white; /* White text */
+  font-weight: bold; /* Bold text */
+  text-transform: uppercase; /* Uppercase text */
+  font-size: 14px; /* Slightly larger text for clarity */
+}
+
+/* Table Header Cells */
+table th {
+  padding: 10px 12px; /* Add padding for space inside the cells */
+  text-align: center; /* Center-align the text */
+  border-bottom: 2px solid #ddd; /* Add a subtle border at the bottom */
+  font-size: 14px; /* Ensures header text size is consistent */
+  font-weight: bold; /* Make text bold */
+}
+
+/* Optional: Rounded top corners */
+table th:first-child {
+  border-top-left-radius: 8px;
+}
+
+table th:last-child {
+  border-top-right-radius: 8px;
+}
+table th {
+  background-color:#4a5568
+  color: white;
+  font-weight: bold;
+  font-size: 8px;
   text-transform: uppercase;
 }
     table tr:nth-child(even) {
@@ -467,7 +526,9 @@ table th {
           <th>Assignment</th>
           <th>Book/Beyond</th>
           <th>Exam</th>
+          <th>Highest</th>
           <th>Total</th>
+          <th>Lowest</th>
           <th>Grade</th>
           <th>Remarks</th>
         </tr>
@@ -484,7 +545,9 @@ table th {
             <td>${score.score.assignment}</td>
             <td>${score.score.bnb}</td>
             <td>${score.score.exam}</td>
-            <td>${score.score.total}</td>
+            <td>${score.highestTotalScore}</td>
+             <td>${score.score.total}</td>
+              <td>${score.lowestTotalScore}</td>
             <td><strong>${score.score.grade}</strong></td>
             <td>${getRemarks(score.score.total)}</td>
           </tr>`
@@ -500,7 +563,7 @@ table th {
       <p><strong>Principal's Comment:</strong> <em>${getPrincipalsComment(
         averageScore
       )}</em></p>
-      <p><strong>Teacher's Comment:</strong> <em>${comments?.comment}</em></p>
+      <p><strong>Teacher's Comment:</strong> <em>${formattedComments}</em></p>
     </div>
   </div>
 </body>
@@ -574,7 +637,9 @@ table th {
           "BNB",
           "Assignment",
           "Exam",
+          "Highest",
           "Total",
+          "Lowest",
           "Grade",
           "Remarks",
         ],
@@ -586,7 +651,9 @@ table th {
           score.score.bnb,
           score.score.assignment,
           score.score.exam,
+          score.highestTotalScore,
           score.score.total,
+          score.lowestTotalScore,
           score.score.grade,
           getRemarks(score.score.total),
         ]),
@@ -613,7 +680,7 @@ table th {
       // Capture the element as a PNG
       const image = await toPng(element, {
         cacheBust: true, // Prevent caching issues
-        backgroundColor: "white", // Add a background color if needed
+        // backgroundColor: "white", // Add a background color if needed
       });
 
       // Use FileSaver to save the image
@@ -625,6 +692,7 @@ table th {
       console.error("Failed to download as image:", error);
     }
   };
+
   return (
     <div
       id="results-section"
@@ -684,7 +752,7 @@ table th {
         <div className="overflow-x-auto bg-white dark:bg-neutral-800 shadow-md rounded-lg mt-2">
           {" "}
           {scores.length > 0 && (
-            <table className="min-w-full px-6 py-3 border-collapse table-auto">
+            <table className="min-w-full px-8 py-3 border-collapse table-auto">
               <thead className="bg-neutral-400  rounded-full dark:bg-neutral-800 text-white">
                 <tr>
                   {[
@@ -695,7 +763,9 @@ table th {
                     "Assignment",
                     "Book/Beyond",
                     "Exam",
+                    "Highest",
                     "Total",
+                    "Lowest",
                     "Grade",
                     "Remarks",
                   ].map((header, index) => (
@@ -728,7 +798,9 @@ table th {
                       score.score.bnb,
                       score.score.assignment,
                       score.score.exam,
+                      score.highestTotalScore,
                       score.score.total,
+                      score.lowestTotalScore,
                       score.score.grade,
                     ].map((value, i) => (
                       <td
@@ -754,7 +826,7 @@ table th {
           <>
             {" "}
             <div className="p-6 mt-6 dark:bg-neutral-800 bg-white dark:bg-black rounded-lg shadow-sm border border-neutral-300 dark:border-neutral-700 space-y-4">
-              <div className="text-base text-neutral-800 dark:text-neutral-200 flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-4">
+              <div className="text-base text-neutral-800 dark:text-neutral-200 flex flex-col  justify-between items-center gap-2 sm:gap-4">
                 <p className="text-lg font-medium text-center text-neutral-900 dark:text-neutral-100">
                   Average Score:{" "}
                   <span className="font-bold">{averageScore}</span>
@@ -771,7 +843,7 @@ table th {
                 </p>
                 <p>
                   <span className="font-medium">Teacher's Comment:</span>{" "}
-                  <span className="italic">{comments?.comment}</span>
+                  <span className="italic">{formattedComments}</span>
                 </p>
               </div>
             </div>

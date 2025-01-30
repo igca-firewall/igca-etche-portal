@@ -403,18 +403,7 @@ export const fetchResults = async ({
     throw error;
   }
 };
-interface Score {
-  studentId: string;
-  studentName: string;
-  firstTest: string;
-  secondTest: string;
-  project: string;
-  bnb: string;
-  assignment: string;
-  exam: string;
-  total: string;
-  grade: string;
-}
+
 
 export const myArray = async ({
   term,
@@ -444,59 +433,52 @@ export const myArray = async ({
 
     const studentScores = AllResults.documents
       .map((item) => {
-        // Skip if no scores available
         if (!item.scores || item.scores.length === 0) {
           return null;
         }
 
-        // Parse the stringified scores
         const parsedScores: Score[] = item.scores
           .map((scoreStr: any) => {
             try {
-              const parsed = JSON.parse(scoreStr) as Score; // Cast to Score type
-             // Log parsed score
-              return parsed;
+              return JSON.parse(scoreStr) as Score;
             } catch (e) {
               console.error("Error parsing score:", e);
               return null;
             }
           })
-          .filter((score: Score): score is Score => score !== null); // Type guard for null filtering
+          .filter((score: Score): score is Score => score !== null);
 
-       
-        // Find the student by ID within the parsed scores
-        const studentScore =
-          parsedScores.find((score) => score.studentId === studentId) ?? null;
+        // Calculate highest and lowest total scores for the subject
+        const totalScores = parsedScores
+          .map((s) => parseFloat(s.total))
+          .filter((t) => !isNaN(t));
+
+        const highestTotalScore =
+          totalScores.length > 0 ? Math.max(...totalScores) : null;
+        const lowestTotalScore =
+          totalScores.length > 0 ? Math.min(...totalScores) : null;
+
+        const studentScore = parsedScores.find(
+          (score) => score.studentId === studentId
+        );
 
         if (studentScore) {
-          // Add the subject to the filtered result
           return {
-            studentName: studentScore.studentName, // Assuming the name is stored in studentName field
+            studentName: studentScore.studentName,
             studentId: studentScore.studentId,
-            classRoom: item.classRoom, // Assuming studentId is available in the document
+            classRoom: item.classRoom,
             term: item.term,
             session: item.session,
             subject: item.subject,
             score: studentScore,
+            highestTotalScore,
+            lowestTotalScore,
           };
         }
         return null;
       })
-      .filter(
-        (
-          result
-        ): result is {
-          subject: string;
-          classRoom: string;
-          term: string;
-          session: string;
-          studentId: string;
-          studentName: string;
-          score: Score;
-        } => result !== null
-      ); // Type guard for null filtering
+      .filter((result): result is any => result !== null);
 
-    
     return studentScores;
   } catch (error) {
     console.error("Error:", error);

@@ -97,7 +97,7 @@ const ScratchCardOTP = ({
   const handleShit = async () => {
     setIsLoading(true);
     try {
-      const result = await useScratchCards({ code, usedFor: draftKeyGranted });
+      const result = await useScratchCards({ code, usedFor: draftKeyGranted , usedBy : name});
       if (result) {
         setFeedback({
           message: "Scratch card validated and processed successfully!",

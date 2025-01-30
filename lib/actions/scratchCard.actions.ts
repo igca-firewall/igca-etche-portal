@@ -43,9 +43,11 @@ export const createScratchCard = async ({ amount }: { amount: number }) => {
 export const updateScratchCardStatusCode = async ({
   id,
   usedFor,
+  usedBy,
 }: {
   id: string;
   usedFor: string;
+  usedBy: string;
 }) => {
   try {
     const { database } = await createAdminClient();
@@ -55,7 +57,8 @@ export const updateScratchCardStatusCode = async ({
       id,
       {
         status: "used",
-        usedFor: usedFor, // No need for template literal
+        usedFor: usedFor,
+        usedBy: usedBy, // No need for template literal
       }
     );
 
@@ -89,8 +92,10 @@ export const deleteScratchCard = async ({ id }: { id: string }) => {
 export const useScratchCards = async ({
   code,
   usedFor,
+  usedBy,
 }: {
   code: string;
+  usedBy: string;
   usedFor: string;
 }) => {
   const { database } = await createAdminClient();
@@ -115,6 +120,7 @@ export const useScratchCards = async ({
       const deletedScratchcard = await updateScratchCardStatusCode({
         id: gotten.documents[0].$id,
         usedFor: usedFor,
+        usedBy: usedBy,
       });
       if (deletedScratchcard) {
         console.log("Fetched and Updated the status of the card All-Done");

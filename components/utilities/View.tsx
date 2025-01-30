@@ -1,7 +1,3 @@
-import {
-  fetchCompiledResults,
-  fetchResultWithSubject,
-} from "@/lib/actions/rexults.actions";
 import { useEffect, useState } from "react";
 import Select from "./CustomSelect";
 import { classOrder, getYearRanges, options, termOptions } from "@/lib/utils";
@@ -9,11 +5,8 @@ import { Input } from "../ui/input";
 import { useUserContext } from "@/context/AuthContext";
 import { getStudentsByClass } from "@/lib/actions/studentsData.actions";
 import { Models } from "appwrite";
-import Image from "next/image";
 import { editResults, fetchResultData } from "@/lib/actions/results.actions";
-import { listAllScoresBy } from "@/lib/actions/updateStudents.actions";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
-
 const CompiledResults: React.FC = () => {
   const [subject, setSubject] = useState<string>("");
   const [classRoom, setClassRoom] = useState<string>("");
@@ -32,7 +25,6 @@ const CompiledResults: React.FC = () => {
   const [studentToDelete, setStudentToDelete] = useState<string | null>(null);
   const [editStudentData, setEditStudentData] = useState<Scores | null>(null);
   const [newScore, setNewScore] = useState<string>("");
-
   // Edit form state
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   // Tracks the active column (field)
