@@ -246,7 +246,7 @@ const PostDetails = ({
 
     /* Footer Section */
     .footer {
-      margin-top: 40px;
+      margin-top: 20px;
       font-size: 16px;
       line-height: 1.6;
       color: #7f8c8d;
@@ -276,7 +276,7 @@ const PostDetails = ({
     .container {
       width: 100%;
       max-width: 900px;
-      margin: 30px auto;
+      margin: 20px auto;
       padding: 30px;
       background-color: #ffffff;
       border-radius: 10px;
@@ -285,14 +285,15 @@ const PostDetails = ({
     /* Header Section */
     .header {
       text-align: center;
-      margin-bottom: 40px;
+      margin-bottom: 32px;
     }
 
     .header img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      margin-bottom: 20px;
+      width: 95px;
+      height: 95px;
+      border-radius: 20%;
+      margin-bottom: 0px;
+      
     }
 
     .header h1 {
@@ -305,6 +306,7 @@ const PostDetails = ({
     .header p {
       font-size: 15px;
       color: #7f8c8d;
+       margin-left: 25px;
     }
 
     /* Student Information Section */
@@ -312,9 +314,15 @@ const PostDetails = ({
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
-      margin-bottom: 30px;
+      margin-bottom: 10px;
     }
-
+ .logo_report {
+      display: flex;
+      justify-content: justify-between;
+      gap: 20px;
+      margin-bottom: 10px;
+       margin-left: 40px;
+    }
     .info-section div {
       font-size: 14px;
     }
@@ -440,9 +448,12 @@ table th {
   <div class="container">
     <!-- Header Section -->
     <div class="header">
-      <img src="/images/logo.jpg" alt="Academy Logo">
-      <h1>INTELLECTUAL GIANTS CHRISTIAN ACADEMY</h1>
+     
+      <h1>INTELLECTUAL GIANTS CHRISTIAN ACADEMY</h1><div class="logo_report">
+             <img src="/images/logo.jpg" alt="Academy Logo">
       <p>Student Performance Report - Academic Year: 2024/2025</p>
+      </div>
+
     </div>
 
     <!-- Student Information Section -->
@@ -501,6 +512,7 @@ table th {
           .join("")}
       </tbody>
     </table>
+  
 
     <!-- Summary Section -->
     <div class="footer">
@@ -609,35 +621,36 @@ table th {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "results.csv");
+    link.setAttribute("download",  `IGCA_Result checked by ${user.name} ${generateUniqueId()}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
   const downloadAsImage = async () => {
-    try {
-      const element = document.getElementById("results-section");
-      if (!element) {
-        console.error("Element with id 'results-section' not found.");
-        return;
-      }
-
-      // Capture the element as a PNG
-      const image = await toPng(element, {
-        cacheBust: true, // Prevent caching issues
-        // backgroundColor: "white", // Add a background color if needed
-      });
-
-      // Use FileSaver to save the image
-      saveAs(
-        image,
-        `IGCA_Result checked by ${user.name} ${generateUniqueId()}.png`
-      );
-    } catch (error) {
-      console.error("Failed to download as image:", error);
+  try {
+    const element = document.getElementById("results-section");
+    if (!element) {
+      console.error("Element with id 'results-section' not found.");
+      return;
     }
-  };
+
+    // Capture the element as a PNG
+    const image = await toPng(element, {
+      cacheBust: true, // Prevent caching issues
+      // backgroundColor: "white", // Add a background color if needed
+    });
+
+    // Use FileSaver to save the image
+    saveAs(
+      image,
+      `IGCA_Result_checked_by_${user.name}_${generateUniqueId()}.png`
+    );
+  } catch (error) {
+    console.error("Failed to download as image:", error);
+  }
+};
+
 
   return (
     <div
