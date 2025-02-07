@@ -318,7 +318,7 @@ const PostDetails = ({
     }
  .logo_report {
       display: flex;
-      justify-content: justify-between;
+      justify-content: flex-end;
       gap: 20px;
       margin-bottom: 10px;
        margin-left: 40px;
