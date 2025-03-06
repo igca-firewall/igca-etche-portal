@@ -479,8 +479,8 @@ table th {
           <th>Subject</th>
           <th>1st Summative Test</th>
           <th>2nd Summative Test</th>
+          <th>Assignment</th>  
           <th>MidTerm Project</th>
-          <th>Assignment</th>
           <th>Book/Beyond</th>
           <th>Exam</th>
           <th>Highest</th>
@@ -497,10 +497,10 @@ table th {
           <tr>
             <td>${formatSubject(score.subject)}</td>
             <td>${score.score.firstTest}</td>
-            <td>${score.score.secondTest}</td>
+            <td>${score.score.secondTest}</td> 
+            <td>${score.score.bnb}</td>
             <td>${score.score.project}</td>
             <td>${score.score.assignment}</td>
-            <td>${score.score.bnb}</td>
             <td>${score.score.exam}</td>
             <td>${score.highestTotalScore}</td>
              <td>${score.score.total}</td>
