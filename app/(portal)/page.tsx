@@ -16,16 +16,16 @@ import { PinIcon } from "lucide-react";
 
 const Home = () => {
   // const [isSplashVisible, setIsSplashVisible] = useState(false); // State for splash screen visibility
-  useEffect(() => {
-    const checkAuthentication = async () => {
-      const xed = await getMe(); // Assuming getMe is asynchronous
-      if (!xed) {
-        redirect("/sign-in")
-      }
-    };
+  // useEffect(() => {
+  //   const checkAuthentication = async () => {
+  //     const xed = await getMe(); // Assuming getMe is asynchronous
+  //     if (!xed) {
+  //       redirect("/sign-in")
+  //     }
+  //   };
 
-    checkAuthentication();
-  }, []);
+  //   checkAuthentication();
+  // }, []);
 
   // const {
   //   data: posts,

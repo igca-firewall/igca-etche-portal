@@ -98,22 +98,21 @@ declare type ResultParams = {
   id?: string | string[];
   firstTest?: string;
   secondTest?: string;
-  name? : string;
+  name?: string;
   project?: string;
-  session?:string;
+  session?: string;
   bnb?: string;
   assignment?: string;
   exam?: string;
   subject?: string;
-  
+
   result?: string;
 };
 interface Student {
   $id: string;
   name: string;
   studentId: string;
-  image? : string;
-  
+  image?: string;
 }
 
 interface Result {
@@ -152,7 +151,7 @@ interface StudentInfoProps {
   guardianInfo: string;
   dateOfBirth: string;
   studentId: string;
-  image?: string
+  image?: string;
 }
 interface subjectProps {
   classRoom: string[];
@@ -170,7 +169,6 @@ interface updateResultProps {
   results: string[];
   stat?: "edited";
 }
-
 
 declare interface AuthFormProps {
   type: "sign-in" | "sign-up";
@@ -196,7 +194,6 @@ declare interface SiderbarProps {
   className: string;
 }
 
-
 declare interface IContextType {
   user: User;
   isLoading: boolean;
@@ -204,7 +201,8 @@ declare interface IContextType {
   isAuthenticated: boolean;
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
   checkAuthUser: () => Promise<boolean>;
-}declare type SignUpParams = {
+}
+declare type SignUpParams = {
   firstName?: string;
   lastName?: string;
   guardianContact?: string;
@@ -257,3 +255,12 @@ declare interface getUserInfoProps {
 }
 
 declare module "react-bottom-sheet";
+interface StudentAverages {
+  studentName: string;
+  averageScore: number;
+}
+interface Comment {
+  studentName: string;
+  studentId: string;
+  comment: string;
+}

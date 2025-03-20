@@ -183,6 +183,7 @@ const ScratchCardOTP = ({
             maxLength={8}
             value={code}
             onChange={(value) => setCode(value)}
+            type="text"
           >
             <InputOTPGroup className="flex justify-between gap-2 w-full">
               {Array.from({ length: 8 }, (_, index) => (

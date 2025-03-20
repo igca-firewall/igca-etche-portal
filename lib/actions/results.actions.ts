@@ -104,8 +104,10 @@ export const addresults = async ({
       // Update scores for each existing student
       updatedScores = existingResult.scores.map((existingScoreStr: string) => {
         const existingScore = JSON.parse(existingScoreStr);
-        const newScore = scores.find(s => s.studentId === existingScore.studentId);
-        
+        const newScore = scores.find(
+          (s) => s.studentId === existingScore.studentId
+        );
+
         if (newScore) {
           // If matching student found, update score details
           return JSON.stringify({
@@ -123,8 +125,10 @@ export const addresults = async ({
       });
 
       // Filter for new scores that don't exist in the current list
-      const newScores = scores.filter(s => !existingStudentIds.includes(s.studentId));
-      const newFormattedScores = newScores.map(s => JSON.stringify(s));
+      const newScores = scores.filter(
+        (s) => !existingStudentIds.includes(s.studentId)
+      );
+      const newFormattedScores = newScores.map((s) => JSON.stringify(s));
 
       // Combine existing updated scores with new scores
       updatedScores = [...updatedScores, ...newFormattedScores];
@@ -404,7 +408,6 @@ export const fetchResults = async ({
   }
 };
 
-
 export const myArray = async ({
   term,
   session,
@@ -557,5 +560,85 @@ export const updateIdIChanged = async () => {
   } catch (error) {
     console.error("Error fetching student documents", error);
     throw error; // Re-throw error for caller to handle if needed
+  }
+};
+
+export const fetchCummulation = async ({
+  classRoom,
+  session,
+  term,
+}: {
+  classRoom: string;
+  session: string;
+  term: string;
+}) => {
+  try {
+    const { database } = await createAdminClient();
+    const hem =
+      term === "1st Term" ? FIRST : term === "2nd Term" ? SECOND : THIRD;
+
+    const fetchedDataByIndex = await database.listDocuments(
+      DATABASE_ID!,
+      hem!,
+      [
+        Query.equal("classRoom", classRoom),
+        Query.equal("session", ` ${session}`),
+        Query.equal("term", term),
+      ]
+    );
+
+    if (!fetchedDataByIndex.documents.length) {
+      console.log("No results found.", term, ` ${session}`, classRoom);
+      return [];
+    }
+
+    // Group scores by studentId
+    const studentScoresMap = new Map<
+      string,
+      { studentName: string; total: number; count: number }
+    >();
+
+    fetchedDataByIndex.documents.forEach((doc) => {
+      if (!doc.scores || !Array.isArray(doc.scores)) return;
+
+      doc.scores.forEach((scoreStr: any) => {
+        try {
+          const score: Score = JSON.parse(scoreStr);
+          const { studentId, studentName, total } = score;
+
+          const numericTotal = parseFloat(total);
+          if (isNaN(numericTotal)) return;
+
+          if (!studentScoresMap.has(studentId)) {
+            studentScoresMap.set(studentId, {
+              studentName,
+              total: numericTotal,
+              count: 1,
+            });
+          } else {
+            const studentData = studentScoresMap.get(studentId)!;
+            studentData.total += numericTotal;
+            studentData.count += 1;
+          }
+        } catch (error) {
+          console.error("Error parsing score:", error);
+        }
+      });
+    });
+
+    // Compute average scores and sort by studentId
+    const studentAverages = Array.from(studentScoresMap.entries())
+      .map(([studentId, { studentName, total, count }]) => ({
+        studentId,
+        studentName,
+        averageScore: total / count,
+      }))
+      .sort((a, b) => a.studentId.localeCompare(b.studentId));
+
+    console.log("Student Averages:", studentAverages);
+    return studentAverages;
+  } catch (error) {
+    console.error(`Error fetching cumulative class scores: ${error}`);
+    return null;
   }
 };
