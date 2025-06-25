@@ -3,9 +3,8 @@ import { inputStudentInfo } from "@/lib/actions/studentsData.actions";
 import { generateavatar, generateStudentId } from "@/lib/utils";
 import React, { useState, useRef, useEffect } from "react";
 import Select from "./CustomSelect";
-import { useUserContext } from "@/context/AuthContext";
+
 import { useRouter } from "next/navigation";
-import { getMe } from "@/lib/actions/user.actions";
 
 const StudentForm = () => {
   // Initial state for managing student details
@@ -80,13 +79,6 @@ const StudentForm = () => {
   };
 
   // Add this helper function outside the component
-  const resetStudentState = () =>
-    Array(1000).fill({
-      fullName: "",
-      dateOfBirth: "",
-      parentInfo: "",
-      classRoom: "JSS1A",
-    });
   // Handle input changes
   const handleInputChange = (index: number, field: string, value: string) => {
     const updatedStudents = [...students];
@@ -104,7 +96,6 @@ const StudentForm = () => {
 
     setStudents(updatedStudents);
   };
-  const { user } = useUserContext();
   // Handle keydown to go to the next field on Enter press
   const handleKeyDown = (
     e: React.KeyboardEvent,
