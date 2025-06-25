@@ -231,10 +231,6 @@ const StudentForm = () => {
     }
   };
 
-  const handleRoute = () => {
-    router.push("/");
-  };
-
   // Handle pagination navigation
   const goToNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -243,16 +239,7 @@ const StudentForm = () => {
   const goToPreviousPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
-  const [admin, setAdmin] = useState(false);
-  useEffect(() => {
-    const fetchMe = async () => {
-      const me = await getMe();
-      if (me === "PARTICLES_ADMINISTRATOR_IGCA") {
-        setAdmin(true);
-      }
-    };
-    fetchMe();
-  }, []);
+
   // Open the modal for confirmation
   const populated = students.filter(isValidStudent);
 
@@ -268,7 +255,7 @@ const StudentForm = () => {
 
 
 
-  return user.role === "admin" || admin && (
+  return (
     //  return (
     <div className="p-6  shadow-lg rounded-lg max-w-[90%] mx-auto">
       <h1 className="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">
