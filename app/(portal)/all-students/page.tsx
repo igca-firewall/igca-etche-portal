@@ -14,6 +14,8 @@ import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import ConfirmationModal from "@/components/utilities/CustomModal"; // Import the modal
 import { classOrder } from "@/lib/utils";
 import Image from "next/image";
+import GraduateStudents from "@/components/utilities/GraduateStudents";
+import { Button } from "@/components/ui/button";
 
 interface Student {
   $id: string;
@@ -134,14 +136,15 @@ const StudentList: React.FC = () => {
         className="
           flex flex-col items-center rounded-[26px] gap-2 mt-4 py-40 text-neutral-500  dark:text-red-200  bg-gray-50 dark:bg-neutral-900"
       >
-          <h2 className="text-xl font-semibold text-red-600">Sorry!</h2>
-        No student found, Please check your internet connection and try again later.{" "}
-        <button
+        <h2 className="text-xl font-semibold text-red-600">Sorry!</h2>
+        No student found, Please check your internet connection and try again
+        later.{" "}
+        <Button
           className="px-6 py-2 bg-purple-500 text-white rounded-full "
           onClick={() => fetchStudents()}
         >
           Retry
-        </button>
+        </Button>
       </div>
     );
   }
@@ -159,7 +162,6 @@ const StudentList: React.FC = () => {
         setStudents((prevStudents) =>
           prevStudents.filter((student) => student.$id !== studentToDelete)
         );
-     
       } catch (error) {
         console.error("Error deleting student:", error);
       }
@@ -211,7 +213,7 @@ const StudentList: React.FC = () => {
         <h1 className="text-3xl font-semibold text-gray-800 dark:text-white mb-6">
           Student List
         </h1>
-
+        <GraduateStudents />
         {/* Search and Sort Section */}
         <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
           <div className="relative w-full sm:w-2/3">
@@ -378,33 +380,33 @@ const StudentList: React.FC = () => {
                       <td className="px-4 py-2 flex items-center gap-3">
                         {editStudentData?.$id === student.$id ? (
                           <>
-                            <button
+                            <Button
                               className="text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 transition-all duration-200"
                               onClick={handleEditSubmit}
                             >
                               Save
-                            </button>
-                            <button
+                            </Button>
+                            <Button
                               className="text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-all duration-200"
                               onClick={() => setEditStudentData(null)}
                             >
                               Cancel
-                            </button>
+                            </Button>
                           </>
                         ) : (
                           <>
-                            <button
+                            <Button
                               className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition-all duration-200"
                               onClick={() => setEditStudentData(student)}
                             >
                               <FaEdit />
-                            </button>
-                            <button
+                            </Button>
+                            <Button
                               className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-all duration-200"
                               onClick={() => handleDelete(student.$id)}
                             >
                               <FaTrashAlt />
-                            </button>
+                            </Button>
                           </>
                         )}
                       </td>
@@ -429,12 +431,12 @@ const StudentList: React.FC = () => {
             <p className="text-gray-700 dark:text-white">
               Student result have been successfully updated.
             </p>
-            <button
+            <Button
               onClick={closeSuccessPopup}
               className="mt-4 bg-purple-500 text-white px-6 py-2 rounded-full"
             >
               Close
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -448,12 +450,12 @@ const StudentList: React.FC = () => {
               Oops, something went wrong!
             </h2>
             {/* <p className="text-gray-600 mb-6">{errorMessage}</p> */}
-            <button
+            <Button
               onClick={closeFailurePopup}
               className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-full transition duration-200 ease-in-out"
             >
               Close
-            </button>
+            </Button>
           </div>
         </div>
       )}

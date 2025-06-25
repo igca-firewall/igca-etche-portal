@@ -342,3 +342,75 @@ export const getS = async ({
 
   return allStudents; // Return the full list of students (up to 10,000)
 };
+
+export const GRADUATE_STUDENTS = async () => {
+  try {
+    const { database: DATABASE } = await createAdminClient();
+    const STUDENTS = await listAllStudents();
+
+    if (!STUDENTS || STUDENTS.length === 0) {
+      console.error("NO RETRIEVED STUDENT DATA FOR GRADUATION.");
+      return null;
+    }
+
+    const PROMOTED_STUDENTS = [];
+
+    for (const STUDENT of STUDENTS) {
+      const CLASSROOM = STUDENT.classRoom?.toUpperCase();
+      if (!CLASSROOM) continue;
+
+      const MATCH = CLASSROOM.match(/(JSS[1-3]|SS[1-3])([A-C]?)/);
+      if (!MATCH) continue;
+
+      const LEVEL = MATCH[1];
+      const SECTION = MATCH[2] || "";
+      let NEW_CLASSROOM: string | null = null;
+
+      switch (LEVEL) {
+        case "JSS1":
+          NEW_CLASSROOM = `JSS2${SECTION}`;
+          break;
+        case "JSS2":
+          NEW_CLASSROOM = `JSS3${SECTION}`;
+          break;
+        case "JSS3":
+          NEW_CLASSROOM = `SS1${SECTION}`;
+          break;
+        case "SS2":
+          NEW_CLASSROOM = `SS3${SECTION}`;
+          break;
+        case "SS3":
+          NEW_CLASSROOM = "GRADUATE";
+          break;
+        default:
+          continue; // Skip SS1 and unrecognized
+      }
+
+      await DATABASE.updateDocument(
+        DATABASE_ID!,
+        STUDENTS_COLLECTION_ID!,
+        "6763b583001c11afdd91",
+        { classRoom: NEW_CLASSROOM }
+      );
+
+      PROMOTED_STUDENTS.push({
+        id: STUDENT.$id,
+        name: STUDENT.name,
+        oldClass: CLASSROOM,
+        newClass: NEW_CLASSROOM,
+      });
+    }
+
+    if (PROMOTED_STUDENTS.length === 0) {
+      return null;
+    }
+
+    console.log("GRADUATION PROCESS COMPLETED.");
+    return PROMOTED_STUDENTS;
+  } catch (ERROR) {
+    console.error("ERROR GRADUATING STUDENTS:", ERROR);
+    throw ERROR;
+  }
+};
+
+
