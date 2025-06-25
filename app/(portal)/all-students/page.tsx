@@ -159,7 +159,7 @@ const StudentList: React.FC = () => {
         setStudents((prevStudents) =>
           prevStudents.filter((student) => student.$id !== studentToDelete)
         );
-        console.log("Student deleted:", studentToDelete);
+     
       } catch (error) {
         console.error("Error deleting student:", error);
       }

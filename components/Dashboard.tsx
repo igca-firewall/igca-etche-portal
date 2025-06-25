@@ -51,7 +51,7 @@ const Dashboard: React.FC = () => {
     const fetchStudents = async () => {
       try {
         const allStudents = await listAllStudents();
-        console.log("Fetched Students:", allStudents);
+     
         setStudents(allStudents);
 
         const classCount: ClassData = allStudents.reduce((acc, student) => {

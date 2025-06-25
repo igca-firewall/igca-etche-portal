@@ -72,7 +72,7 @@ const Teachers = () => {
           createdAt: student.$createdAt,
         }));
         setStudents(transformedStudents);
-        console.log("Students", transformedStudents);
+      
         if (transformedStudents.length === 0) {
           setIsFailed(true);
         }
@@ -107,7 +107,7 @@ const Teachers = () => {
             createdAt: student.$createdAt,
           }));
           setStudents(transformedStudents);
-          console.log("Students", transformedStudents);
+      
           if (transformedStudents.length === 0) {
             setIsFailed(true);
           }

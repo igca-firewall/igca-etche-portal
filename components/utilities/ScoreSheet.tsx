@@ -245,7 +245,7 @@ const SubjectResultUploader: React.FC = () => {
         }));
 
         setStudents(transformedStudents);
-        console.log(transformedStudents, students);
+   
       }
     } catch (error) {
       console.error("Error fetching students:", error);
@@ -272,7 +272,7 @@ const SubjectResultUploader: React.FC = () => {
           }));
 
           setStudents(transformedStudents);
-          console.log(transformedStudents, students);
+       
         }
       } catch (error) {
         console.error("Error fetching students:", error);
@@ -302,7 +302,6 @@ const SubjectResultUploader: React.FC = () => {
           subject,
         });
 
-        console.log("Particles:", particles);
         if (particles?.length) {
           const transformedScores = particles.flatMap((result) => {
             return result.scores.map((scoreString: string) => {
@@ -323,7 +322,7 @@ const SubjectResultUploader: React.FC = () => {
           });
 
           setScores(transformedScores);
-          console.log("Transformed Scores:", transformedScores);
+    
           if (transformedScores.length === 0) {
             setIsFailed(true);
           }

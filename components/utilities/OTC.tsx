@@ -62,10 +62,10 @@ const ImageToScoreProcessor: React.FC = () => {
       console.log("Starting OCR process...");
       const result = await Tesseract.recognize(imageUrl, "eng");
       const rawText = result.data.text.trim();
-      console.log("Raw OCR result:", rawText);
+
 
       const parsedResults = parseTextToScores(rawText);
-      console.log("Parsed results:", parsedResults);
+
 
       const processedScores = parsedResults.map((result) => {
         const [firstTest, secondTest, project, bnb, assignment, exam] =
@@ -105,13 +105,7 @@ const ImageToScoreProcessor: React.FC = () => {
         subject,
         scores: processedScores, // Transformed scores array
       };
-      console.log(uploadData, "UploadedData")
-      console.log("UploadedData", uploadData);
-
-      // if (uploadResponse) {
-      //   setIsSuccess(true);
-      //   console.log("All results uploaded successfully.");
-      // }
+  
     } catch (err) {
       console.error("Error during OCR or processing:", err);
       setError("Failed to process the image. Please try again.");

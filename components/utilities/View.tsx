@@ -31,7 +31,7 @@ const CompiledResults: React.FC = () => {
   // const inputRefs = useRef([]);
   const currentYear = new Date().getFullYear();
   const nextYear = currentYear + 1;
-  // const confirmDelete = async () => {
+  
   //   if (studentToDelete) {
   //     try {
   //       await deleteStudent({ id: studentToDelete });
@@ -66,7 +66,7 @@ const CompiledResults: React.FC = () => {
           }));
 
           setStudents(transformedStudents);
-          console.log(transformedStudents, students);
+        
         }
       } catch (error) {
         console.error("Error fetching students:", error);
@@ -92,7 +92,7 @@ const CompiledResults: React.FC = () => {
           session,
           subject,
         });
-        console.log("particles", particles);
+       
         if (particles?.length) {
           const transformedScores = particles.flatMap((result) => {
             return result.scores.map((scoreString: string) => {
@@ -113,7 +113,7 @@ const CompiledResults: React.FC = () => {
           });
 
           setScores(transformedScores);
-          console.log("Transformed Scores:", transformedScores);
+         
         }
       } catch (error) {
         console.error("Error fetching student scores:", error);
@@ -139,7 +139,7 @@ const CompiledResults: React.FC = () => {
           session,
           subject,
         });
-        console.log("particles", particles);
+
         if (particles?.length) {
           const transformedScores = particles.flatMap((result) => {
             return result.scores.map((scoreString: string) => {
@@ -160,7 +160,7 @@ const CompiledResults: React.FC = () => {
           });
 
           setScores(transformedScores);
-          console.log("Transformed Scores:", transformedScores);
+         
         }
       } catch (error) {
         console.error("Error fetching student scores:", error);

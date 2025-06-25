@@ -158,7 +158,6 @@ export async function getStudentById(id: string) {
       console.log("No student found with this ID.");
       return null;
     }
-    console.log("the student found with this ID:", result.documents);
     return parseStringify(result.documents[0]);
   } catch (error) {
     console.log(error);

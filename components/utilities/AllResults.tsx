@@ -69,7 +69,7 @@ const AllResults = () => {
           createdAt: student.$createdAt,
         }));
         setStudents(transformedStudents);
-        console.log("Students", transformedStudents);
+  
         if (transformedStudents.length === 0) {
           setIsFailure(true);
         }
@@ -81,7 +81,7 @@ const AllResults = () => {
       setIsLoading(false);
     }
   };
-  // useEffect(() => {
+
   //   const fetchStudentsScore = async () => {
   //     try {
   //       setIsLoading(true);
@@ -153,7 +153,7 @@ const AllResults = () => {
             createdAt: student.$createdAt,
           }));
           setStudents(transformedStudents);
-          console.log("Students", transformedStudents);
+       
           if (transformedStudents.length === 0) {
             setIsFailure(true);
           }

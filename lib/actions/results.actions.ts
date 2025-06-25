@@ -134,8 +134,7 @@ export const addresults = async ({
       updatedScores = [...updatedScores, ...newFormattedScores];
 
       // Log the final array of all scores (both updated and new)
-      console.log("All scores (updated + new):", updatedScores);
-
+     
       // Update the document with the combined scores
       const updatedDocument = await database.updateDocument(
         DATABASE_ID!,
@@ -146,7 +145,6 @@ export const addresults = async ({
         }
       );
 
-      console.log("Updated Successfully the existing results", updatedDocument);
       return parseStringify(updatedDocument);
     } else {
       // If no existing results, create a new document with all scores

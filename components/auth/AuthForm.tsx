@@ -55,17 +55,6 @@ const AuthForm = ({
       role: "viewer",
     },
   });
-  // useEffect(() => {
-  //   const allStudents = async () => {
-  //     const xed = await listAllStudents(); // Assuming getMe is asynchronous
-  //     if (xed) {
-  //       console.log("list of  all students", xed);
-  //     } else {
-  //       console.log("No student found", xed)
-  //     }
-  //   };
-  //  allStudents();
-  // }, []);
 
   const selectedRole = form.watch("role");
   const router = useRouter();
@@ -101,15 +90,14 @@ const AuthForm = ({
             guardianContact: data.guardianContact!.replace(/\s+/g, ""),
           }),
         };
-console.log(userData)
+
         const newUser = await createUser(userData);
         if (!newUser || newUser === null || newUser === undefined) {
           setIsFailed(true);
-          console.log("Failed to complete authentication");
+          
           return null;
         } else if (newUser) {
           setIsSuccess(true);
-          console.log("User and scratch card created", newUser);
           form.reset();
           router.push("/");
         }
